@@ -457,10 +457,10 @@ export class RappidMainComponent implements OnInit {
         var textString = cell.attributes.attrs.text.text;
         let newShapeWidth = bboxText ? (
               (cell.attributes.attrs.text['ref-x'] == '0.5') ? (bboxText.width + padding) :
-                (bboxText.width / (0.2 + Math.abs(0.5 - cell.attributes.attrs.text['ref-x'])) + padding)) : 0,
+                (bboxText.width / (0.5 + Math.abs(0.5 - cell.attributes.attrs.text['ref-x'])) + padding)) : 0,
           newShapeHeight = bboxText ? (
               (cell.attributes.attrs.text['ref-y'] == '0.5') ? (bboxText.height + padding) :
-                (bboxText.height / (0.25 + Math.abs(0.5 - cell.attributes.attrs.text['ref-y'])) + padding)) : 0,
+                (bboxText.height / (0.5 + Math.abs(0.5 - cell.attributes.attrs.text['ref-y'])) + padding)) : 0,
           currentWidth = cell.get('size').width,
           currentHeight = cell.get('size').height,
           manuallyResized = cell.attributes.attrs.manuallyResized;
@@ -609,31 +609,31 @@ export class RappidMainComponent implements OnInit {
               arrangeStates.call(this, side);
             });
             halo.addHandle({
-              name: 'arrange_right', position: 'w', icon: null, attrs: {
-                '.handle': {
-                  'data-tooltip-class-name': 'small',
-                  'data-tooltip': 'Arrange the states to the right inside the object',
-                  'data-tooltip-position': 'right',
-                  'data-tooltip-padding': 15
-                }
-              }
-            });
-            halo.on('action:arrange_right:pointerup', function () {
-              side = 'right';
-              arrangeStates.call(this, side);
-            });
-            halo.addHandle({
-              name: 'arrange_left', position: 'e', icon: null, attrs: {
+              name: 'arrange_left', position: 'w', icon: null, attrs: {
                 '.handle': {
                   'data-tooltip-class-name': 'small',
                   'data-tooltip': 'Arrange the states to the left inside the object',
-                  'data-tooltip-position': 'left',
+                  'data-tooltip-position': 'right',
                   'data-tooltip-padding': 15
                 }
               }
             });
             halo.on('action:arrange_left:pointerup', function () {
               side = 'left';
+              arrangeStates.call(this, side);
+            });
+            halo.addHandle({
+              name: 'arrange_right', position: 'e', icon: null, attrs: {
+                '.handle': {
+                  'data-tooltip-class-name': 'small',
+                  'data-tooltip': 'Arrange the states to the right inside the object',
+                  'data-tooltip-position': 'left',
+                  'data-tooltip-padding': 15
+                }
+              }
+            });
+            halo.on('action:arrange_right:pointerup', function () {
+              side = 'right';
               arrangeStates.call(this, side);
             });
             halo.$handles.children('.arrange_up').toggleClass('hidden', !hasStates);

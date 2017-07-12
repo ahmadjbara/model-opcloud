@@ -3,6 +3,7 @@
  */
 import * as common from "../common/commonFunctions";
 import {gridLayout} from "./gridLayout";
+import {width} from "../common/commonFunctions";
 const joint = require('rappid');
 const paddingObject = common.paddingObject;
 
@@ -17,6 +18,8 @@ export function arrangeStates(side) {
   let textBBox = null;
   // Transform the textBoundBox into cell coordinates
   textBoundBox();
+  // Calculate how much can the text be moved on X - axis
+  let refX = ((0.75 - textBBox.width/fatherObject.getBBox().width) > 0.25) ? 0.25 : Math.max(0, (0.75 - textBBox.width/fatherObject.getBBox().width));
   // If the Object has any embedded states
   if (embeddedStates.length) {
     // Find the maximum Height and Width of all the states
@@ -91,10 +94,21 @@ export function arrangeStates(side) {
         overText = false;
       }
     }
-    else if (side == 'left') {
+    else if (side == 'right') {
+      if (refX < 0.1){
+        common._.each(embeddedStates, function (child) {
+          child.set({
+            position: {
+              x: textBBox.x + textBBox.width,
+              y: child.getBBox().y
+            }
+          });
+        });
+        refX = ((0.75 - textBBox.width/fatherObject.getBBox().width) > 0.25) ? 0.25 : Math.max(0.1, (0.75 - textBBox.width/fatherObject.getBBox().width));
+      }
       fatherObject.attributes.attrs.text["ref-y"] = '0.5';
-      fatherObject.attributes.attrs.statesArrange = 'left';
-      fatherObject.attributes.attrs.text["ref-x"] = '0.25';
+      fatherObject.attributes.attrs.statesArrange = 'right';
+      fatherObject.attributes.attrs.text["ref-x"] = Math.abs(0.5 - refX).toString();
       options.cellView.render();
       textBoundBox();
       gridLayout.layout(embeddedStates, {
@@ -113,7 +127,7 @@ export function arrangeStates(side) {
         common._.each(embeddedStates, function (child) {
           child.set({
             position: {
-              x: textBBox.x + textBBox.width + paddingObject * 0.8,
+              x: textBBox.x + textBBox.width + paddingObject,
               y: child.getBBox().y
             }
           });
@@ -121,10 +135,21 @@ export function arrangeStates(side) {
         overText = false;
       }
     }
-    else if (side == 'right') {
+    else if (side == 'left') {
+      if (refX < 0.1){
+        common._.each(embeddedStates, function (child) {
+          child.set({
+            position: {
+              x: textBBox.x - maxWidth,
+              y: child.getBBox().y
+            }
+          });
+        });
+        refX = ((0.75 - textBBox.width/fatherObject.getBBox().width) > 0.25) ? 0.25 : Math.max(0.05, (0.75 - textBBox.width/fatherObject.getBBox().width));
+      }
       fatherObject.attributes.attrs.text["ref-y"] = '0.5';
-      fatherObject.attributes.attrs.statesArrange = 'right';
-      fatherObject.attributes.attrs.text["ref-x"] = '0.75';
+      fatherObject.attributes.attrs.statesArrange = 'left';
+      fatherObject.attributes.attrs.text["ref-x"] = (0.5 + refX).toString();
       options.cellView.render();
       textBoundBox();
       gridLayout.layout(embeddedStates, {
@@ -143,7 +168,7 @@ export function arrangeStates(side) {
         common._.each(embeddedStates, function (child) {
           child.set({
             position: {
-              x: textBBox.x - textBBox.width - paddingObject * 0.8,
+              x: textBBox.x - maxWidth - paddingObject,
               y: child.getBBox().y
             }
           });
@@ -151,6 +176,7 @@ export function arrangeStates(side) {
         overText = false;
       }
     }
+    options.cellView.render();
   }
   // Transform the textBoundBox into cell coordinates
   function textBoundBox() {
