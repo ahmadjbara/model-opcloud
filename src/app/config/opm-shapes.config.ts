@@ -21,7 +21,7 @@ export const opmShapes = {
     markup: '<image/>',
     defaults: _.defaultsDeep({
       type: 'opm.TriangleAgg',
-      size: {width: 30, height: 30},
+      size: {width: 31, height: 30},
       inPorts: ['in'],
       outPorts: ['out'],
       ports: {
