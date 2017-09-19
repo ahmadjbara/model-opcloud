@@ -1,7 +1,6 @@
-import {basicDefinitions} from '../config/basicDefinitions';
-import * as common from '../common/commonFunctions';
-import {arrangeStates} from '../config/arrangeStates';
-import {OpmState} from '../models/OpmState';
+import {basicDefinitions} from "./basicDefinitions";
+import * as common from "../common/commonFunctions";
+import {arrangeStates} from "../config/arrangeStates";
 const joint = require('rappid');
 let objectChangedSize = false;
 
@@ -15,12 +14,12 @@ function saveValues(cell, parent) {
 }
 
 export function addNewState(fatherObject, graph) {
-  const defaultState = new OpmState();
-  fatherObject.embed(defaultState);     // makes the state stay in the bounds of the object
+  let defaultState = new joint.shapes.opm.State(basicDefinitions.defineState());
+  fatherObject.embed(defaultState);     //makes the state stay in the bounds of the object
   graph.addCells([fatherObject, defaultState]);
-  // Placing the new state. By default it is outside the object.
-  const xNewState = fatherObject.getBBox().center().x - basicDefinitions.stateWidth / 2;
-  const yNewState = fatherObject.getBBox().y + fatherObject.getBBox().height - basicDefinitions.stateHeight - common.paddingObject;
+  //Placing the new state. By default it is outside the object.
+  let xNewState = fatherObject.getBBox().center().x - basicDefinitions.stateWidth / 2;
+  let yNewState = fatherObject.getBBox().y + fatherObject.getBBox().height - basicDefinitions.stateHeight - common.paddingObject;
   defaultState.set('father', defaultState.get('parent'));
   if (fatherObject.get('embeds') && fatherObject.get('embeds').length) {
     common._.each(fatherObject.getEmbeddedCells(), function (child) {
