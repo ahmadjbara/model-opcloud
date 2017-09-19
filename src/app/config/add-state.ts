@@ -1,6 +1,6 @@
-import {basicDefinitions} from '../config/basicDefinitions';
+import {basicDefinitions} from './basicDefinitions';
 import * as common from '../common/commonFunctions';
-import {arrangeStates} from '../config/arrangeStates';
+import {arrangeStates} from './arrangeStates';
 import {OpmState} from '../models/OpmState';
 const joint = require('rappid');
 let objectChangedSize = false;

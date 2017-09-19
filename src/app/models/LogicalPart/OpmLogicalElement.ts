@@ -1,5 +1,5 @@
 
-  import {OpmVisualElement} from "../VisualPart/OpmVisualElement";
+  import {OpmVisualElement} from '../VisualPart/OpmVisualElement';
 
   export class OpmLogicalElement<T extends OpmVisualElement> {
     visualElements: Array<T>;
