@@ -141,7 +141,7 @@ export class MainComponent implements OnInit, OnDestroy {
 
   // TODO: replace with onResize method
   onResize(e) {
-    console.log(e);
+    //console.log(e);
   }
 
   toggleInspector() {

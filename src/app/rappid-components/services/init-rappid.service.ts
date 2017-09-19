@@ -13,10 +13,13 @@ import { arrangeStates } from '../../config/arrangeStates';
 import * as common from '../../common/commonFunctions';
 //treeview imports
 import { TreeViewService } from '../../services/tree-view.service';
-import { processInzooming } from '../../config/process-inzooming';
+import { processInzooming, processUnfolding } from '../../config/process-inzooming';
 // popup imports
 import { linkDrawing } from '../../link-operating/linkDrawing';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
+
+import { TreeComponent, TreeModel, TreeNode } from 'angular-tree-component';
+
 
 const joint = require('rappid');
 
@@ -62,6 +65,7 @@ export class InitRappidService {
     this.handleRemoveElement();
     // This doesn't work (the event is not caught)
     this.linkHoverEvent();
+
   }
 
   createDialog(link) {
@@ -142,6 +146,7 @@ export class InitRappidService {
 
   linkHoverEvent() {
     let oplDialog;
+
     this.paper.on('link:mouseover', (cellView, evt) => {
       this.createOplDialog(cellView);
       console.log('mouse over link');
@@ -203,6 +208,7 @@ export class InitRappidService {
           }
         });
         cell.on('change:target change:source', (link,a, b) => {
+
           if (link.attributes.source.id && link.attributes.target.id) {
             if (link.attributes.source.id != link.attributes.target.id) {
               if (!link.get('previousTargetId') || (link.get('previousTargetId') != link.attributes.target.id)) {
@@ -247,7 +253,7 @@ export class InitRappidService {
     // element below.
     paper.on('cell:pointerup', function (cellView, evt, x, y) {
       const cell = cellView.model;
-      if (cell.attributes.type == 'opm.Process') {
+      if (cell.attributes.type == 'opm.Process' || cell.attributes.type == 'opm.Object') {
         const cellViewsBelow = paper.findViewsFromPoint(cell.getBBox().center());
         if (cellViewsBelow.length) {
           // Note that the findViewsFromPoint() returns the view for the `cell` itself.
@@ -397,6 +403,10 @@ export class InitRappidService {
   initializeTextEditing() {
     let lastEnteredText;
     let currentCellView;
+    this.paper.on('all', function (cellView, evt) {
+      //console.log(evt);
+    }, this);
+
     this.paper.on('cell:pointerdblclick', function (cellView, evt) {
       lastEnteredText = cellView.model.attributes.attrs.text.text;
       currentCellView = cellView.model;
@@ -421,12 +431,13 @@ export class InitRappidService {
         cell.attributes.attrs.wrappingResized = true;
         cell.attr({ text: { text: newParams.text } });
         if (!((newParams.width <= cell.get('size').width) && (newParams.height <= cell.get('size').height) && cell.attributes.attrs.manuallyResized)) {
-          cell.resize(newParams.width, newParams.height);
+          cell.resize(newParams.width, newParams.height, {cameFrom:'textEdit', wd:cell.get('size').width, hg:cell.get('size').height });
           cell.attributes.attrs.manuallyResized = false;
         }
         cell.attributes.attrs.wrappingResized = false;
       }
     }, this);
+
 
     this.paper.on('blank:pointerdown', function (cellView, evt) {
       if (currentCellView && !currentCellView.isLink()) {
@@ -477,7 +488,7 @@ export class InitRappidService {
   }
 
   initializeHaloAndInspector() {
-    const _this = this;
+    let _this=this;
     this.paper.on('element:pointerup link:options', function (cellView) {
 
       const cell = cellView.model;
@@ -578,29 +589,73 @@ export class InitRappidService {
           }
           if (cell.attributes.type === 'opm.Process') {
             halo.addHandle({
-              name: 'add_state', position: 'sw', icon: null, attrs: {
+              name: 'manage_complexity', position: 'sw', icon: null, attrs: {
                 '.handle': {
                   'data-tooltip-class-name': 'small',
-                  'data-tooltip': 'Click to In-zoom the process',
+                  'data-tooltip': 'Click to manage complexity',
                   'data-tooltip-position': 'left',
                   'data-tooltip-padding': 15
                 }
               }
             });
-            halo.on('action:add_state:pointerdown', function (evt, x, y) {
-              const cellModel = this.options.cellView.model;
-              if (cellModel.attributes.attrs.ellipse['stroke-width'] === 4) {
-              _this.graphService.changeGraphModel(cellModel.id);
-                return;
-             }
-              cellModel.attributes.attrs.ellipse['stroke-width']=4;
-              const CellClone = cell.clone();
-              const textString = cell.attributes.attrs.text.text;
-              CellClone.set('id', cellModel.id);
-              CellClone.attr({ text: { text: textString } });
-              _this.treeViewService.insertNode(cellModel);
-              const elementlinks = _this.graphService.graphLinks;
-              processInzooming(evt, x, y, this, CellClone, elementlinks, _this);
+
+            halo.on('action:manage_complexity:pointerdown', function (evt, x, y) {
+              let contextToolbar = new joint.ui.ContextToolbar({
+                theme: 'modern',
+                tools: [
+                  { action: 'In-Zoom', content:  this.options.cellView.model.attributes.attrs.ellipse['stroke-width'] === 4 ? 'Show In-Zoomed':'In-Zoom' },
+                  { action: 'Unfold', content: this.options.cellView.model.attributes.attrs.ellipse['stroke'] === '#FF0000' ? 'Show Unfolded':'Unfold' }
+                ],
+                target:halo.el,
+                autoClose: true,
+                padding: 30
+              });
+
+              let haloThis = this;
+              contextToolbar.on('action:In-Zoom', function() {
+                this.remove();
+                const cellModel = haloThis.options.cellView.model;
+                if (cellModel.attributes.attrs.ellipse['stroke-width'] === 4) {
+                  _this.graphService.changeGraphModel(cellModel.id, _this.treeViewService,'inzoom');
+                  console.log(cellModel);
+                }
+                else {
+                  cellModel.attributes.attrs.ellipse['stroke-width'] = 4;
+                  const CellClone = cell.clone();
+                  const textString = cell.attributes.attrs.text.text;
+                  CellClone.set('id', cellModel.id);
+                  CellClone.attr({text: {text: textString}});
+                  _this.treeViewService.insertNode(cellModel, 'inzoom');
+                  const elementlinks = _this.graphService.graphLinks;
+                  console.log(CellClone);
+                  processInzooming(evt, x, y, haloThis, CellClone, elementlinks);
+
+                }
+                _this.treeViewService.treeView.treeModel.getNodeById(cellModel.id).toggleActivated();
+              });
+              contextToolbar.on('action:Unfold', function() {
+                this.remove();
+                const cellModel = haloThis.options.cellView.model;
+                if (cellModel.attributes.attrs.ellipse['stroke'] === '#FF0000') {
+                  _this.graphService.changeGraphModel(cellModel.id, _this.treeViewService, 'unfold');
+                }
+                else {
+                  cellModel.attributes.attrs.ellipse['stroke'] = '#FF0000';
+                  const CellClone = cell.clone();
+                  const textString = cell.attributes.attrs.text.text;
+                  CellClone.set('id', cellModel.id);
+                  CellClone.attr({text: {text: textString}});
+                  _this.treeViewService.insertNode(cellModel, 'unfold');
+                  const elementlinks = _this.graphService.graphLinks;
+
+                  haloThis.options.graph.addCell(CellClone);
+                  haloThis.options.graph.addCells(elementlinks);
+                  processUnfolding(haloThis, CellClone, elementlinks);
+                  //console.log(_this.treeViewService.nodes);
+                }
+               _this.treeViewService.treeView.treeModel.getNodeById(cellModel.id).toggleActivated();
+              });
+              contextToolbar.render();
             });
           }
 

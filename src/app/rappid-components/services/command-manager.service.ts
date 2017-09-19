@@ -1,11 +1,12 @@
 import { Injectable } from '@angular/core';
 import { GraphService } from './graph.service';
 
-const joint = require('rappid');
+
 
 const $ = require('jquery');
 // window.jQuery = $;
 const _ = require('lodash');
+const joint = require('rappid');
 
 
 @Injectable()

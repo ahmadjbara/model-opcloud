@@ -1,4 +1,8 @@
 import {OpmThing} from './OpmThing';
+import {OpmLogicalElement} from "./LogicalPart/OpmLogicalElement";
+import {OpmVisualProcess} from "./VisualPart/OpmVisualProcess";
+import {OpmVisualState} from "./VisualPart/OpmVisualState";
+
 
 export class OpmObject extends OpmThing {
 
@@ -6,6 +10,8 @@ export class OpmObject extends OpmThing {
     super.initialize();
     this.set(this.objectAttributes());
     this.attr(this.objectAttrs());
+
+
   }
   objectAttributes() {
     return {

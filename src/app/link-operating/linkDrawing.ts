@@ -16,9 +16,9 @@ const DictOfLinksValue = {
   "Agent": {src: false, dst: true, middle: false, c: false, e: false, value: {fill: 'black', d: 'M 0 0 a 5 5 0 1 0 10 0 a 5 5 0 1 0 -10 0 M 10,0', 'stroke-width': 2}},
   "Instrument": {src: false, dst: true, middle: false, c: false, e: false, value: {fill: 'white', d: 'M 0 0 a 5 5 0 1 0 10 0 a 5 5 0 1 0 -10 0 M 10,0', 'stroke-width': 2}},
   "Invocation": {src: false, dst: true, middle: false, c: false, e: false, value: {fill: 'white', d: 'M 8,33 L -12,25 L 8,17 L0,25 L 8,33 M 0,25', 'stroke-width': 2}},
-  "Overtime_exception": {src: false, dst: true, middle: false, c: false, e: false, value: {fill: 'black', d: 'M 32 46  L40 32  L48 16  M40 31 L16 31', 'stroke-width': 2}},
-  "Undertime_exception": {src: false, dst: true, middle: false, c: false, e: false, value: {fill: 'black', d: 'M 32 46  L40 32  L48 16  M40 31 L16 31 Z M 42 46  L50 32  L58 16  M50 31 L26 31', 'stroke-width': 2}},
-  "Undertime_and_overtime_exception": {src: false, dst: true, middle: false, c: false, e: false, value: {fill: 'black', d: 'M 22 46  L30 32  L38 16  M30 31 L6 31 Z M 32 46  L40 32  L48 16  M40 31 L16 31 Z M 52 46  L60 32  L68 16  M60 31 L36 31', 'stroke-width': 2}},
+  "Overtime_exeption": {src: false, dst: true, middle: false, c: false, e: false, value: {fill: 'black', d: 'M 32 46  L40 32  L48 16  M40 31 L16 31', 'stroke-width': 2}},
+  "Undertime_exeption": {src: false, dst: true, middle: false, c: false, e: false, value: {fill: 'black', d: 'M 32 46  L40 32  L48 16  M40 31 L16 31 Z M 42 46  L50 32  L58 16  M50 31 L26 31', 'stroke-width': 2}},
+  "Undertime_and_overtime_exeption": {src: false, dst: true, middle: false, c: false, e: false, value: {fill: 'black', d: 'M 22 46  L30 32  L38 16  M30 31 L6 31 Z M 32 46  L40 32  L48 16  M40 31 L16 31 Z M 52 46  L60 32  L68 16  M60 31 L36 31', 'stroke-width': 2}},
   "Condition_Consumption": {src: false, dst: true, middle: false, c: true, e: false, value: {fill: 'white', d: 'M 8,33 L -12,25 L 8,17 L0,25 L 8,33 M 0,25', 'stroke-width': 2}},
   "Condition_Effect": {src: true, dst: true, middle: false, c: true, e: false, value: {fill: 'white', d: 'M 8,33 L -12,25 L 8,17 L0,25 L 8,33 M 0,25', 'stroke-width': 2}},
   "Condition_Instrument": {src: false, dst: true, middle: false, c: true, e: false, value: {fill: 'white', d: 'M 0 0 a 5 5 0 1 0 10 0 a 5 5 0 1 0 -10 0 M 10,0', 'stroke-width': 2}},
@@ -110,10 +110,11 @@ function conditionOrEvent(link, s: string){
 
 export const linkDrawing = {
   drawLink(link, linkName, ftag: string = null, btag: string = null){
+    console.log('in drawlink');
     var linkInfo = DictOfLinksValue[linkName];
     var graph = link.get('graph');
     link.set({'graph': null}, { ignoreCommandManager: true });
-    if (!linkInfo) {
+    if (!linkInfo){
       console.log('ERROR, link name does not exist!');
       return;
     }
@@ -132,13 +133,18 @@ export const linkDrawing = {
       '.marker-source' : {d:'', 'stroke-width': 2},
       '.marker-target' : {d:'', 'stroke-width': 2}
     };
-    if (linkInfo.src) {
-      newAttributes['.marker-source'] = linkInfo.value;
+
+    if (linkInfo.src && !linkInfo.dst) {
+      newAttributes[".marker-source"] = linkInfo.value;
     }
-    if (linkInfo.dst) {
-      newAttributes['.marker-target'] = linkInfo.value;
+    else if (!linkInfo.src && linkInfo.dst) {
+      newAttributes[".marker-target"] = linkInfo.value;
     }
-    if (linkInfo.middle) {   //structural links
+    else if (linkInfo.src && linkInfo.dst) {
+      newAttributes[".marker-source"] = linkInfo.value;
+      newAttributes[".marker-target"] = linkInfo.value;
+    }
+    else if (linkInfo.middle) {   //structural links
       var outboundLinks = graph.getConnectedLinks(link.getSourceElement(), { outbound: true });
       var targetTriangle;
       for (var pt in outboundLinks) {
@@ -199,22 +205,20 @@ export const linkDrawing = {
       var s: string = (linkInfo.c) ? 'c' : 'e';
       conditionOrEvent(link, s);
     }
-    if (linkName == 'Invocation') {
+    if (linkName == "Invocation") {
       invocation(link);
     }
-   // link.set({'attrs': newAttributes}, { ignoreCommandManager: true });
-    link.attr({'.connection': {'stroke-dasharray': '0'}, '.marker-source': newAttributes['.marker-source'],
-      '.marker-target': newAttributes['.marker-target']});
+    link.set({'attrs': newAttributes}, { ignoreCommandManager: true });
 
   },
 
-  linkUpdating(link) {
-    if (link.attributes.name === 'Invocation') {
+  linkUpdating(link){
+    if (link.attributes.name === "Invocation") {
 
       invocation(link);
     } else {
       var linkInfo = DictOfLinksValue[link.attributes.name];
-      if (linkInfo.c || linkInfo.e) {
+      if (linkInfo && (linkInfo.c || linkInfo.e)) {
         var s: string = (linkInfo.c) ? 'c' : 'e';
         conditionOrEvent(link, s);
       }

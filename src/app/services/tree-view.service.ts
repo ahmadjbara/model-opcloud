@@ -6,6 +6,7 @@ import { Observable } from 'rxjs/Observable';
 import {BehaviorSubject} from 'rxjs/Rx';
 
 import * as _ from 'lodash';
+import {TreeComponent} from "angular-tree-component";
 
 const { find } = _;
 const rootId="SD";
@@ -17,7 +18,7 @@ export class TreeViewService {
   private nodesSubject: BehaviorSubject<Node[]> = new BehaviorSubject<Node[]>(this.nodes);
   parentNode: any;
 
-
+  treeView: TreeComponent;
 
   constructor(private graphService: GraphService) {
 
@@ -28,8 +29,10 @@ export class TreeViewService {
        id: rootId,
        name: rootId,
        parent: rootId,
+       graph: JSON.stringify(graphService.graph),
      });
     this.nodes.push(this.parentNode);
+
   }
 
 
@@ -37,7 +40,7 @@ export class TreeViewService {
     return this.nodesSubject.asObservable();
   }
 
-  insertNode(cellModelRef)
+  insertNode(cellModelRef, type)
   {
     let element_id=cellModelRef.id;
     let parent_id=cellModelRef.get('parent')?cellModelRef.get('parent'):rootId;
@@ -49,11 +52,13 @@ export class TreeViewService {
       id: element_id,
       name: 'SD',
       parent: parentNode,
+      graph: '',
+      type:type,
     });
-    this.graphService.graphSetUpdate(element_id);
+    this.graphService.graphSetUpdate(element_id, newNode, this, type);
     parentNode.addChildren(newNode);
-    console.log('the nodes');
-    console.log(this.nodes);
+    //console.log('the nodes');
+    //console.log(this.nodes);
     this.nodesSubject.next(this.nodes);
   }
 
@@ -79,6 +84,12 @@ export class TreeViewService {
       return this.nodes[0];
     const idStr = id.toString();
     return this.getNodeBy((node) => node.id.toString() === idStr);
+  }
+  getNodeByIdType(id, type) {
+    if (id==rootId)
+      return this.nodes[0];
+    const idStr = id.toString();
+    return this.getNodeBy((node) => node.id.toString() === idStr && node.type===type);
   }
 
   getNodeBy(predicate, startNode = this.nodes[0]) {

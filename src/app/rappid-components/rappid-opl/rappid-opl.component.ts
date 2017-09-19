@@ -55,6 +55,7 @@ export class RappidOplComponent implements OnInit {
       });
 
       this.graph.on('change', (cell) => {
+        console.log(cell);
         if (cell.attributes.type === 'opm.State') {
           var parentId = cell.attributes.parent;
           if(parentId){

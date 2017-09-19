@@ -1,4 +1,4 @@
-import {basicDefinitions} from './basicDefinitions';
+import {basicDefinitions} from '../config/basicDefinitions';
 import * as common from '../common/commonFunctions';
 import {arrangeStates} from '../config/arrangeStates';
 import {OpmState} from '../models/OpmState';

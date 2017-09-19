@@ -11,6 +11,8 @@ export class Node {
   hasParent: boolean = false;
   parent: string;
   children: Node[] = [];
+  graph: string='';
+  type:string='';
   constructor(node: any) {
     this.id = node.id;
     this.name = node.name || '';
@@ -21,6 +23,8 @@ export class Node {
     this.parent = node.parent || 'SD';
     this.hasChildren = node.hasChildren || false;
     this.children = node.children || [];
+    this.graph = node.graph || '';
+    this.type = node.type || '';
   }
 
   public addChildren(children) {
