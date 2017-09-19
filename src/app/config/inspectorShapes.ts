@@ -15,7 +15,7 @@ export const inspectorShapes = {
    stroke-width: The width of the element's stroke. Picked from a range bar (0-30). Appears in styling group.Ordered eighth.
    */
   shapeDefinition: {
-    'filter': CommonFunctions.createSelection('select-box', selectOptions.shadowStyle, 'Essence', 'presentation', 1),
+    'filter': CommonFunctions.createSelection('select', selectOptions.shadowStyle, 'Essence', 'presentation', 2),
     'stroke-dasharray': CommonFunctions.createSelection('select', selectOptions.strokeStyle, 'Affiliation', 'presentation', 2),
     fill: CommonFunctions.createColorsObject('Shape fill', 6),
     stroke: CommonFunctions.createColorsObject('Outline', 7),

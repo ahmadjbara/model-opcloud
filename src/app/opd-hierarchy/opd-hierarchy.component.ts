@@ -49,6 +49,7 @@ export class OPDHierarchyComponent implements OnInit {
       this.nodes = nodes;
       this.treeView.treeModel.update();
     });
+    this._treeViewService.treeView = this.treeView;
   }
 
   customTemplateStringOptions = {
@@ -66,7 +67,8 @@ export class OPDHierarchyComponent implements OnInit {
   }
 
   changeGraphModel($event, node) {
-    this.graphService.changeGraphModel(node.id);
+    console.log(node);
+    this.graphService.changeGraphModel(node.data.id, this._treeViewService, node.data.type);
   }
 
   getNodeNum(node) {

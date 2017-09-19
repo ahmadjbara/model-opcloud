@@ -3,8 +3,8 @@ export const selectOptions = {
 
   //with (Physical) or without (Informatical) shadow
   shadowStyle: [
-    {content: 'Physical', value: {name: 'dropShadow', args: {dx: 3, dy: 3, blur: 0, color: 'grey'}}},
-    {content: 'Informatical', value: {name: 'dropShadow', args: {dx: 0, dy: 0, blur: 0, color: 'grey'}}},
+    {content: 'Physical', value: {name: 'dropShadow', args: {dx: 3, dy: 3, blur: 0, color: 'grey'}} },
+    {content: 'Informatical', value: {name: 'dropShadow', args: {dx: 0, dy: 0, blur: 0, color: 'grey'}}}
   ],
   //dashed (Environmental) or not (Systemic) stroke
   strokeStyle: [
