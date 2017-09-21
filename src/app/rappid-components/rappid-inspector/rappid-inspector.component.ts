@@ -33,8 +33,8 @@ export class RappidInspectorComponent implements OnChanges {
       cell: this.cell
     }, inspectorConfig[this.cell.get('type')]));
     this.inspectorContainer.element.nativeElement.appendChild(inspector.el);
-    console.log('aaa');
-    console.log(this.cell);
+    //console.log('aaa');
+    //console.log(this.cell);
     inspector.render();
   }
 

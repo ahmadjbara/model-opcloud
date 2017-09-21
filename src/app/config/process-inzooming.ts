@@ -40,7 +40,7 @@ export function processInzooming (evt, x, y, _this, cellRef, links) {
   var cells = options.graph.getElements();
   for (var cellIndex = 0; cellIndex < cells.length; cellIndex++) {
     var cell = cells[cellIndex];
-    if (!(cell instanceof joint.shapes.opm.State)) {
+    if (!(cell instanceof OpmState)) {
       var cellSize = cell.get('size');
       cell.resize(cellSize.width * Facotr, cellSize.height * Facotr);
     }

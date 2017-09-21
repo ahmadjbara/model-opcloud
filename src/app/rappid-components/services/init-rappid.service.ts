@@ -19,6 +19,7 @@ import { linkDrawing } from '../../link-operating/linkDrawing';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 
 import { TreeComponent, TreeModel, TreeNode } from 'angular-tree-component';
+import {OpmProcess} from "../../models/OpmProcess";
 
 
 const joint = require('rappid');

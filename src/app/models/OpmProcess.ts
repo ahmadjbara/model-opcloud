@@ -5,6 +5,7 @@ export class OpmProcess extends OpmThing {
     super.initialize();
     this.set(this.processAttributes());
     this.attr(this.processAttrs());
+    console.log(this);
   }
   processAttributes() {
     return {

@@ -186,12 +186,12 @@ export class GraphService {
   }
 
   changeGraphModel(elementId, treeViewService, type) {
+
     if (elementId == this.currentGraphId && this.type===type)
       return 0;
     //localStorage.setItem(this.currentGraphId, JSON.stringify(this.graph.toJSON()));
     treeViewService.getNodeByIdType(this.currentGraphId, this.type).graph = JSON.stringify(this.graph.toJSON());
-
-    console.log(treeViewService.getNodeByIdType(elementId, type));
+    
     this.graph.fromJSON(JSON.parse(treeViewService.getNodeByIdType(elementId, type).graph));
     //this.graph.fromJSON(JSON.parse(localStorage.getItem(elementId)));
     this.currentGraphId = elementId;

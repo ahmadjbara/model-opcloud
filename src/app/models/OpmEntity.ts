@@ -41,6 +41,7 @@ class EntityDefinition{
     };
   }
 }
+
 export  class OpmEntity extends common.joint.dia.Element.extend(entityDefinition) {
   initialize() {
     super.initialize();

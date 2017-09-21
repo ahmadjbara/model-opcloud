@@ -11,7 +11,6 @@ export class OpmObject extends OpmThing {
     this.set(this.objectAttributes());
     this.attr(this.objectAttrs());
 
-
   }
   objectAttributes() {
     return {
