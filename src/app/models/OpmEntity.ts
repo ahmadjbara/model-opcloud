@@ -1,4 +1,5 @@
 import * as common from '../common/commonFunctions';
+import {basicDefinitions} from "../config/basicDefinitions";
 
 const entityText = {
   fill: 'black',
@@ -12,6 +13,7 @@ const entityText = {
 
 const entityDefinition = {
   defaults: common._.defaultsDeep({
+    size: {width: 90, height: 50},
     attrs: {
       'text': entityText,
       'wrappingResized' : false,
@@ -19,29 +21,21 @@ const entityDefinition = {
     }
   }, common.joint.shapes.basic.Generic.prototype.defaults)
 }
-class EntityDefinition {
-  static entityDefinition() {
-    return {defaults: common._.defaultsDeep({
-      attrs: {
-        'text': EntityDefinition.entityText,
-        'wrappingResized' : false,
-        'manuallyResized' : false,
-      }
-    }, common.joint.shapes.basic.Generic.prototype.defaults)};
+
+export  class OpmEntity extends common.joint.dia.Element.extend(entityDefinition) {
+  initialize() {
+    super.initialize();
   }
-  static entityText() {
+  entityShape() {
     return {
-      fill: 'black',
-      'font-size': 14,
-      'ref-x': .5,
-      'ref-y': .5,
-      'x-alignment': 'middle',
-      'y-alignment': 'middle',
-      'font-family': 'Arial, helvetica, sans-serif',
+      fill: '#DCDCDC',
+      magnet: true,
+      'stroke-width': 2,
     };
   }
 }
-export  class OpmEntity extends common.joint.dia.Element.extend(entityDefinition) {
+
+export  class OpmEntity2 extends common.joint.dia.Element.extend(entityDefinition) {
   initialize() {
     super.initialize();
   }

@@ -5,9 +5,7 @@ import {OpmThing} from "../models/OpmThing";
 
 export const stencilConfig = {
   shapes: [
-   //new opmShapes.Process,
-    new OpmProcess(),
-    new OpmObject(),
-    //new opmShapes.Object,
+    new opmShapes.Process,
+    new opmShapes.Object
   ]
 };
