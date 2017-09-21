@@ -22,7 +22,7 @@ const entityDefinition = {
   }, common.joint.shapes.basic.Generic.prototype.defaults)
 }
 
-export  class OpmEntity extends common.joint.dia.Element.extend(entityDefinition) {
+export class OpmEntity extends common.joint.dia.Element.extend(entityDefinition) {
   initialize() {
     super.initialize();
   }
