@@ -1,5 +1,4 @@
-
-  import {OpmVisualEntity} from "./OpmVisualEntity";
+  import {OpmVisualEntity} from './OpmVisualEntity';
 
   export class OpmVisualState extends OpmVisualEntity {
 

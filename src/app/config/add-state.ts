@@ -1,7 +1,6 @@
 import {basicDefinitions} from "./basicDefinitions";
 import * as common from "../common/commonFunctions";
 import {arrangeStates} from "../config/arrangeStates";
-import {OpmState} from "../models/OpmState";
 const joint = require('rappid');
 let objectChangedSize = false;
 
@@ -15,7 +14,7 @@ function saveValues(cell, parent) {
 }
 
 export function addNewState(fatherObject, graph) {
-  let defaultState = new OpmState();
+  let defaultState = new joint.shapes.opm.State(basicDefinitions.defineState());
   fatherObject.embed(defaultState);     //makes the state stay in the bounds of the object
   graph.addCells([fatherObject, defaultState]);
   //Placing the new state. By default it is outside the object.

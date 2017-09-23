@@ -16,9 +16,9 @@ export const opmShapes = {
   // OPM Links definitions
 
   Link: joint.dia.Link.extend(basicDefinitions.defineLink()),
-  //Object: new OpmObject(),
-  //Process: new OpmProcess(),
-  //State: new OpmState(),
+  Object: OpmObject,
+  Process: OpmProcess,
+ // State: new OpmState(),
   TriangleAgg: joint.shapes.devs.Model.extend({
     markup: '<image/>',
     defaults: _.defaultsDeep({
