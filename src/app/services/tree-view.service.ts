@@ -29,7 +29,8 @@ export class TreeViewService {
        id: rootId,
        name: rootId,
        parent: rootId,
-       graph: JSON.stringify(graphService.graph),
+       //AHMAD graph: JSON.stringify(graphService.graph),
+       graph: graphService.graph,
      });
     this.nodes.push(this.parentNode);
 
@@ -52,9 +53,10 @@ export class TreeViewService {
       id: element_id,
       name: 'SD',
       parent: parentNode,
-      graph: '',
-      type:type,
+      graph: null,
+      type: type,
     });
+
     this.graphService.graphSetUpdate(element_id, newNode, this, type);
     parentNode.addChildren(newNode);
     //console.log('the nodes');

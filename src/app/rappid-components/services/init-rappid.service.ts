@@ -459,6 +459,7 @@ export class InitRappidService {
 
   initializeAttributesEvents() {
     const _this = this;
+    this.paper.render();
     this.paper.on('cell:pointerup blank:pointerclick ', function (cellView) {
       _this.graphService.updateJSON();
     });
@@ -626,9 +627,10 @@ export class InitRappidService {
                   const textString = cell.attributes.attrs.text.text;
                   CellClone.set('id', cellModel.id);
                   CellClone.attr({text: {text: textString}});
+                  CellClone.set('position',cellModel.get('position'));
                   _this.treeViewService.insertNode(cellModel, 'inzoom');
                   const elementlinks = _this.graphService.graphLinks;
-                  console.log(CellClone);
+
                   processInzooming(evt, x, y, haloThis, CellClone, elementlinks);
 
                 }

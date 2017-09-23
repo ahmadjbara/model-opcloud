@@ -11,7 +11,7 @@ export class Node {
   hasParent: boolean = false;
   parent: string;
   children: Node[] = [];
-  graph: string='';
+  graph: joint.dia.Graph;
   type:string='';
   constructor(node: any) {
     this.id = node.id;

@@ -29,12 +29,11 @@ export function processInzooming (evt, x, y, _this, cellRef, links) {
 
   options.graph.addCells(links);
 
-  parentObject.attributes.attrs.text = {
-    'ref-y': .1,
-    'ref-x': .5,
-    'text-anchor': 'middle',
-    'y-alignment': 'top'
-  };
+  parentObject.attributes.attrs.text['ref-y']=.1;
+  parentObject.attributes.attrs.text['ref-x']=.5;
+  parentObject.attributes.attrs.text['text-anchor']='middle';
+  parentObject.attributes.attrs.text['y-alignment']='top';
+
    //parentObject.attributes.attrs.text({refx:'30%'});
   //zoom out current elements in the paper
   var cells = options.graph.getElements();

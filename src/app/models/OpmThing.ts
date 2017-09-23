@@ -1,11 +1,12 @@
 import {OpmEntity} from './OpmEntity';
 
 export  class OpmThing extends OpmEntity {
-  initialize() {
-    super.initialize();
+  constructor() {
+    super();
     this.set(this.thingAttributes());
     this.attr({text: {'font-weight': 600}});
   }
+
   thingShape() {
     return {
       filter: {name: 'dropShadow', args: {dx: 3, dy: 3, blur: 0, color: 'grey'}},
