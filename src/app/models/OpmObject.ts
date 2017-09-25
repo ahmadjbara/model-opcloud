@@ -4,6 +4,7 @@ import {OpmVisualProcess} from "./VisualPart/OpmVisualProcess";
 import {OpmVisualState} from "./VisualPart/OpmVisualState";
 import {basicDefinitions} from "../config/basicDefinitions";
 import * as common from '../common/commonFunctions';
+import * as ConfigurationOptions from './ConfigurationOptions';
 
 export class OpmObject extends OpmThing {
   constructor() {
@@ -14,6 +15,7 @@ export class OpmObject extends OpmThing {
     this.attr({rect: {stroke: '#00AA00'}});
     this.attr({rect: this.entityShape()});
     this.attr({rect: this.thingShape()});
+    this.attr({'statesArrange': 'bottom'});
   }
 
   objectAttributes() {
@@ -29,5 +31,18 @@ export class OpmObject extends OpmThing {
       'statesArrange' : 'bottom',
       'text' : {text: 'Object'}
     };
+  }
+
+  getParams() {
+    const params = {
+      fill: this.attr('rect/fill'),
+      strokeColor: this.attr('rect/stroke'),
+      strokeWidth: this.attr('rect/stroke-width'),
+      statesArrangement: this.attr('statesArrange'),
+      valueType: this.attr('value/valueType'),
+      value: this.attr('value/value'),
+      units: this.attr('value/units')
+    };
+    return {...super.getThingParams(), ...params};
   }
 }

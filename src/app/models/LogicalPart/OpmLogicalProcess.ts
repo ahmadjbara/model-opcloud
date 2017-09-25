@@ -9,7 +9,6 @@
     constructor(params) {
       super();
       this.visualElements = new Array<OpmVisualProcess>();
-      console.log(params);
       this.add(params);
       this.text = OpmLogicalProcess.processText;
     }

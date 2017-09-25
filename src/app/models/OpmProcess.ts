@@ -9,7 +9,6 @@ export class OpmProcess extends OpmThing {
     this.attr({ellipse: {stroke: '#0000FF', rx: 40, ry: 40, cx: 40, cy: 40}});
     this.attr({ellipse: this.entityShape()});
     this.attr({ellipse: this.thingShape()});
-    console.log("process");
   }
   processAttributes() {
     return {
@@ -27,5 +26,13 @@ export class OpmProcess extends OpmThing {
       'text': {text: 'Process'}
     };
   }
-
+  getParams() {
+    const params = {
+      fill: this.attr('ellipse/fill'),
+      strokeColor: this.attr('ellipse/stroke'),
+      strokeWidth: this.attr('ellipse/stroke-width'),
+      parentheses: (this.attr('value/value') === 'None') ? false : true
+    };
+    return {...super.getThingParams(), ...params};
+  }
 }

@@ -23,4 +23,13 @@ export  class OpmState extends OpmEntity {
       'text' : {text: 'State', 'font-weight': 300}
     };
   }
+  getParams() {
+    const params = {
+      fill: this.attr('rect/fill'),
+      strokeColor: this.attr('rect/stroke'),
+      strokeWidth: this.attr('rect/stroke-width'),
+      fatherObjectId: this.get('parent')
+    };
+    return {...super.getEntityParams(), ...params};
+  }
 }

@@ -28,6 +28,7 @@ import {OpmVisualObject} from "../../models/VisualPart/OpmVisualObject";
 import {OpmVisualElement} from "../../models/VisualPart/OpmVisualElement";
 import {OpmLogicalProcess} from "../../models/LogicalPart/OpmLogicalProcess";
 import {OpmLogicalState} from "../../models/LogicalPart/OpmLogicalState";
+import {OpmState} from "../../models/OpmState";
 
 
 const joint = require('rappid');
@@ -212,10 +213,11 @@ export class InitRappidService {
     let _thisObj=this;
     this.graph.on('add', (cell) => {
            if (cell instanceof OpmObject) {
-             this.opmModel.add(new OpmLogicalObject(cell.getParams('rect')));
-           }
-           else if (cell instanceof OpmProcess) {
-             this.opmModel.add(new OpmLogicalProcess(cell.getParams('ellipse')));
+             this.opmModel.add(new OpmLogicalObject(cell.getParams()));
+           } else if (cell instanceof OpmProcess) {
+             this.opmModel.add(new OpmLogicalProcess(cell.getParams()));
+           } else if (cell instanceof OpmState) {
+             this.opmModel.add(new OpmLogicalState(cell.getParams()));
            }
 
       if (cell.attributes.type === 'opm.Link') {

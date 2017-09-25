@@ -30,4 +30,18 @@ export class OpmEntity extends common.joint.dia.Element.extend(entityDefinition)
       'stroke-width': 2,
     };
   }
+  getEntityParams() {
+    return {
+      xPos: this.get('position').x,
+      yPos: this.get('position').y,
+      width: this.get('size').width,
+      height: this.get('size').height,
+      textFontWeight: this.attr('text/font-weight'),
+      textFontSize: this.attr('text/font-size'),
+      textFontFamily: this.attr('text/font-family'),
+      textColor: this.attr('text/fill'),
+      text: this.attr('text/text'),
+      id: this.get('id')
+    };
+  }
 }

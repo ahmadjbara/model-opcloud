@@ -5,6 +5,7 @@ export  class OpmThing extends OpmEntity {
     super();
     this.set(this.thingAttributes());
     this.attr({text: {'font-weight': 600}});
+    this.attr({value: {'value': 'None', 'valueType': 'None', 'units': ''}});
   }
 
   thingShape() {
@@ -23,20 +24,11 @@ export  class OpmThing extends OpmEntity {
       value: {'value': 'None', 'valueType': 'None', 'units': ''}
     };
   }
-  getParams(thingType) {
-    return {
-      xPos: this.get('position').x,
-      yPos: this.get('position').y,
-      width: this.get('size').width,
-      height: this.get('size').height,
-      fill: this.attr(thingType + '/fill'),
-      strokeColor: this.attr(thingType + '/stroke'),
-      strokeWidth: this.attr(thingType + '/stroke-width'),
-      textFontWeight: this.attr('text/font-weight'),
-      textFontSize: this.attr('text/font-size'),
-      textFontFamily: this.attr('text/font-family'),
-      textColor: this.attr('text/fill'),
-      id: this.get('id')
+  getThingParams() {
+    const params = {
+      shadow: (this.attr('ellipse/filter/args/dx') === 0) ? false : true,
+      stroked: (this.attr('ellipse/stroke-dasharray') === 0) ? false : true,
     };
+    return {...super.getEntityParams(), ...params};
   }
 }

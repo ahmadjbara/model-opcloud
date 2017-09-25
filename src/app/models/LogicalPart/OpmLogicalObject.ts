@@ -10,10 +10,12 @@
     constructor(params) {
       super();
       this.visualElements = new Array<OpmVisualObject>();
-      console.log(params);
       this.add(params);
       this.text = OpmLogicalObject.objectText;
-
+      // Different types - will be changed.
+      // this.valueType = params.valueType;
+      this.value = params.value;
+      this.units = params.units;
     }
     add(params) {
       this.visualElements.push(new OpmVisualObject(params));

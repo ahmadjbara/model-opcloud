@@ -5,5 +5,7 @@
     stroked: boolean;
     constructor(params) {
       super(params);
+      this.shadow = params.shadow;
+      this.stroked = params.stroked;
     }
   }
