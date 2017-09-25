@@ -1,5 +1,4 @@
 import * as common from '../common/commonFunctions';
-import {basicDefinitions} from '../config/basicDefinitions';
 
 const entityText = {
   fill: 'black',
@@ -24,19 +23,6 @@ const entityDefinition = {
 
 export class OpmEntity extends common.joint.dia.Element.extend(entityDefinition) {
 
-  entityShape() {
-    return {
-      fill: '#DCDCDC',
-      magnet: true,
-      'stroke-width': 2,
-    };
-  }
-}
-
-export  class OpmEntity2 extends common.joint.dia.Element.extend(entityDefinition) {
-  initialize() {
-    super.initialize();
-  }
   entityShape() {
     return {
       fill: '#DCDCDC',

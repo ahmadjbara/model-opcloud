@@ -20,6 +20,7 @@ import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 
 import { TreeComponent, TreeModel, TreeNode } from 'angular-tree-component';
 import {OpmProcess} from "../../models/OpmProcess";
+import {OpmLink} from "../../models/OpmLink";
 
 
 const joint = require('rappid');
@@ -242,7 +243,7 @@ export class InitRappidService {
       gridSize: 5,
       drawGrid: true,
       model: this.graph,
-      defaultLink: new opmShapes.Link,
+      defaultLink: new OpmLink(),
       multiLinks: false,
       selectionCollection: null
     });
