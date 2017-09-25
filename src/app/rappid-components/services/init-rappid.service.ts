@@ -20,7 +20,14 @@ import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 
 import { TreeComponent, TreeModel, TreeNode } from 'angular-tree-component';
 import {OpmProcess} from "../../models/OpmProcess";
-import {OpmLink} from "../../models/OpmLink";
+import {OpmObject} from "../../models/OpmObject";
+import {OpmLogicalElement} from "../../models/LogicalPart/OpmLogicalElement";
+import {OpmModel} from "../../models/OpmModel";
+import {OpmLogicalObject} from "../../models/LogicalPart/OpmLogicalObject";
+import {OpmVisualObject} from "../../models/VisualPart/OpmVisualObject";
+import {OpmVisualElement} from "../../models/VisualPart/OpmVisualElement";
+import {OpmLogicalProcess} from "../../models/LogicalPart/OpmLogicalProcess";
+import {OpmLogicalState} from "../../models/LogicalPart/OpmLogicalState";
 
 
 const joint = require('rappid');
@@ -43,6 +50,7 @@ export class InitRappidService {
   private navigator;
   private toolbar;
   private RuleSet;
+  private opmModel: OpmModel;
 
 
   constructor(
@@ -56,6 +64,7 @@ export class InitRappidService {
     this.initializePaper();
     this.initializeSelection();
     this.initializeHaloAndInspector();
+    this.initializeHaloAndInspector();
     this.initializeValidator();
     this.initializeNavigator();
     this.initializeToolbar();
@@ -67,6 +76,8 @@ export class InitRappidService {
     this.handleRemoveElement();
     // This doesn't work (the event is not caught)
     this.linkHoverEvent();
+
+    this.opmModel = new OpmModel();
 
   }
 
@@ -196,10 +207,17 @@ export class InitRappidService {
     });
   }
 
-  //Check Changes. This function has been modified to update opl for each cell once graph is changed
+  // Check Changes. This function has been modified to update opl for each cell once graph is changed
   handleAddLink() {
     let _thisObj=this;
     this.graph.on('add', (cell) => {
+           if (cell instanceof OpmObject) {
+             this.opmModel.add(new OpmLogicalObject(cell.getParams('rect')));
+           }
+           else if (cell instanceof OpmProcess) {
+             this.opmModel.add(new OpmLogicalProcess(cell.getParams('ellipse')));
+           }
+
       if (cell.attributes.type === 'opm.Link') {
         this.paper.on('cell:pointerup ', function (cellView) {
           const cell = cellView.model;
@@ -232,6 +250,7 @@ export class InitRappidService {
 
   initializePaper() {
     this.graph.on('add', (cell, collection, opt) => {
+
       if (opt.stencil) {
         this.cell$.next(cell);
       }
@@ -243,7 +262,7 @@ export class InitRappidService {
       gridSize: 5,
       drawGrid: true,
       model: this.graph,
-      defaultLink: new OpmLink(),
+      defaultLink: new opmShapes.Link,
       multiLinks: false,
       selectionCollection: null
     });
@@ -285,7 +304,6 @@ export class InitRappidService {
 
     /// $('.paper-container').append(paperScroller.el);
     paperScroller.render().center();
-
 
   }
 
@@ -526,6 +544,7 @@ export class InitRappidService {
               }
             });
             halo.on('action:add_state:pointerup', function () {
+              console.log("add_state");
               hasStates = true;
               halo.$handles.children('.arrange_up').toggleClass('hidden', !hasStates);
               halo.$handles.children('.arrange_down').toggleClass('hidden', !hasStates);

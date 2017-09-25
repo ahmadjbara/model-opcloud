@@ -3,5 +3,6 @@ export class OpmVisualElement {
     textFontSize: number;
     textFontFamily: string;
     strokeWidth: number;
+    id: string;
   }
 

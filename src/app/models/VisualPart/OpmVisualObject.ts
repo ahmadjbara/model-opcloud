@@ -6,5 +6,8 @@
     value: any;
     valueState: boolean;
     unitsBrackets: boolean;
+    constructor(params){
+      super(params);
+    }
   }
 

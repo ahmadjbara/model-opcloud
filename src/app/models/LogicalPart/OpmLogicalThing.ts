@@ -1,12 +1,20 @@
   import {OpmLogicalEntity} from './OpmLogicalEntity';
   import {OpmVisualElement} from '../VisualPart/OpmVisualElement';
   import * as ConfigurationOptions from '../ConfigurationOptions';
+  import {Affiliation, Essence} from "../ConfigurationOptions";
+  import {OpmVisualThing} from "../VisualPart/OpmVisualThing";
 
-  export class OpmLogicalThing<T extends OpmVisualElement> extends OpmLogicalEntity<T> {
-    private _essence: ConfigurationOptions.Essence;
-    private _affiliation: ConfigurationOptions.Affiliation;
+  export abstract class OpmLogicalThing<T extends OpmVisualThing> extends OpmLogicalEntity<T> {
+    private _essence: Essence;
+    private _affiliation: Affiliation;
 
-    // getters and setters
+    // constructor(essence: Essence, affiliation: Affiliation) {
+    //   super();
+    //   this._essence = essence;
+    //   this._affiliation = affiliation;
+    // }
+
+// getters and setters
     get essence(): ConfigurationOptions.Essence {
       return this._essence;
     }

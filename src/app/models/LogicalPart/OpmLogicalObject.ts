@@ -6,6 +6,18 @@
     private _valueType: ConfigurationOptions.valueType;
     private _value: any;
     private _units: string;
+
+    constructor(params) {
+      super();
+      this.visualElements = new Array<OpmVisualObject>();
+      console.log(params);
+      this.add(params);
+      this.text = OpmLogicalObject.objectText;
+
+    }
+    add(params) {
+      this.visualElements.push(new OpmVisualObject(params));
+    }
     // getters and setters
     get valueType(): ConfigurationOptions.valueType {
       return this._valueType;

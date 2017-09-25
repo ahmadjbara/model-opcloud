@@ -27,4 +27,5 @@ export class OpmProcess extends OpmThing {
       'text': {text: 'Process'}
     };
   }
+
 }

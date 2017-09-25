@@ -6,6 +6,17 @@
     private _code: ConfigurationOptions.code;
     private _functionType: ConfigurationOptions.functionType;
     private _insertedFunction: string;
+    constructor(params) {
+      super();
+      this.visualElements = new Array<OpmVisualProcess>();
+      console.log(params);
+      this.add(params);
+      this.text = OpmLogicalProcess.processText;
+    }
+    add(params) {
+      this.visualElements.push(new OpmVisualProcess(params));
+    }
+
     // getters and setters
     get code(): ConfigurationOptions.code {
       return this._code;

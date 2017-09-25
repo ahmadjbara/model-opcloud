@@ -8,5 +8,16 @@
     width: number;
     height: number;
     textFontWeight: number;
+    constructor(params) {
+      super();
+      this.strokeColor = params.fill;
+      this.fill = params.fill;
+      this.xPos = params.xPos;
+      this.yPos = params.yPos;
+      this.width = params.width;
+      this.height = params.height;
+      this.textFontWeight = params.textFontWeight;
+      this.id = params.id;
+    }
   }
 

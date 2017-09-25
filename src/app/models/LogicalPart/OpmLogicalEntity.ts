@@ -1,7 +1,8 @@
   import {OpmLogicalElement} from './OpmLogicalElement';
   import {OpmVisualElement} from '../VisualPart/OpmVisualElement';
+  import {OpmVisualEntity} from "../VisualPart/OpmVisualEntity";
 
-  export class OpmLogicalEntity<T extends OpmVisualElement> extends OpmLogicalElement<T> {
+  export abstract class OpmLogicalEntity<T extends OpmVisualEntity> extends OpmLogicalElement<T> {
     private _shape: string;
     // getters and setters
     get shape(): string {

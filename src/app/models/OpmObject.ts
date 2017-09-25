@@ -6,8 +6,7 @@ import {basicDefinitions} from "../config/basicDefinitions";
 import * as common from '../common/commonFunctions';
 
 export class OpmObject extends OpmThing {
-
-  constructor(){
+  constructor() {
     super();
     this.set(this.objectAttributes());
     //  this.attr(this.objectAttrs());

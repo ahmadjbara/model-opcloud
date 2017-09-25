@@ -23,4 +23,20 @@ export  class OpmThing extends OpmEntity {
       value: {'value': 'None', 'valueType': 'None', 'units': ''}
     };
   }
+  getParams(thingType) {
+    return {
+      xPos: this.get('position').x,
+      yPos: this.get('position').y,
+      width: this.get('size').width,
+      height: this.get('size').height,
+      fill: this.attr(thingType + '/fill'),
+      strokeColor: this.attr(thingType + '/stroke'),
+      strokeWidth: this.attr(thingType + '/stroke-width'),
+      textFontWeight: this.attr('text/font-weight'),
+      textFontSize: this.attr('text/font-size'),
+      textFontFamily: this.attr('text/font-family'),
+      textColor: this.attr('text/fill'),
+      id: this.get('id')
+    };
+  }
 }
