@@ -1,9 +1,9 @@
   import {OpmLogicalThing} from './OpmLogicalThing';
   import {OpmVisualObject} from '../VisualPart/OpmVisualObject';
-  import * as ConfigurationOptions from '../ConfigurationOptions';
+  import {valueType} from '../ConfigurationOptions';
 
   export class OpmLogicalObject extends OpmLogicalThing<OpmVisualObject> {
-    private _valueType: ConfigurationOptions.valueType;
+    private _valueType: valueType;
     private _value: any;
     private _units: string;
 
@@ -21,10 +21,10 @@
       this.visualElements.push(new OpmVisualObject(params));
     }
     // getters and setters
-    get valueType(): ConfigurationOptions.valueType {
+    get valueType(): valueType {
       return this._valueType;
     }
-    set valueType(valueType: ConfigurationOptions.valueType) {
+    set valueType(valueType: valueType) {
       this._valueType = valueType;
     }
     get value(): any {

@@ -39,3 +39,26 @@ export enum stateType {
   regular,
   value
 }
+
+export enum linkConnectionType {
+  default,
+  enviromental,
+  systemic
+}
+
+export enum linkType {
+  Agent,
+  Instrument,
+  Consumption,
+  Result,
+  Effect,
+  UndertimeException,
+  OvertimeException,
+  UnderOvertimeException,
+  Unidirectional,
+  Bidirectional,
+  Aggregation,
+  Exhibition,
+  Generalization,
+  Instantiation,
+}
