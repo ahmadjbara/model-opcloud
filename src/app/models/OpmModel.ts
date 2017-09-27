@@ -9,7 +9,7 @@ export class OpmModel {
   logicalElements: Array<OpmLogicalElement<OpmVisualElement>>;
   opds: Array<OpmOpd>;
 
-  constructor(){
+  constructor() {
     this.logicalElements = new Array<OpmLogicalElement<OpmVisualElement>>();
   }
   add(opmLogicalElement: OpmLogicalElement<OpmVisualElement>) {
