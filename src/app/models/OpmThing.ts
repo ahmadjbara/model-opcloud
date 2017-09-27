@@ -1,4 +1,5 @@
 import {OpmEntity} from './OpmEntity';
+import { Essence, Affiliation } from './ConfigurationOptions';
 
 export  class OpmThing extends OpmEntity {
   constructor() {
@@ -26,8 +27,8 @@ export  class OpmThing extends OpmEntity {
   }
   getThingParams() {
     const params = {
-      shadow: (this.attr('ellipse/filter/args/dx') === 0) ? false : true,
-      stroked: (this.attr('ellipse/stroke-dasharray') === 0) ? false : true,
+      essence: (this.attr('ellipse/filter/args/dx') === 0) ? Essence.Informatical : Essence.Physical,
+      affiliation: (this.attr('ellipse/stroke-dasharray') === 0) ? Affiliation.Systemic : Affiliation.Environmental,
     };
     return {...super.getEntityParams(), ...params};
   }

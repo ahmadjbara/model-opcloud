@@ -211,6 +211,7 @@ export class InitRappidService {
   // Check Changes. This function has been modified to update opl for each cell once graph is changed
   handleAddLink() {
     let _thisObj=this;
+
     this.graph.on('add', (cell) => {
            if (cell instanceof OpmObject) {
              this.opmModel.add(new OpmLogicalObject(cell.getParams()));
@@ -269,6 +270,11 @@ export class InitRappidService {
       selectionCollection: null
     });
 
+    this.paper.on('blank:pointerup', ()=>{
+      let l = new joint.shapes.opm.Link();
+      console.log(l);
+
+    });
 
     paper.on('blank:mousewheel', _.partial(this.onMousewheel, null), this);
     paper.on('cell:mousewheel', this.onMousewheel, this);

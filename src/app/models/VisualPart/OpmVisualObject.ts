@@ -1,5 +1,6 @@
   import {OpmVisualThing} from './OpmVisualThing';
   import * as ConfigurationOptions from '../ConfigurationOptions';
+  import {OpmLogicalObject} from "../LogicalPart/OpmLogicalObject";
 
   export class OpmVisualObject extends OpmVisualThing {
     statesArrangement: ConfigurationOptions.statesArrangement;
