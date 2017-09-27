@@ -1,5 +1,5 @@
-import {OpmRelation} from "./OpmRelation";
+import {OpmRelation} from './OpmRelation';
 
-class OpmStructuralRelation extends OpmRelation{
+export class OpmStructuralRelation extends OpmRelation {
 
 }
