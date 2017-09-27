@@ -29,6 +29,7 @@ import {OpmVisualElement} from "../../models/VisualPart/OpmVisualElement";
 import {OpmLogicalProcess} from "../../models/LogicalPart/OpmLogicalProcess";
 import {OpmLogicalState} from "../../models/LogicalPart/OpmLogicalState";
 import {OpmState} from "../../models/OpmState";
+import {OpmLink} from "../../models/OpmLink";
 
 
 const joint = require('rappid');
@@ -212,14 +213,19 @@ export class InitRappidService {
   handleAddLink() {
     let _thisObj=this;
 
+    this.graph.on('all', (x)=>{console.log(x);})
     this.graph.on('add', (cell) => {
+      console.log(cell);
            if (cell instanceof OpmObject) {
              this.opmModel.add(new OpmLogicalObject(cell.getParams()));
            } else if (cell instanceof OpmProcess) {
              this.opmModel.add(new OpmLogicalProcess(cell.getParams()));
            } else if (cell instanceof OpmState) {
              this.opmModel.add(new OpmLogicalState(cell.getParams()));
+           } else if (cell.attributes.type === 'opm.Link'){
+             console.log("link");
            }
+
 
       if (cell.attributes.type === 'opm.Link') {
         this.paper.on('cell:pointerup ', function (cellView) {
@@ -239,8 +245,10 @@ export class InitRappidService {
                 if (relevantLinks.length > 0) {
                   link.set('previousTargetId', link.attributes.target.id);
                   link.set('graph', this.graph);
-                  if (!b.cameFromInZooming)
-                  this.createDialog(link);
+                  if (!b.cameFromInZooming) {
+                    this.createDialog(link);
+                    console.log("here...");
+                  }
                 }
               }
             }
