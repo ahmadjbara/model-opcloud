@@ -28,7 +28,7 @@ export  class OpmState extends OpmEntity {
       fill: this.attr('rect/fill'),
       strokeColor: this.attr('rect/stroke'),
       strokeWidth: this.attr('rect/stroke-width'),
-      fatherObjectId: this.get('parent')
+      fatherObjectId: this.get('father')
     };
     return {...super.getEntityParams(), ...params};
   }

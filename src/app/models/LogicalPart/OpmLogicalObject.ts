@@ -8,7 +8,7 @@
     private _units: string;
 
     constructor(params) {
-      super();
+      super(params);
       this.visualElements = new Array<OpmVisualObject>();
       this.add(params);
       this.text = OpmLogicalObject.objectText;

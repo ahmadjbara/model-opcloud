@@ -1,4 +1,7 @@
+import {OpmLogicalElement} from '../LogicalPart/OpmLogicalElement';
+
 export class OpmVisualElement {
+    logicalElement: OpmLogicalElement<OpmVisualElement>;
     textColor: string;
     textFontSize: number;
     textFontFamily: string;

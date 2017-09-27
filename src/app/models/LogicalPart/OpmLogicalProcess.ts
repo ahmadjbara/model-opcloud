@@ -7,7 +7,7 @@
     private _functionType: ConfigurationOptions.functionType;
     private _insertedFunction: string;
     constructor(params) {
-      super();
+      super(params);
       this.visualElements = new Array<OpmVisualProcess>();
       this.add(params);
       this.text = OpmLogicalProcess.processText;
