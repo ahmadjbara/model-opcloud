@@ -3,8 +3,8 @@
  */
 import {basicDefinitions} from "./basicDefinitions";
 import * as common from "../common/commonFunctions";
-import {OpmProcess} from "../models/OpmProcess";
-import {OpmState} from "../models/OpmState";
+import {OpmProcess} from "../models/DrawnPart/OpmProcess";
+import {OpmState} from "../models/DrawnPart/OpmState";
 
 const joint = require('rappid');
 const initial_subprocess=3;

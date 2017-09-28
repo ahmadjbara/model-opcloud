@@ -1,6 +1,6 @@
 
   import {OpmVisualElement} from '../VisualPart/OpmVisualElement';
-  import {OpmModel} from "../OpmModel";
+  import {OpmModel} from "../DrawnPart/OpmModel";
 
   export abstract class OpmLogicalElement<T extends OpmVisualElement> {
     static objectText = 'Object';

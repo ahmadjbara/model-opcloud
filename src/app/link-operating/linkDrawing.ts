@@ -1,3 +1,15 @@
+import {AgentLink} from "../models/DrawnPart/Links/AgentLink";
+import {InstrumentLink} from "../models/DrawnPart/Links/InstrumentLink";
+import {InvocationLink} from "../models/DrawnPart/Links/InvocationLink";
+import {ResultLink} from "../models/DrawnPart/Links/ResultLink";
+import {ConsumptionLink} from "../models/DrawnPart/Links/ConsumptionLink";
+import {EffectLink} from "../models/DrawnPart/Links/EffectLink";
+import {OvertimeExceptionLink} from "../models/DrawnPart/Links/OvertimeExceptionLink";
+import {UndertimeExceptionLink} from "../models/DrawnPart/Links/UndertimeExceptionLink";
+import {OvertimeUndertimeExceptionLink} from "../models/DrawnPart/Links/OvertimeUndertimeExceptionLink";
+import {UnidirectionalTaggedLink} from "../models/DrawnPart/Links/UnidirectionalTaggedLink";
+import {BiDirectionalTaggedLink} from "../models/DrawnPart/Links/BiDirectionalTaggedLink";
+
 const joint = require('rappid');
 
 const DictOfLinksValue = {
@@ -111,14 +123,42 @@ function conditionOrEvent(link, s: string){
 export const linkDrawing = {
   drawLink(link, linkName, ftag: string = null, btag: string = null){
     console.log('in drawlink');
-    var linkInfo = DictOfLinksValue[linkName];
-    var graph = link.get('graph');
+    const graph = link.get('graph');
+    const isCondition = linkName.includes('Condition');
+    const isEvent = linkName.includes('Event');
+    let newLink;
+    if (linkName.includes('Agent')) {
+      newLink = new AgentLink(link.getSourceElement(), link.getTargetElement(), isCondition, isEvent);
+    } else if (linkName.includes('Instrument')) {
+      newLink = new InstrumentLink(link.getSourceElement(), link.getTargetElement(), isCondition, isEvent);
+    } else if (linkName.includes('Invocation')) {
+      newLink = new InvocationLink(link.getSourceElement(), link.getTargetElement(), isCondition, isEvent);
+    } else if (linkName.includes('Result')) {
+      newLink = new ResultLink(link.getSourceElement(), link.getTargetElement(), isCondition, isEvent);
+    } else if (linkName.includes('Consumption')) {
+      newLink = new ConsumptionLink(link.getSourceElement(), link.getTargetElement(), isCondition, isEvent);
+    } else if (linkName.includes('Effect')) {
+      newLink = new EffectLink(link.getSourceElement(), link.getTargetElement(), isCondition, isEvent);
+    } else if (linkName.includes('Overtime_exception')) {
+      newLink = new OvertimeExceptionLink(link.getSourceElement(), link.getTargetElement(), isCondition, isEvent);
+    } else if (linkName.includes('Undertime_exception')) {
+      newLink = new UndertimeExceptionLink(link.getSourceElement(), link.getTargetElement(), isCondition, isEvent);
+    } else if (linkName.includes('Undertime_and_overtime_exception')) {
+      newLink = new OvertimeUndertimeExceptionLink(link.getSourceElement(), link.getTargetElement(), isCondition, isEvent);
+    } else if (linkName.includes('Unidirectional')) {
+      newLink = new UnidirectionalTaggedLink(link.getSourceElement(), link.getTargetElement());
+    } else if (linkName.includes('Bidirectional')) {
+      newLink = new BiDirectionalTaggedLink(link.getSourceElement(), link.getTargetElement());
+    }
+    graph.addCell(newLink);
+    link.remove();
+    const linkInfo = DictOfLinksValue[linkName];
     link.set({'graph': null}, { ignoreCommandManager: true });
-    if (!linkInfo){
+    if (!linkInfo) {
       console.log('ERROR, link name does not exist!');
       return;
     }
-
+/*
     if (link.attributes.router) {
       link.unset('router');
     }
@@ -145,7 +185,9 @@ export const linkDrawing = {
       newAttributes[".marker-target"] = linkInfo.value;
     }
     else if (linkInfo.middle) {   //structural links
-      var outboundLinks = graph.getConnectedLinks(link.getSourceElement(), { outbound: true });
+    */
+    if (linkInfo.middle) {   //structural links
+        var outboundLinks = graph.getConnectedLinks(link.getSourceElement(), { outbound: true });
       var targetTriangle;
       for (var pt in outboundLinks) {
         if(outboundLinks[pt].attributes.type == 'opm.StructLink'){
@@ -186,13 +228,14 @@ export const linkDrawing = {
           target: {id: link.getTargetElement().id},
         });
         graph.addCells([triangle, linkNewFirst, linkNewSecond]);
-      }
+      }/*
       newAttributes['.connection'] = { stroke: 'black', 'stroke-width': 0, 'stroke-dasharray': "0"};
       newAttributes['.link-tools'] = {display: 'none'};
       newAttributes['.marker-arrowheads'] = {display: 'none'};
       newAttributes['.connection-wrap'] = {display: 'none'};
-      newAttributes['.marker-vertices'] = {display: 'none'};
+      newAttributes['.marker-vertices'] = {display: 'none'};*/
     }
+    /*
     if (ftag && btag) {
       link.set('labels', [ { position: 0.75, attrs: { text: {text: ftag+'\n'}, rect: {fill: 'transparent'} } },
         { position: 0.25, attrs: { text: {text: '\n'+btag}, rect: {fill: 'transparent'} } }
@@ -209,10 +252,10 @@ export const linkDrawing = {
       invocation(link);
     }
     link.set({'attrs': newAttributes}, { ignoreCommandManager: true });
-
+*/
   },
 
-  linkUpdating(link){
+  linkUpdating(link) {
     if (link.attributes.name === "Invocation") {
 
       invocation(link);

@@ -1,5 +1,5 @@
 import {OpmEntity} from './OpmEntity';
-import { Essence, Affiliation } from './ConfigurationOptions';
+import { Essence, Affiliation } from '../ConfigurationOptions';
 
 export  class OpmThing extends OpmEntity {
   constructor() {

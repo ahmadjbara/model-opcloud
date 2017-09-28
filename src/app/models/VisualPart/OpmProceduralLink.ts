@@ -1,6 +1,5 @@
-import {OpmProceduralLink} from '../OpmProceduralLink';
 import {OpmLink} from './OpmLink';
 
-export OpmProceduralLink extends OpmLink {
+export class OpmProceduralLink extends OpmLink {
 
 }

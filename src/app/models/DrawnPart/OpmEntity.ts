@@ -1,4 +1,4 @@
-import * as common from '../common/commonFunctions';
+import * as common from '../../common/commonFunctions';
 
 const entityText = {
   fill: 'black',

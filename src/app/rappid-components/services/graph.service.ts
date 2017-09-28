@@ -3,7 +3,7 @@ import { ModelObject } from '../../services/storage/model-object.class';
 import { ModelStorageInterface } from '../../services/storage/model-storage.interface';
 import {TreeViewService} from "../../services/tree-view.service";
 import {linkDrawing} from  '../../link-operating/linkDrawing';
-import {OpmProcess} from "../../models/OpmProcess";
+import {OpmProcess} from "../../models/DrawnPart/OpmProcess";
 const joint = require('rappid');
 const rootId="SD";
 const firebaseKeyEncode = require('firebase-key-encode');

@@ -1,8 +1,8 @@
 import {OpmThing} from './OpmThing';
-import {basicDefinitions} from "../config/basicDefinitions";
-import * as common from '../common/commonFunctions';
+import {basicDefinitions} from "../../config/basicDefinitions";
+import * as common from '../../common/commonFunctions';
 export class OpmProcess extends OpmThing {
-  constructor(){
+  constructor() {
     super();
     this.set(this.processAttributes());
     this.attr({text: {text: 'Process'}});

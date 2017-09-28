@@ -4,18 +4,18 @@
  * Nadav Oved, Aviv Sugarman, Oleg Zendel, Itamar Shafran and Or Keren
  * for the OPCloud Project
  */
-import {OpmState} from "../models/OpmState";
+import {OpmState} from "../models/DrawnPart/OpmState";
 
 const joint = require('rappid');
 export const _ = require('lodash');
 import { basicDefinitions } from './basicDefinitions';
-import {OpmProcess} from '../models/OpmProcess';
-import { OpmObject } from '../models/OpmObject';
+import {OpmProcess} from '../models/DrawnPart/OpmProcess';
+import { OpmObject } from '../models/DrawnPart/OpmObject';
 
 export const opmShapes = {
   // OPM Links definitions
 
-  Link: joint.dia.Link.extend(basicDefinitions.defineLink()),
+  Link: joint.shapes.devs.Link.extend(basicDefinitions.defineLink()),
   Object: OpmObject,
   Process: OpmProcess,
  // State: new OpmState(),

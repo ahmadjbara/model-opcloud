@@ -19,17 +19,18 @@ import { linkDrawing } from '../../link-operating/linkDrawing';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 
 import { TreeComponent, TreeModel, TreeNode } from 'angular-tree-component';
-import {OpmProcess} from "../../models/OpmProcess";
-import {OpmObject} from "../../models/OpmObject";
+import {OpmProcess} from "../../models/DrawnPart/OpmProcess";
+import {OpmObject} from "../../models/DrawnPart/OpmObject";
 import {OpmLogicalElement} from "../../models/LogicalPart/OpmLogicalElement";
-import {OpmModel} from "../../models/OpmModel";
+import {OpmModel} from "../../models/DrawnPart/OpmModel";
 import {OpmLogicalObject} from "../../models/LogicalPart/OpmLogicalObject";
 import {OpmVisualObject} from "../../models/VisualPart/OpmVisualObject";
 import {OpmVisualElement} from "../../models/VisualPart/OpmVisualElement";
 import {OpmLogicalProcess} from "../../models/LogicalPart/OpmLogicalProcess";
 import {OpmLogicalState} from "../../models/LogicalPart/OpmLogicalState";
-import {OpmState} from "../../models/OpmState";
-import {OpmLink} from "../../models/OpmLink";
+import {OpmState} from "../../models/DrawnPart/OpmState";
+import {OpmDefaultLink} from "../../models/DrawnPart/Links/OpmDefaultLink";
+import {OpmProceduralLink} from "../../models/DrawnPart/Links/OpmProceduralLink";
 
 
 const joint = require('rappid');
@@ -164,13 +165,13 @@ export class InitRappidService {
 
     this.paper.on('link:mouseover', (cellView, evt) => {
       this.createOplDialog(cellView);
-      console.log('mouse over link');
+    //  console.log('mouse over link');
       cellView.highlight();
     });
     this.paper.on('link:mouseleave', (cellView, evt) => {
       oplDialog.close();
       this.dialog$.next('close-opl');
-      console.log('mouse leave link');
+   //   console.log('mouse leave link');
     });
   }
 
@@ -213,9 +214,9 @@ export class InitRappidService {
   handleAddLink() {
     let _thisObj=this;
 
-    this.graph.on('all', (x)=>{console.log(x);})
+  //  this.graph.on('all', (x)=>{console.log(x);})
     this.graph.on('add', (cell) => {
-      console.log(cell);
+   //   console.log(cell);
            if (cell instanceof OpmObject) {
              this.opmModel.add(new OpmLogicalObject(cell.getParams()));
            } else if (cell instanceof OpmProcess) {
@@ -273,14 +274,14 @@ export class InitRappidService {
       gridSize: 5,
       drawGrid: true,
       model: this.graph,
-      defaultLink: new opmShapes.Link,
+      defaultLink: new OpmDefaultLink(),
       multiLinks: false,
       selectionCollection: null
     });
 
     this.paper.on('blank:pointerup', ()=>{
       let l = new joint.shapes.opm.Link();
-      console.log(l);
+     // console.log(l);
 
     });
 
@@ -516,10 +517,18 @@ export class InitRappidService {
       const outboundLinks = this.graph.getConnectedLinks(cell, { outbound: true });
       const inboundLinks = this.graph.getConnectedLinks(cell, { inbound: true });
       common._.each(outboundLinks, function (linkToUpdate) {
-        linkDrawing.linkUpdating(linkToUpdate);
+        if (linkToUpdate instanceof OpmProceduralLink) {
+          linkToUpdate.UpdateVertices();
+          linkToUpdate.UpdateConditionEvent();
+        }
+        // linkDrawing.linkUpdating(linkToUpdate);
       });
       common._.each(inboundLinks, function (linkToUpdate) {
-        linkDrawing.linkUpdating(linkToUpdate);
+        if (linkToUpdate instanceof OpmProceduralLink) {
+          linkToUpdate.UpdateVertices();
+          linkToUpdate.UpdateConditionEvent();
+        }
+        // linkDrawing.linkUpdating(linkToUpdate);
       });
     }, this));
   }
@@ -560,7 +569,7 @@ export class InitRappidService {
               }
             });
             halo.on('action:add_state:pointerup', function () {
-              console.log("add_state");
+          //    console.log("add_state");
               hasStates = true;
               halo.$handles.children('.arrange_up').toggleClass('hidden', !hasStates);
               halo.$handles.children('.arrange_down').toggleClass('hidden', !hasStates);
@@ -655,7 +664,7 @@ export class InitRappidService {
                 const cellModel = haloThis.options.cellView.model;
                 if (cellModel.attributes.attrs.ellipse['stroke-width'] === 4) {
                   _this.graphService.changeGraphModel(cellModel.id, _this.treeViewService,'inzoom');
-                  console.log(cellModel);
+              //    console.log(cellModel);
                 }
                 else {
                   cellModel.attributes.attrs.ellipse['stroke-width'] = 4;

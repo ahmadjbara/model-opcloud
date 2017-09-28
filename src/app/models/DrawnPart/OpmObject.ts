@@ -1,10 +1,10 @@
 import {OpmThing} from './OpmThing';
-import {OpmLogicalElement} from "./LogicalPart/OpmLogicalElement";
-import {OpmVisualProcess} from "./VisualPart/OpmVisualProcess";
-import {OpmVisualState} from "./VisualPart/OpmVisualState";
-import {basicDefinitions} from "../config/basicDefinitions";
-import * as common from '../common/commonFunctions';
-import * as ConfigurationOptions from './ConfigurationOptions';
+import {OpmLogicalElement} from "../LogicalPart/OpmLogicalElement";
+import {OpmVisualProcess} from "../VisualPart/OpmVisualProcess";
+import {OpmVisualState} from "../VisualPart/OpmVisualState";
+import {basicDefinitions} from "../../config/basicDefinitions";
+import * as common from '../../common/commonFunctions';
+import * as ConfigurationOptions from '../ConfigurationOptions';
 
 export class OpmObject extends OpmThing {
   constructor() {
