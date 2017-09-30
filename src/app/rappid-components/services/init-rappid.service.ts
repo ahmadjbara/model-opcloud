@@ -181,13 +181,7 @@ export class InitRappidService {
       if (cell.attributes.type === 'opm.Process') {
         _this.treeViewService.removeNode(cell.id);
       }
-      if (cell.attributes.type === 'opm.TriangleAgg') {
-        _.each(cell.attributes.linkId, function (linkToRemove) {
-          if (_this.graph.getCell(linkToRemove))
-            _this.graph.getCell(linkToRemove).remove();
-        });
-      }
-      if (cell.attributes.type === 'opm.StructLink') {
+      if (cell.attributes.type === 'opm.Link') {
         if (_this.graph.getCell(cell.get('target').id).attributes.type === 'opm.TriangleAgg')
           _this.graph.getCell(cell.get('target').id).remove();
         if (_this.graph.getCell(cell.get('source').id).attributes.type === 'opm.TriangleAgg') {
@@ -245,7 +239,6 @@ export class InitRappidService {
                 const relevantLinks = linkTypeSelection.generateLinkWithOpl(link);
                 if (relevantLinks.length > 0) {
                   link.set('previousTargetId', link.attributes.target.id);
-                  link.set('graph', this.graph);
                   if (!b.cameFromInZooming) {
                     this.createDialog(link);
                     console.log("here...");

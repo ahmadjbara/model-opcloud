@@ -9,6 +9,10 @@ import {UndertimeExceptionLink} from "../models/DrawnPart/Links/UndertimeExcepti
 import {OvertimeUndertimeExceptionLink} from "../models/DrawnPart/Links/OvertimeUndertimeExceptionLink";
 import {UnidirectionalTaggedLink} from "../models/DrawnPart/Links/UnidirectionalTaggedLink";
 import {BiDirectionalTaggedLink} from "../models/DrawnPart/Links/BiDirectionalTaggedLink";
+import {AggregationLink} from "../models/DrawnPart/Links/AggregationLink";
+import {ExhibitionLink} from "../models/DrawnPart/Links/ExhibitionLink";
+import {GeneralizationLink} from "../models/DrawnPart/Links/GeneralizationLink";
+import {InstantiationLink} from "../models/DrawnPart/Links/InstantiationLink";
 
 const joint = require('rappid');
 
@@ -123,7 +127,7 @@ function conditionOrEvent(link, s: string){
 export const linkDrawing = {
   drawLink(link, linkName, ftag: string = null, btag: string = null){
     console.log('in drawlink');
-    const graph = link.get('graph');
+    const graph = link.graph;
     const isCondition = linkName.includes('Condition');
     const isEvent = linkName.includes('Event');
     let newLink;
@@ -149,11 +153,18 @@ export const linkDrawing = {
       newLink = new UnidirectionalTaggedLink(link.getSourceElement(), link.getTargetElement());
     } else if (linkName.includes('Bidirectional')) {
       newLink = new BiDirectionalTaggedLink(link.getSourceElement(), link.getTargetElement());
+    } else if (linkName.includes('Aggregation')) {
+      newLink = new AggregationLink(link.getSourceElement(), link.getTargetElement(), graph);
+    } else if (linkName.includes('Exhibition')) {
+      newLink = new ExhibitionLink(link.getSourceElement(), link.getTargetElement(), graph);
+    }else if (linkName.includes('Generalization')) {
+      newLink = new GeneralizationLink(link.getSourceElement(), link.getTargetElement(), graph);
+    }else if (linkName.includes('Instantiation')) {
+      newLink = new InstantiationLink(link.getSourceElement(), link.getTargetElement(), graph);
     }
     graph.addCell(newLink);
     link.remove();
     const linkInfo = DictOfLinksValue[linkName];
-    link.set({'graph': null}, { ignoreCommandManager: true });
     if (!linkInfo) {
       console.log('ERROR, link name does not exist!');
       return;
@@ -184,8 +195,6 @@ export const linkDrawing = {
       newAttributes[".marker-source"] = linkInfo.value;
       newAttributes[".marker-target"] = linkInfo.value;
     }
-    else if (linkInfo.middle) {   //structural links
-    */
     if (linkInfo.middle) {   //structural links
         var outboundLinks = graph.getConnectedLinks(link.getSourceElement(), { outbound: true });
       var targetTriangle;
@@ -228,14 +237,13 @@ export const linkDrawing = {
           target: {id: link.getTargetElement().id},
         });
         graph.addCells([triangle, linkNewFirst, linkNewSecond]);
-      }/*
+      }
       newAttributes['.connection'] = { stroke: 'black', 'stroke-width': 0, 'stroke-dasharray': "0"};
       newAttributes['.link-tools'] = {display: 'none'};
       newAttributes['.marker-arrowheads'] = {display: 'none'};
       newAttributes['.connection-wrap'] = {display: 'none'};
-      newAttributes['.marker-vertices'] = {display: 'none'};*/
+      newAttributes['.marker-vertices'] = {display: 'none'};
     }
-    /*
     if (ftag && btag) {
       link.set('labels', [ { position: 0.75, attrs: { text: {text: ftag+'\n'}, rect: {fill: 'transparent'} } },
         { position: 0.25, attrs: { text: {text: '\n'+btag}, rect: {fill: 'transparent'} } }
