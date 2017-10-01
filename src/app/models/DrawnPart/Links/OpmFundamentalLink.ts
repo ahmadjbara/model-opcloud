@@ -7,6 +7,7 @@ export  class OpmFundamentalLink extends OpmStructuralLink {
   sourceElement: OpmEntity;
   targetElement: OpmEntity;
   triangle: any;
+  mainUpperLink: OpmDefaultLink;
   constructor(sourceElement, targetElement, graph) {
     super();
     this.sourceElement = sourceElement;
@@ -17,6 +18,7 @@ export  class OpmFundamentalLink extends OpmStructuralLink {
     for (const pt in outboundLinks) {
       // Already exists a link with the same type
       if (outboundLinks[pt].get('OpmLinkType') === this.constructor.name) {
+        this.mainUpperLink = outboundLinks[pt];
         this.triangle = outboundLinks[pt].getTargetElement();
       }
     }
@@ -41,6 +43,7 @@ export  class OpmFundamentalLink extends OpmStructuralLink {
         '.marker-arrowheads': {display: 'none'},
         '.connection': {'stroke-dasharray': '0'}
       });
+      this.mainUpperLink = newLink;
       graph.addCells([this.triangle, newLink]);
     }
     // Define the connection from the triangle to the current link
@@ -55,6 +58,13 @@ export  class OpmFundamentalLink extends OpmStructuralLink {
     }});
     let numberOfTargets = this.triangle.get('numberOfTargets') + 1;
     this.triangle.set('numberOfTargets', numberOfTargets);
+  }
+  getFundamentalLinkParams() {
+    const params = {
+      symbolPos: [this.triangle.get('position').x, this.triangle.get('position').y],
+      UpperConnectionVertices: this.mainUpperLink.get('vertices')
+    };
+    return {...super.getStructuralLinkParams(), ...params};
   }
 }
 

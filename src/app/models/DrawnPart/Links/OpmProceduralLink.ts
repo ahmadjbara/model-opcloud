@@ -6,6 +6,9 @@ export  class OpmProceduralLink extends OpmDefaultLink {
   targetElement: OpmEntity;
   condition: boolean;
   event: boolean;
+  pathText: string;
+  probability: number;
+  rate: number;
   constructor(sourceElement, targetElement, condition, event) {
     super();
     this.sourceElement = sourceElement;
@@ -55,5 +58,13 @@ export  class OpmProceduralLink extends OpmDefaultLink {
       }
       this.set('labels', [{position: -5, attrs: {text: {text: symbolAdding}, rect: {fill: 'transparent'}}}]);
     }
+  }
+  getProceduralLinkParams() {
+    const params = {
+      pathText: this.pathText,
+      probability: this.probability,
+      rate: this.rate
+    };
+    return {...super.getDefaultLinkParams(), ...params};
   }
 }

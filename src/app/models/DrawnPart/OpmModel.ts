@@ -17,11 +17,19 @@ export class OpmModel {
     opmLogicalElement.opmModel = this;
     this.logicalElements.push(opmLogicalElement);
   }
-  getVisualElementById(visualID){
-    for (let i=0; i<this.logicalElements.length; i++){
-      for (let j=0; j < this.logicalElements[i].visualElements.length; j++)
+  getVisualElementById(visualID) {
+    for (let i = 0; i < this.logicalElements.length; i++) {
+      for (let j = 0; j < this.logicalElements[i].visualElements.length; j++)
         if (visualID === this.logicalElements[i].visualElements[j].id)
           return this.logicalElements[i].visualElements[j];
+    }
+    return null;
+  }
+  getLogicalElementByVisualId(visualID) {
+    for (let i = 0; i < this.logicalElements.length; i++) {
+      for (let j = 0; j < this.logicalElements[i].visualElements.length; j++)
+        if (visualID === this.logicalElements[i].visualElements[j].id)
+          return this.logicalElements[i];
     }
     return null;
   }

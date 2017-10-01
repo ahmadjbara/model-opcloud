@@ -13,4 +13,10 @@ export  class OpmTaggedLink extends OpmStructuralLink {
     this.set({'source': {'id': sourceElement.id}});
     this.set({'target': {'id': targetElement.id}});
   }
+  getTaggedLinkParams() {
+    const params = {
+      forwardTag: this.forwardTag,
+    };
+    return {...super.getStructuralLinkParams(), ...params};
+  }
 }

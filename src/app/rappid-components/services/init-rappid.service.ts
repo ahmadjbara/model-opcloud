@@ -15,22 +15,23 @@ import * as common from '../../common/commonFunctions';
 import { TreeViewService } from '../../services/tree-view.service';
 import { processInzooming, processUnfolding } from '../../config/process-inzooming';
 // popup imports
-import { linkDrawing } from '../../link-operating/linkDrawing';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 
 import { TreeComponent, TreeModel, TreeNode } from 'angular-tree-component';
 import {OpmProcess} from "../../models/DrawnPart/OpmProcess";
 import {OpmObject} from "../../models/DrawnPart/OpmObject";
-import {OpmLogicalElement} from "../../models/LogicalPart/OpmLogicalElement";
 import {OpmModel} from "../../models/DrawnPart/OpmModel";
 import {OpmLogicalObject} from "../../models/LogicalPart/OpmLogicalObject";
-import {OpmVisualObject} from "../../models/VisualPart/OpmVisualObject";
-import {OpmVisualElement} from "../../models/VisualPart/OpmVisualElement";
 import {OpmLogicalProcess} from "../../models/LogicalPart/OpmLogicalProcess";
 import {OpmLogicalState} from "../../models/LogicalPart/OpmLogicalState";
 import {OpmState} from "../../models/DrawnPart/OpmState";
 import {OpmDefaultLink} from "../../models/DrawnPart/Links/OpmDefaultLink";
 import {OpmProceduralLink} from "../../models/DrawnPart/Links/OpmProceduralLink";
+import {OpmProceduralRelation} from '../../models/LogicalPart/OpmProceduralRelation';
+import {OpmFundamentalLink} from '../../models/DrawnPart/Links/OpmFundamentalLink';
+import {OpmFundamentalRelation} from '../../models/LogicalPart/OpmFundamentalRelation';
+import {OpmTaggedLink} from '../../models/DrawnPart/Links/OpmTaggedLink';
+import {OpmTaggedRelation} from '../../models/LogicalPart/OpmTaggedRelation';
 
 
 const joint = require('rappid');
@@ -181,7 +182,7 @@ export class InitRappidService {
       if (cell.attributes.type === 'opm.Process') {
         _this.treeViewService.removeNode(cell.id);
       }
-      if (cell.attributes.type === 'opm.Link') {
+      if ((cell.attributes.type === 'opm.Link') && cell.get('target').id && cell.get('source').id) {
         if (_this.graph.getCell(cell.get('target').id).attributes.type === 'opm.TriangleAgg')
           _this.graph.getCell(cell.get('target').id).remove();
         if (_this.graph.getCell(cell.get('source').id).attributes.type === 'opm.TriangleAgg') {
@@ -217,8 +218,12 @@ export class InitRappidService {
              this.opmModel.add(new OpmLogicalProcess(cell.getParams()));
            } else if (cell instanceof OpmState) {
              this.opmModel.add(new OpmLogicalState(cell.getParams()));
-           } else if (cell.attributes.type === 'opm.Link'){
-             console.log("link");
+           } else if (cell instanceof OpmProceduralLink) {
+             this.opmModel.add(new OpmProceduralRelation(cell.getParams()));
+           } else if (cell instanceof OpmTaggedLink) {
+             this.opmModel.add(new OpmTaggedRelation(cell.getParams()));
+           } else if (cell instanceof OpmFundamentalLink) {
+             this.opmModel.add(new OpmFundamentalRelation(cell.getParams()));
            }
 
 

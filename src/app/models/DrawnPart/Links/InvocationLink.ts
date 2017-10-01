@@ -1,4 +1,5 @@
 import {OpmProceduralLink} from './OpmProceduralLink';
+import {linkType} from "../../ConfigurationOptions";
 
 export  class InvocationLink extends OpmProceduralLink {
   constructor(sourceElement, targetElement, condition, event) {
@@ -23,5 +24,9 @@ export  class InvocationLink extends OpmProceduralLink {
       { x: 0.45 * (srcX + 10 * vector.x) + 0.55 * (dstX + 10 * vector.x) + 45, y: 0.45 * (srcY + 5 * vector.y) + 0.55 * (dstY + 5 * vector.y) + 25},
       { x: 0.55 * (srcX - 10 * vector.x) + 0.45 * (dstX - 10 * vector.x) + 45, y: 0.55 * (srcY - 5 * vector.y) + 0.45 * (dstY - 5 * vector.y) + 25}
     ]);
+  }
+  getParams() {
+    const params = { linkType: linkType.Invocation};
+    return {...super.getProceduralLinkParams(), ...params};
   }
 }

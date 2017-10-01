@@ -21,5 +21,14 @@
     set sourceCardinality(value: string) {this._sourceCardinality = value; }
     get targetCardinality(): string {return this._targetCardinality; }
     set targetCardinality(value: string) {this._targetCardinality = value; }
+    get linkType(): linkType {return this._linkType; }
+    set linkType(value: linkType) {this._linkType = value; }
+    constructor(params) {
+      super();
+      this.sourceLogicalElement = this.opmModel.getLogicalElementByVisualId(params.sourceElementId);
+      this.targetLogicalElements.push(this.opmModel.getLogicalElementByVisualId(params.sourceElementId));
+      this.linkConnectionType = params.linkConnectionType;
+      this.linkType = params.linkType;
+    }
   }
 

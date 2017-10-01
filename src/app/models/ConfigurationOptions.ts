@@ -52,6 +52,7 @@ export enum linkType {
   Consumption,
   Result,
   Effect,
+  Invocation,
   UndertimeException,
   OvertimeException,
   UnderOvertimeException,

@@ -7,6 +7,8 @@ export  class OpmStructuralLink extends OpmDefaultLink {
     this.attr({'.connection': {'stroke-dasharray': '0'}});
     this.attr({'.marker-source' : {'stroke-width': 2}});
     this.attr({'.marker-target' : {'stroke-width': 2}});
-
+  }
+  getStructuralLinkParams() {
+    return super.getDefaultLinkParams();
   }
 }
