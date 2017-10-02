@@ -14,7 +14,6 @@ export class OpmModel {
     this.logicalElements = new Array<OpmLogicalElement<OpmVisualElement>>();
   }
   add(opmLogicalElement: OpmLogicalElement<OpmVisualElement>) {
-    opmLogicalElement.opmModel = this;
     this.logicalElements.push(opmLogicalElement);
   }
   getVisualElementById(visualID) {

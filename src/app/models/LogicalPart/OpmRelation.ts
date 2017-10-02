@@ -4,7 +4,7 @@
   import {linkConnectionType} from '../ConfigurationOptions';
   import {linkType} from '../ConfigurationOptions';
 
-  export class OpmRelation extends OpmLogicalElement<OpmLink> {
+  export class OpmRelation<T extends OpmLink> extends OpmLogicalElement<T> {
     private _sourceLogicalElement: OpmLogicalElement<OpmVisualElement>;
     private _targetLogicalElements: Array<OpmLogicalElement<OpmVisualElement>>;
     private _linkConnectionType: linkConnectionType;
@@ -23,8 +23,9 @@
     set targetCardinality(value: string) {this._targetCardinality = value; }
     get linkType(): linkType {return this._linkType; }
     set linkType(value: linkType) {this._linkType = value; }
-    constructor(params) {
-      super();
+    constructor(params, model) {
+      super(model);
+      this.targetLogicalElements = new Array<OpmLogicalElement<OpmVisualElement>>();
       this.sourceLogicalElement = this.opmModel.getLogicalElementByVisualId(params.sourceElementId);
       this.targetLogicalElements.push(this.opmModel.getLogicalElementByVisualId(params.sourceElementId));
       this.linkConnectionType = params.linkConnectionType;

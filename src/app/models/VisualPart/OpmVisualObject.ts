@@ -7,8 +7,8 @@
     valueType: ConfigurationOptions.valueType;
     value: any;
     units: string;
-    constructor(params) {
-      super(params);
+    constructor(params, logicalElement) {
+      super(params, logicalElement);
       // statesArrangement fro different types. one is string and the new one is enum.
       // Once all states and values related code be refactored the lines should be uncommented
      // this.statesArrangement = params.statesArrangement;

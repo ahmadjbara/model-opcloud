@@ -6,8 +6,8 @@
     private _essence: Essence;
     private _affiliation: Affiliation;
 
-     constructor(params) {
-       super();
+     constructor(params, model) {
+       super(model);
        this.essence = params.essence;
        this.affiliation = params.affiliation;
      }

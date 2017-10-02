@@ -3,8 +3,9 @@
   export class OpmLink extends OpmVisualElement {
     sourceVisualElement: OpmVisualElement;
     targetVisualElements: Array<TargetElementData>;
-    constructor(params) {
-      super(params);
+    constructor(params, logicalElement) {
+      super(params, logicalElement);
+      this.targetVisualElements = new Array<TargetElementData>();
       this.sourceVisualElement = this.logicalElement.opmModel.getVisualElementById(params.sourceElementId);
       const targetVisualElement = this.logicalElement.opmModel.getVisualElementById(params.targetElementId);
       this.targetVisualElements.push(new TargetElementData(targetVisualElement, params.vertices));

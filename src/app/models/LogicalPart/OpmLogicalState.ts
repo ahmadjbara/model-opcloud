@@ -4,14 +4,10 @@
 
   export class OpmLogicalState extends OpmLogicalEntity<OpmVisualState> {
     private _stateType: ConfigurationOptions.stateType;
-    constructor(params) {
-      super();
-      this.visualElements = new Array<OpmVisualState>();
-      this.add(params);
+    constructor(params, model) {
+      super(model);
+      this.add(new OpmVisualState(params, this));
       this.text = OpmLogicalState.stateText;
-    }
-    add(params) {
-      this.visualElements.push(new OpmVisualState(params));
     }
     get stateType(): ConfigurationOptions.stateType {
       return this._stateType;

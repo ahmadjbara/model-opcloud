@@ -7,8 +7,8 @@
     width: number;
     height: number;
 
-    constructor(params) {
-      super(params);
+    constructor(params, logicalElement) {
+      super(params, logicalElement);
       this.fill = params.fill;
       this.xPos = params.xPos;
       this.yPos = params.yPos;

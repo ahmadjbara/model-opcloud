@@ -6,14 +6,10 @@
     private _code: ConfigurationOptions.code;
     private _functionType: ConfigurationOptions.functionType;
     private _insertedFunction: string;
-    constructor(params) {
-      super(params);
-      this.visualElements = new Array<OpmVisualProcess>();
-      this.add(params);
+    constructor(params, model) {
+      super(params, model);
+      this.add(new OpmVisualProcess(params, this));
       this.text = OpmLogicalProcess.processText;
-    }
-    add(params) {
-      this.visualElements.push(new OpmVisualProcess(params));
     }
 
     // getters and setters

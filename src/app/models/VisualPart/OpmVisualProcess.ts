@@ -2,8 +2,8 @@
 
   export class OpmVisualProcess extends OpmVisualThing {
     parentheses: boolean;
-    constructor(params) {
-      super(params);
+    constructor(params, logicalElement) {
+      super(params, logicalElement);
       this.parentheses = params.parentheses;
     }
   }

@@ -5,8 +5,8 @@ export class OpmFundamentalLink extends OpmStructuralLink {
   private UpperConnectionVertices: Array<{x: number, y: number}>;
   // Triangle position
   private symbolPos: [number, number];
-  constructor(params) {
-    super(params);
+  constructor(params, logicalElement) {
+    super(params, logicalElement);
     this.symbolPos = params.symbolPos;
     this.UpperConnectionVertices = params.UpperConnectionVertices;
   }

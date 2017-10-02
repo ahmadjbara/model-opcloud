@@ -7,18 +7,15 @@
     private _value: any;
     private _units: string;
 
-    constructor(params) {
-      super(params);
-      this.visualElements = new Array<OpmVisualObject>();
-      this.add(params);
+    constructor(params, model) {
+      super(params, model);
+
+      this.add(new OpmVisualObject(params, this));
       this.text = OpmLogicalObject.objectText;
       // Different types - will be changed.
       // this.valueType = params.valueType;
       this.value = params.value;
       this.units = params.units;
-    }
-    add(params) {
-      this.visualElements.push(new OpmVisualObject(params));
     }
     // getters and setters
     get valueType(): valueType {

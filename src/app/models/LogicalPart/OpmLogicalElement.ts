@@ -8,5 +8,12 @@
     static stateText = 'State';
     visualElements: Array<T>;
     opmModel: OpmModel;
+    constructor(model) {
+      this.opmModel = model;
+      this.visualElements = new Array<T>();
+    }
+    add(opmVisualElement) {
+      this.visualElements.push(opmVisualElement);
+    }
   }
 

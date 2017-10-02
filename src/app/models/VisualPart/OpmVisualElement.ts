@@ -9,7 +9,8 @@ export class OpmVisualElement {
     strokeColor: string;
     textFontWeight: number;
     id: string;
-    constructor(params) {
+    constructor(params, logicalElement) {
+      this.logicalElement = logicalElement;
       this.textColor = params.textColor;
       this.textFontSize = params.textFontSize;
       this.textFontFamily = params.textFontFamily;

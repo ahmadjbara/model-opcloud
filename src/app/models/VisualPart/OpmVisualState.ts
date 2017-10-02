@@ -3,8 +3,8 @@
   export class OpmVisualState extends OpmVisualEntity {
     private _fatherObject;
 
-    constructor(params) {
-      super(params);
+    constructor(params, logicalElement) {
+      super(params, logicalElement);
       this.fatherObject = this.logicalElement.opmModel.getVisualElementById(params.fatherObjectId);
     }
     get fatherObject() {

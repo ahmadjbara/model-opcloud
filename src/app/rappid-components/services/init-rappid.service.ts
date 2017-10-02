@@ -213,17 +213,17 @@ export class InitRappidService {
     this.graph.on('add', (cell) => {
    //   console.log(cell);
            if (cell instanceof OpmObject) {
-             this.opmModel.add(new OpmLogicalObject(cell.getParams()));
+             this.opmModel.add(new OpmLogicalObject(cell.getParams(), this.opmModel));
            } else if (cell instanceof OpmProcess) {
-             this.opmModel.add(new OpmLogicalProcess(cell.getParams()));
+             this.opmModel.add(new OpmLogicalProcess(cell.getParams(), this.opmModel));
            } else if (cell instanceof OpmState) {
-             this.opmModel.add(new OpmLogicalState(cell.getParams()));
+             this.opmModel.add(new OpmLogicalState(cell.getParams(), this.opmModel));
            } else if (cell instanceof OpmProceduralLink) {
-             this.opmModel.add(new OpmProceduralRelation(cell.getParams()));
+             this.opmModel.add(new OpmProceduralRelation(cell.getParams(), this.opmModel));
            } else if (cell instanceof OpmTaggedLink) {
-             this.opmModel.add(new OpmTaggedRelation(cell.getParams()));
+             this.opmModel.add(new OpmTaggedRelation(cell.getParams(), this.opmModel));
            } else if (cell instanceof OpmFundamentalLink) {
-             this.opmModel.add(new OpmFundamentalRelation(cell.getParams()));
+             this.opmModel.add(new OpmFundamentalRelation(cell.getParams(), this.opmModel));
            }
 
 
