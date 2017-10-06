@@ -436,23 +436,10 @@ export class InitRappidService {
   }
 
   initializeTextEditing() {
-    let lastEnteredText;
-    let currentCellView;
-    this.paper.on('all', function (cellView, evt) {
-      //console.log(evt);
-    }, this);
-
     this.paper.on('cell:pointerdblclick', function (cellView, evt) {
-      lastEnteredText = cellView.model.attributes.attrs.text.text;
-      currentCellView = cellView.model;
-      joint.ui.TextEditor.edit(evt.target, {
-        cellView: cellView,
-        textProperty: cellView.model.isLink() ? 'labels/attrs/text/text' : 'attrs/text/text',
-        placeholder: true
-      });
-    }, this);
+      cellView.model.doubleClickHandle(cellView, evt, this.paper); }, this);
     this.graph.on('change:attrs', function (cell) {
-      if ((cell.get('type') != 'opm.Link') && (cell.attr('text/text') != lastEnteredText) &&
+      if ((cell.get('type') != 'opm.Link') && (cell.attr('text/text') != cell.lastEnteredText) &&
         !cell.attributes.attrs.wrappingResized) {  //if the text was changed
         const textString = cell.attr('text/text');
         let newParams = { width: cell.get('minSize').width, height: cell.get('minSize').height, text: '' };    //No
@@ -472,18 +459,6 @@ export class InitRappidService {
         cell.attributes.attrs.wrappingResized = false;
       }
     }, this);
-
-
-    this.paper.on('blank:pointerdown', function (cellView, evt) {
-      if (currentCellView && !currentCellView.isLink()) {
-        const currentText = currentCellView.attributes.attrs.text.text;
-        if (currentText == '') {
-          currentCellView.attr({ text: { text: lastEnteredText } });
-        }
-        joint.ui.TextEditor.close();
-      }
-    }, this);
-
     this.graph.on('change:size', _.bind(function (cell, attrs) {
       if (cell.attributes.attrs.text && !cell.attributes.attrs.wrappingResized) { //resized manually
         textWrapping.wrapTextAfterSizeChange(cell);

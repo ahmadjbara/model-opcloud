@@ -22,7 +22,7 @@ const entityDefinition = {
 };
 
 export class OpmEntity extends common.joint.dia.Element.extend(entityDefinition) {
-
+  lastEnteredText: string;
   entityShape() {
     return {
       fill: '#DCDCDC',
@@ -43,5 +43,22 @@ export class OpmEntity extends common.joint.dia.Element.extend(entityDefinition)
       text: this.attr('text/text'),
       id: this.get('id')
     };
+  }
+  doubleClickHandle(cellView, evt, paper) {
+    common.joint.ui.TextEditor.edit(evt.target, {
+      cellView: cellView,
+      textProperty: 'attrs/text/text',
+      placeholder: true
+    });
+    this.lastEnteredText = cellView.model.attr('text/text');
+    this.blankClickHandle(paper);
+  }
+  blankClickHandle(paper) {
+    paper.on('blank:pointerdown', function (cellView, evt) {
+      if (this.attr('text/text') === '') {
+        this.attr({ text: { text: this.lastEnteredText } });
+      }
+      common.joint.ui.TextEditor.close();
+    }, this);
   }
 }
