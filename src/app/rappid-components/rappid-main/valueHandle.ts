@@ -1,5 +1,5 @@
 import * as common from "../../common/commonFunctions";
-import * as addState from '../../config/add-state';
+import { addState } from '../../config/add-state';
 
 export const valueHandle = {
 
@@ -14,7 +14,7 @@ export const valueHandle = {
         });
         //If got to this line then it means that there is no state yet and need to add a new state
         if(statesNumber == 0) {
-            addState.addNewState(cell, graph);
+            addState.call(this);
             common._.each(cell.getEmbeddedCells(), function (child) {child.attr({text: {text: value}});});
         }
     },

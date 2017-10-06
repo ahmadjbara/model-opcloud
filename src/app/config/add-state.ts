@@ -14,9 +14,12 @@ function saveValues(cell, parent) {
   }
 }
 
-export function addNewState(fatherObject, graph) {
+export function addState() {
+  let options = this.options;
+  let fatherObject = options.cellView.model;
+  let graph = options.graph;
   let defaultState = new OpmState();
-  fatherObject.embed(defaultState);     //makes the state stay in the bounds of the object
+  fatherObject.embed(defaultState);     // makes the state stay in the bounds of the object
   graph.addCells([fatherObject, defaultState]);
   //Placing the new state. By default it is outside the object.
   let xNewState = fatherObject.getBBox().center().x - basicDefinitions.stateWidth / 2;
@@ -62,11 +65,4 @@ export function addNewState(fatherObject, graph) {
   else {
     arrangeStates.call(this, fatherObject.attributes.attrs.statesArrange);
   }
-}
-
-export function addState() {
-  let options = this.options;
-  //this.startBatch();
-  let fatherObject = options.cellView.model;
-  addNewState.call(this, fatherObject, options.graph);
 }
