@@ -440,7 +440,7 @@ export class InitRappidService {
       cellView.model.doubleClickHandle(cellView, evt, this.paper); }, this);
     this.graph.on('change:attrs', function (cell) {
       cell.changeAttributesHandle(); }, this);
-    this.graph.on('change:size', _.bind(function (cell, attrs) {
+    this.graph.on('change:size', _.bind(function (cell) {
       cell.changeSizeHandle();
     }, this));
   }
