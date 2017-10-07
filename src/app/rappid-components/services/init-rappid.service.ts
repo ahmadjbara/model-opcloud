@@ -439,30 +439,9 @@ export class InitRappidService {
     this.paper.on('cell:pointerdblclick', function (cellView, evt) {
       cellView.model.doubleClickHandle(cellView, evt, this.paper); }, this);
     this.graph.on('change:attrs', function (cell) {
-      if ((cell.get('type') != 'opm.Link') && (cell.attr('text/text') != cell.lastEnteredText) &&
-        !cell.attributes.attrs.wrappingResized) {  //if the text was changed
-        const textString = cell.attr('text/text');
-        let newParams = { width: cell.get('minSize').width, height: cell.get('minSize').height, text: '' };    //No
-                                                                                                                 // empty
-                                                                                                                 // name
-                                                                                                                 // is
-                                                                                                                 // allowed
-        if (textString.trim() != '') { //if there is areal text - not spaces
-          newParams = textWrapping.calculateNewTextSize(textString, cell);
-        }
-        cell.attributes.attrs.wrappingResized = true;
-        cell.attr({ text: { text: newParams.text } });
-        if (!((newParams.width <= cell.get('size').width) && (newParams.height <= cell.get('size').height) && cell.attributes.attrs.manuallyResized)) {
-          cell.resize(newParams.width, newParams.height, {cameFrom:'textEdit', wd:cell.get('size').width, hg:cell.get('size').height });
-          cell.attributes.attrs.manuallyResized = false;
-        }
-        cell.attributes.attrs.wrappingResized = false;
-      }
-    }, this);
+      cell.changeAttributesHandle(); }, this);
     this.graph.on('change:size', _.bind(function (cell, attrs) {
-      if (cell.attributes.attrs.text && !cell.attributes.attrs.wrappingResized) { //resized manually
-        textWrapping.wrapTextAfterSizeChange(cell);
-      }
+      cell.changeSizeHandle();
     }, this));
   }
 

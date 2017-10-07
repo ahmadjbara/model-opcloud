@@ -1,4 +1,4 @@
-import * as common from "../../common/commonFunctions";
+import * as common from '../../common/commonFunctions';
 
 export const wrapAndSize = {
   width: 0,
@@ -62,7 +62,7 @@ export const textWrapping = {
     }
   },
 
-  //units have to be bellow the object's name
+  // units have to be bellow the object's name
   unitsNewLine(textString){
     if (textString.includes('[') && !textString.includes('\n[')) {
       textString = textString.replace('[', '\n[');
@@ -101,14 +101,14 @@ export const textWrapping = {
     return textString;
   },
 
-  calculateNewTextSize(textString, cell){
-    var addition = 1, increase = false;
-    var stateWidth = cell.get('statesWidthPadding');
-    var stateHeight = cell.get('statesHeightPadding');
-    var result = wrapAndSize;
+  calculateNewTextSize(textString, cell) {
+    let addition = 1, increase = false;
+    const stateWidth = cell.get('statesWidthPadding') ? cell.get('statesWidthPadding') : 0;
+    const stateHeight = cell.get('statesHeightPadding') ? cell.get('statesHeightPadding') : 0;
+    let result = wrapAndSize;
     textString = this.refactorText(cell, cell.get('size').width - stateWidth - cell.get('padding'));
-    var textWidth = this.getParagraphWidth(textString, cell) + stateWidth;
-    var textHeight = this.getParagraphHeight(textString, cell) + stateHeight;
+    let textWidth = this.getParagraphWidth(textString, cell) + stateWidth;
+    let textHeight = this.getParagraphHeight(textString, cell) + stateHeight;
     while ((textHeight > (cell.get('size').height * addition - cell.get('padding'))) || (textWidth > (cell.get('size').width * addition - cell.get('padding')))) {
       increase = true;
       addition = addition * 1.1;

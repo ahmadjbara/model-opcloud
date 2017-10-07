@@ -1,4 +1,5 @@
 import * as common from '../../common/commonFunctions';
+import {textWrapping} from "../../rappid-components/rappid-main/textWrapping";
 
 const entityText = {
   fill: 'black',
@@ -22,7 +23,6 @@ const entityDefinition = {
 };
 
 export class OpmEntity extends common.joint.dia.Element.extend(entityDefinition) {
-  lastEnteredText: string;
   entityShape() {
     return {
       fill: '#DCDCDC',
@@ -60,5 +60,28 @@ export class OpmEntity extends common.joint.dia.Element.extend(entityDefinition)
       }
       common.joint.ui.TextEditor.close();
     }, this);
+  }
+  changeAttributesHandle() {
+    if ((this.attr('text/text') !== this.lastEnteredText) &&
+        !this.attr('wrappingResized')) {  // if the text was changed
+      const textString = this.attr('text/text');
+      // No empty name is allowed
+      let newParams = { width: this.get('minSize').width, height: this.get('minSize').height, text: '' };
+      if (textString.trim() !== '') { // If there is areal text - not spaces
+        newParams = textWrapping.calculateNewTextSize(textString, this);
+      }
+      this.attributes.attrs.wrappingResized = true;
+      this.attr({ text: { text: newParams.text } });
+      if (!((newParams.width <= this.get('size').width) && (newParams.height <= this.get('size').height) && this.attr('manuallyResized'))) {
+        this.resize(newParams.width, newParams.height, {cameFrom: 'textEdit', wd: this.get('size').width, hg: this.get('size').height });
+        this.attributes.attrs.manuallyResized = false;
+      }
+      this.attributes.attrs.wrappingResized = false;
+    }
+  }
+  changeSizeHandle() {
+    if (this.attributes.attrs.text && !this.attributes.attrs.wrappingResized) { // resized manually
+      textWrapping.wrapTextAfterSizeChange(this);
+    }
   }
 }
