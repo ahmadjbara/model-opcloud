@@ -7,9 +7,9 @@ import {textWrapping} from "../rappid-components/rappid-main/textWrapping";
 const joint = require('rappid');
 const paddingObject = common.paddingObject;
 
-export function arrangeStates(side) {
-  let options = this.options;
-  let fatherObject = options.cellView.model;
+export function arrangeStates(fatherObject, side) {
+ // let options = this.options;
+ // let fatherObject = options.cellView.model;
   let embeddedStates = fatherObject.getEmbeddedCells();
   let maxWidth = null;
   let maxHeight = null;

@@ -5,6 +5,7 @@ import {OpmVisualState} from "../VisualPart/OpmVisualState";
 import {basicDefinitions} from "../../config/basicDefinitions";
 import * as common from '../../common/commonFunctions';
 import * as ConfigurationOptions from '../ConfigurationOptions';
+import {valueHandle} from "../../rappid-components/rappid-main/valueHandle";
 
 export class OpmObject extends OpmThing {
   constructor() {
@@ -44,5 +45,9 @@ export class OpmObject extends OpmThing {
       units: this.attr('value/units')
     };
     return {...super.getThingParams(), ...params};
+  }
+  changeAttributesHandle() {
+    super.changeAttributesHandle();
+    valueHandle.updateCell(this);
   }
 }

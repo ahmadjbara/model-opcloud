@@ -457,14 +457,6 @@ export class InitRappidService {
         _this.graphService.updateJSON();
       });
     });
-    this.graph.on('change:attrs', _.bind(function (cell, attrs) {
-      // If value of an object was changed - add/modify a state according to it
-      if (cell.isElement() && attrs.value) {
-        // console.log('if - value');
-        valueHandle.updateCell(this.graph, cell);
-      }
-    }, this));
-
     this.graph.on('change:position', _.bind(function (cell) {
       const outboundLinks = this.graph.getConnectedLinks(cell, { outbound: true });
       const inboundLinks = this.graph.getConnectedLinks(cell, { inbound: true });
@@ -527,7 +519,7 @@ export class InitRappidService {
               halo.$handles.children('.arrange_down').toggleClass('hidden', !hasStates);
               halo.$handles.children('.arrange_left').toggleClass('hidden', !hasStates);
               halo.$handles.children('.arrange_right').toggleClass('hidden', !hasStates);
-              addState.call(this);
+              addState(this.options.cellView.model);
             });
             halo.addHandle({
               name: 'arrange_up', position: 'n', icon: null, attrs: {
@@ -540,7 +532,7 @@ export class InitRappidService {
               }
             });
             halo.on('action:arrange_up:pointerup', function () {
-              arrangeStates.call(this, 'top');
+              arrangeStates(this.options.cellView.model, 'top');
             });
             halo.addHandle({
               name: 'arrange_down', position: 's', icon: null, attrs: {
@@ -553,7 +545,7 @@ export class InitRappidService {
               }
             });
             halo.on('action:arrange_down:pointerup', function () {
-              arrangeStates.call(this, 'bottom');
+              arrangeStates(this.options.cellView.model, 'bottom');
             });
             halo.addHandle({
               name: 'arrange_right', position: 'w', icon: null, attrs: {
@@ -566,7 +558,7 @@ export class InitRappidService {
               }
             });
             halo.on('action:arrange_right:pointerup', function () {
-              arrangeStates.call(this, 'left');
+              arrangeStates(this.options.cellView.model, 'left');
             });
             halo.addHandle({
               name: 'arrange_left', position: 'e', icon: null, attrs: {
@@ -579,7 +571,7 @@ export class InitRappidService {
               }
             });
             halo.on('action:arrange_left:pointerup', function () {
-              arrangeStates.call(this, 'right');
+              arrangeStates(this.options.cellView.model, 'right');
             });
             halo.$handles.children('.arrange_up').toggleClass('hidden', !hasStates);
             halo.$handles.children('.arrange_down').toggleClass('hidden', !hasStates);

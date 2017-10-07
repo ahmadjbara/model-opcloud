@@ -4,7 +4,7 @@ import { addState } from '../../config/add-state';
 export const valueHandle = {
 
     //When a value of an object is updated, if a state exists - its value will be updates, otherwise - a new state will be added with the new value
-    updateState(graph, cell, value){
+    updateState(cell, value) {
         cell.set('previousValue', value);
         var statesNumber = 0;   //currently only one value for object is allowed
         common._.each(cell.getEmbeddedCells(), function(child) {
@@ -14,7 +14,7 @@ export const valueHandle = {
         });
         //If got to this line then it means that there is no state yet and need to add a new state
         if(statesNumber == 0) {
-            addState.call(this);
+            addState(cell);
             common._.each(cell.getEmbeddedCells(), function (child) {child.attr({text: {text: value}});});
         }
     },
@@ -32,14 +32,14 @@ export const valueHandle = {
         cell.attr({text: {text: newText}});
     },
 
-    updateCell(graph, cell){
+    updateCell(cell) {
         var value = cell.attributes.attrs.value.value;
         var valueType = cell.attributes.attrs.value.valueType;
         var units = cell.attributes.attrs.value.units;
         var cellType = cell.attributes.type;
         if(cell.attributes.type == 'opm.Object') {
           if ((!cell.get('previousValue') || (value != cell.get('previousValue'))) && (value != 'None')) {
-            this.updateState(graph, cell, value);
+            this.updateState(cell, value);
           }
           if ((!cell.get('previousUnits') || (units != cell.get('previousUnits'))) && (units != '')) {
             this.updateUnits(cell, units);

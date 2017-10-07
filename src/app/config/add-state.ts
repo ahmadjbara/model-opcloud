@@ -14,13 +14,13 @@ function saveValues(cell, parent) {
   }
 }
 
-export function addState() {
-  let options = this.options;
-  let fatherObject = options.cellView.model;
-  let graph = options.graph;
+export function addState(fatherObject) {
+ // let options = this.options;
+ // let fatherObject = options.cellView.model;
+ // let graph = options.graph;
   let defaultState = new OpmState();
   fatherObject.embed(defaultState);     // makes the state stay in the bounds of the object
-  graph.addCells([fatherObject, defaultState]);
+  fatherObject.graph.addCells([fatherObject, defaultState]);
   //Placing the new state. By default it is outside the object.
   let xNewState = fatherObject.getBBox().center().x - basicDefinitions.stateWidth / 2;
   let yNewState = fatherObject.getBBox().y + fatherObject.getBBox().height - basicDefinitions.stateHeight - common.paddingObject;
@@ -32,9 +32,9 @@ export function addState() {
       }
     });
   }
-  graph.on('change:position', function (cell) {
+  fatherObject.graph.on('change:position', function (cell) {
     let parentId = cell.get('parent');
-    let parent = graph.getCell(parentId);
+    let parent = this.getCell(parentId);
     saveValues(cell, parent);
     if (parentId) {        //State case
       common.CommonFunctions.updateObjectSize(parent);
@@ -46,9 +46,9 @@ export function addState() {
       }
     }
   });
-  graph.on('change:size', function (cell) {
+  fatherObject.graph.on('change:size', function (cell) {
     let parentId = cell.get('parent');
-    let parent = graph.getCell(parentId);
+    let parent = this.getCell(parentId);
     saveValues(cell, parent);
     if (parentId) {        //State case
       common.CommonFunctions.updateObjectSize(parent);
@@ -60,9 +60,8 @@ export function addState() {
   });
   //Add the new state using the current states arrangement
   if (fatherObject.get('embeds').length < 2) {
-    arrangeStates.call(this, 'bottom');
-  }
-  else {
-    arrangeStates.call(this, fatherObject.attributes.attrs.statesArrange);
+    arrangeStates(fatherObject, 'bottom');
+  } else {
+    arrangeStates(fatherObject, fatherObject.attributes.attrs.statesArrange);
   }
 }
