@@ -68,7 +68,6 @@ export class InitRappidService {
     this.initializePaper();
     this.initializeSelection();
     this.initializeHaloAndInspector();
-    this.initializeHaloAndInspector();
     this.initializeValidator();
     this.initializeNavigator();
     this.initializeToolbar();
@@ -207,24 +206,20 @@ export class InitRappidService {
 
   // Check Changes. This function has been modified to update opl for each cell once graph is changed
   handleAddLink() {
-    let _thisObj=this;
-
-  //  this.graph.on('all', (x)=>{console.log(x);})
     this.graph.on('add', (cell) => {
-   //   console.log(cell);
-           if (cell instanceof OpmObject) {
-             this.opmModel.add(new OpmLogicalObject(cell.getParams(), this.opmModel));
-           } else if (cell instanceof OpmProcess) {
-             this.opmModel.add(new OpmLogicalProcess(cell.getParams(), this.opmModel));
-           } else if (cell instanceof OpmState) {
-             this.opmModel.add(new OpmLogicalState(cell.getParams(), this.opmModel));
-           } else if (cell instanceof OpmProceduralLink) {
-             this.opmModel.add(new OpmProceduralRelation(cell.getParams(), this.opmModel));
-           } else if (cell instanceof OpmTaggedLink) {
-             this.opmModel.add(new OpmTaggedRelation(cell.getParams(), this.opmModel));
-           } else if (cell instanceof OpmFundamentalLink) {
-             this.opmModel.add(new OpmFundamentalRelation(cell.getParams(), this.opmModel));
-           }
+       if (cell instanceof OpmObject) {
+         this.opmModel.add(new OpmLogicalObject(cell.getParams(), this.opmModel));
+       } else if (cell instanceof OpmProcess) {
+         this.opmModel.add(new OpmLogicalProcess(cell.getParams(), this.opmModel));
+       } else if (cell instanceof OpmState) {
+         this.opmModel.add(new OpmLogicalState(cell.getParams(), this.opmModel));
+       } else if (cell instanceof OpmProceduralLink) {
+         this.opmModel.add(new OpmProceduralRelation(cell.getParams(), this.opmModel));
+       } else if (cell instanceof OpmTaggedLink) {
+         this.opmModel.add(new OpmTaggedRelation(cell.getParams(), this.opmModel));
+       } else if (cell instanceof OpmFundamentalLink) {
+         this.opmModel.add(new OpmFundamentalRelation(cell.getParams(), this.opmModel));
+       }
 
 
       if (cell.attributes.type === 'opm.Link') {
@@ -276,13 +271,6 @@ export class InitRappidService {
       multiLinks: false,
       selectionCollection: null
     });
-
-    this.paper.on('blank:pointerup', ()=>{
-      let l = new joint.shapes.opm.Link();
-     // console.log(l);
-
-    });
-
     paper.on('blank:mousewheel', _.partial(this.onMousewheel, null), this);
     paper.on('cell:mousewheel', this.onMousewheel, this);
     // When the dragged cell is dropped over another cell, let it become a child of the
@@ -409,30 +397,25 @@ export class InitRappidService {
 
     }, this);
 
-    this.paper.on('element:pointerdown', function (elementView, evt) {
+    this.paper.on('cell:pointerdown', function (cellView, evt) {
 
       // Select an element if CTRL/Meta key is pressed while the element is clicked.
       if (this.keyboard.isActive('ctrl meta', evt)) {
-        this.selection.collection.add(elementView.model);
+        this.selection.collection.add(cellView.model);
         this.paper.selectionCollection = this.selection.collection;
       }
 
     }, this);
 
-    this.selection.on('selection-box:pointerdown', function (elementView, evt) {
+    this.selection.on('selection-box:pointerdown', function (cellView, evt) {
       // Unselect an element if the CTRL/Meta key is pressed while a selected element is clicked.
       if (this.keyboard.isActive('ctrl meta', evt)) {
-        this.selection.collection.remove(elementView.model);
+        this.selection.collection.remove(cellView.model);
         this.paper.selectionCollection = this.selection.collection;
       }
     }, this);
 
     this.selection.removeHandle('rotate');
-    this.selection.addHandle({ name: 'link', position: 'n', icon: '../../assets/OPM_Links/StructuralAgg.png' });
- //   this.selection.on('action:link:pointerdown', function(evt) {
- //     evt.stopPropagation()
- //     alert('My custom action.');
- //   });
   }
 
   initializeTextEditing() {
@@ -686,23 +669,7 @@ export class InitRappidService {
       'print:pointerclick': _.bind(this.paper.print, this.paper),
       'grid-size:change': _.bind(this.paper.setGridSize, this.paper)
     });
-
-    // $('.toolbar-container').append(toolbar.el);
-    // toolbar.render();
   }
-
-
-  changeSnapLines(checked) {
-
-    /*if (checked) {
-     this.snaplines.startListening();
-     this.stencil.options.snaplines = this.snaplines;
-     } else {
-     this.snaplines.stopListening();
-     this.stencil.options.snaplines = null;
-     }*/
-  }
-
 
   initializeTooltips() {
 
