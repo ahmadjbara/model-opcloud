@@ -1,5 +1,6 @@
 import * as common from '../../common/commonFunctions';
 import {textWrapping} from "../../rappid-components/rappid-main/textWrapping";
+import {OpmProceduralLink} from "./Links/OpmProceduralLink";
 
 const entityText = {
   fill: 'black',
@@ -84,5 +85,16 @@ export class OpmEntity extends common.joint.dia.Element.extend(entityDefinition)
       textWrapping.wrapTextAfterSizeChange(this);
     }
   }
-  changePositionHandle() {}
+  changePositionHandle() {
+    // When an entity is moving, need to update the vertices on invocation link and the
+    // C and E signs on condition end event links
+    const outboundLinks = this.graph.getConnectedLinks(this, { outbound: true });
+    const inboundLinks = this.graph.getConnectedLinks(this, { inbound: true });
+    common._.each(outboundLinks.concat(inboundLinks), function (linkToUpdate) {
+      if (linkToUpdate instanceof OpmProceduralLink) {
+        linkToUpdate.UpdateVertices();
+        linkToUpdate.UpdateConditionEvent();
+      }
+    });
+  }
 }

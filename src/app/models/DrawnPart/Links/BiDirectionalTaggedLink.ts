@@ -8,7 +8,7 @@ export class BiDirectionalTaggedLink extends OpmTaggedLink {
     this.attr({'.marker-source' : {fill: 'white', d: 'M20,33 L0,23 L20,23'}});
     this.attr({'.marker-target' : {fill: 'white', d: 'M20,33 L0,23 L20,23'}});
   }
-  getBiDirectionalTaggedLinkParams() {
+  getParams() {
     const params = {
       backwardTag: this.backwardTag,
       linkType: linkType.Bidirectional

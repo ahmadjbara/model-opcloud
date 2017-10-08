@@ -458,24 +458,6 @@ export class InitRappidService {
         _this.graphService.updateJSON();
       });
     });
-    this.graph.on('change:position', _.bind(function (cell) {
-      const outboundLinks = this.graph.getConnectedLinks(cell, { outbound: true });
-      const inboundLinks = this.graph.getConnectedLinks(cell, { inbound: true });
-      common._.each(outboundLinks, function (linkToUpdate) {
-        if (linkToUpdate instanceof OpmProceduralLink) {
-          linkToUpdate.UpdateVertices();
-          linkToUpdate.UpdateConditionEvent();
-        }
-        // linkDrawing.linkUpdating(linkToUpdate);
-      });
-      common._.each(inboundLinks, function (linkToUpdate) {
-        if (linkToUpdate instanceof OpmProceduralLink) {
-          linkToUpdate.UpdateVertices();
-          linkToUpdate.UpdateConditionEvent();
-        }
-        // linkDrawing.linkUpdating(linkToUpdate);
-      });
-    }, this));
   }
 
   initializeHaloAndInspector() {
