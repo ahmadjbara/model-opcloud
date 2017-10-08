@@ -1,4 +1,5 @@
 import {OpmEntity} from './OpmEntity';
+import * as common from '../../common/commonFunctions';
 
 export  class OpmState extends OpmEntity {
   initialize() {
@@ -31,5 +32,20 @@ export  class OpmState extends OpmEntity {
       fatherObjectId: this.get('father')
     };
     return {...super.getEntityParams(), ...params};
+  }
+  changeSizeHandle() {
+    super.changeSizeHandle();
+    // Need to update the size of it's object so that the state will not
+    // stay out of it's border
+    const parentId = this.get('parent');
+    const parent = this.graph.getCell(parentId);
+    common.CommonFunctions.updateObjectSize(parent);
+  }
+  changePositionHandle() {
+    super.changePositionHandle();
+    // When state is changing it's position, the object need to change it's size accordingly
+    const parentId = this.get('parent');
+    const parent = this.graph.getCell(parentId);
+    common.CommonFunctions.updateObjectSize(parent);
   }
 }

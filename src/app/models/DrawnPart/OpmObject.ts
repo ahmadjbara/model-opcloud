@@ -50,4 +50,23 @@ export class OpmObject extends OpmThing {
     super.changeAttributesHandle();
     valueHandle.updateCell(this);
   }
+  changeSizeHandle() {
+    super.changeSizeHandle();
+    // In case object has states, need to update the size so that the states will not
+    // stay out of it's border
+    if (this.get('embeds') && this.get('embeds').length) {
+      this.objectChangedSize = true;
+      common.CommonFunctions.updateObjectSize(this);
+    }
+  }
+  changePositionHandle() {
+    super.changePositionHandle();
+    // Changing Object's size from the left size cause position event
+    if (this.get('embeds') && this.get('embeds').length) {
+      if (this.objectChangedSize) {
+        common.CommonFunctions.updateObjectSize(this);
+        this.objectChangedSize = false;
+      }
+    }
+  }
 }

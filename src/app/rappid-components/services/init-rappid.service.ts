@@ -441,8 +441,9 @@ export class InitRappidService {
     this.graph.on('change:attrs', function (cell) {
       cell.changeAttributesHandle(); }, this);
     this.graph.on('change:size', _.bind(function (cell) {
-      cell.changeSizeHandle();
-    }, this));
+      cell.changeSizeHandle(); }, this));
+    this.graph.on('change:position', _.bind(function (cell) {
+      cell.changePositionHandle(); }, this));
   }
 
   initializeAttributesEvents() {

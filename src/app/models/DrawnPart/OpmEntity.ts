@@ -84,4 +84,5 @@ export class OpmEntity extends common.joint.dia.Element.extend(entityDefinition)
       textWrapping.wrapTextAfterSizeChange(this);
     }
   }
+  changePositionHandle() {}
 }
