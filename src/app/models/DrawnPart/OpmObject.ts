@@ -56,7 +56,7 @@ export class OpmObject extends OpmThing {
     // stay out of it's border
     if (this.get('embeds') && this.get('embeds').length) {
       this.objectChangedSize = true;
-      common.CommonFunctions.updateObjectSize(this);
+      this.updateSizeToFitEmbeded();
     }
   }
   changePositionHandle() {
@@ -64,7 +64,7 @@ export class OpmObject extends OpmThing {
     // Changing Object's size from the left size cause position event
     if (this.get('embeds') && this.get('embeds').length) {
       if (this.objectChangedSize) {
-        common.CommonFunctions.updateObjectSize(this);
+        this.updateSizeToFitEmbeded();
         this.objectChangedSize = false;
       }
     }

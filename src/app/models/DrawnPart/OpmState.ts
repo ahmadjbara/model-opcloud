@@ -39,13 +39,13 @@ export  class OpmState extends OpmEntity {
     // stay out of it's border
     const parentId = this.get('parent');
     const parent = this.graph.getCell(parentId);
-    common.CommonFunctions.updateObjectSize(parent);
+    parent.updateSizeToFitEmbeded();
   }
   changePositionHandle() {
     super.changePositionHandle();
     // When state is changing it's position, the object need to change it's size accordingly
     const parentId = this.get('parent');
     const parent = this.graph.getCell(parentId);
-    common.CommonFunctions.updateObjectSize(parent);
+    parent.updateSizeToFitEmbeded();
   }
 }

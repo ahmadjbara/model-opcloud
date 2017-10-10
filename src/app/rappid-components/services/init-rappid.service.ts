@@ -196,8 +196,8 @@ export class InitRappidService {
       }
       if (cell.attributes.type === 'opm.State') {
         const fatherObject = _this.graph.getCell(cell.get('father'));
-        if (fatherObject.get('embeds').length == 0) {
-          common.CommonFunctions.arrangeStatesParams(fatherObject, 0.5, 0.5, 'middle', 'middle', 'bottom', 0, 0);
+        if (fatherObject.get('embeds').length === 0) {
+          fatherObject.arrangeEmbededParams(0.5, 0.5, 'middle', 'middle', 'bottom', 0, 0);
           textWrapping.updateTextAndSize(fatherObject);
         }
       }
@@ -293,7 +293,7 @@ export class InitRappidService {
             */
             // cell.toFront();
             cell.set('z', cellViewBelow.model.attributes.z  + 1);
-            common.CommonFunctions.updateObjectSize(cellViewBelow.model);
+            cellViewBelow.model.updateSizeToFitEmbeded();
           }
         }
       }

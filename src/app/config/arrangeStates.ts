@@ -27,16 +27,16 @@ export function arrangeStates(fatherObject, side) {
       child.set({size: {height: stateHeight, width: stateWidth}});
     });
 
-    if((side == 'top') || (side == 'bottom')){
-      var refY = (side == 'top') ? (maxHeight+2*common.paddingObject) : common.paddingObject;
-      common.CommonFunctions.arrangeStatesParams(fatherObject, 0.5, refY, 'middle', 'up', side, 0, maxHeight+common.paddingObject);
+    if((side === 'top') || (side === 'bottom')) {
+      var refY = (side === 'top') ? (maxHeight + 2 * common.paddingObject) : common.paddingObject;
+      fatherObject.arrangeEmbededParams(fatherObject, 0.5, refY, 'middle', 'up', side, 0, maxHeight+common.paddingObject);
       textWrapping.updateTextAndSize(fatherObject);
-      var marginY = (side == 'top') ? (fatherObject.getBBox().y + paddingObject) : (fatherObject.getBBox().y + fatherObject.getBBox().height - paddingObject - maxHeight);
+      var marginY = (side === 'top') ? (fatherObject.getBBox().y + paddingObject) : (fatherObject.getBBox().y + fatherObject.getBBox().height - paddingObject - maxHeight);
       updtaeGridLayout(embeddedStates.length, maxWidth + 5, maxHeight, fatherObject.getBBox().x + 0.5*(fatherObject.getBBox().width - (maxWidth + 5) * embeddedStates.length), marginY);
     }
-    if((side == 'left') || (side == 'right')){
-      var refX = (side == 'left') ? (maxWidth+2*common.paddingObject) : common.paddingObject;
-      common.CommonFunctions.arrangeStatesParams(fatherObject, refX, 0.5, 'left', 'middle', side, maxWidth+common.paddingObject, 0);
+    if((side === 'left') || (side === 'right')) {
+      var refX = (side === 'left') ? (maxWidth + 2 * common.paddingObject) : common.paddingObject;
+      fatherObject.arrangeEmbededParams(refX, 0.5, 'left', 'middle', side, maxWidth+common.paddingObject, 0);
       textWrapping.updateTextAndSize(fatherObject);
       var marginX = (side == 'left') ? (fatherObject.getBBox().x + paddingObject) : (fatherObject.getBBox().x + fatherObject.getBBox().width - paddingObject - maxWidth);
       updtaeGridLayout(1, maxWidth, maxHeight + 5, marginX, fatherObject.getBBox().y + 0.5*(fatherObject.getBBox().height - (maxHeight + 5) * embeddedStates.length));

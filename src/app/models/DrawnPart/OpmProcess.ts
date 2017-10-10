@@ -1,6 +1,5 @@
 import {OpmThing} from './OpmThing';
 import {basicDefinitions} from "../../config/basicDefinitions";
-import * as common from '../../common/commonFunctions';
 export class OpmProcess extends OpmThing {
   constructor() {
     super();

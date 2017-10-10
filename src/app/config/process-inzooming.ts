@@ -106,7 +106,7 @@ export function processInzooming (evt, x, y, _this, cellRef, links) {
       var parent = options.graph.getCell(parentId);
       if (!parent.get('originalPosition')) parent.set('originalPosition', parent.get('position'));
       if (cell.attributes.attrs.wrappingResized){
-        common.CommonFunctions.updateObjectSize(parent);
+        parent.updateSizeToFitEmbeded();
         return;
       }
       if (!parent.get('originalSize')) parent.set('originalSize', parent.get('size'));
@@ -114,10 +114,10 @@ export function processInzooming (evt, x, y, _this, cellRef, links) {
     }
     else if (cell.get('embeds') && cell.get('embeds').length) {
      // if (cell.attributes.attrs.wrappingResized){
-      //  common.CommonFunctions.updateObjectSize(cell);
+      //  common.CommonFunctions.updateSizeToFitEmbeded(cell);
       //  return;
      // }
-      common.CommonFunctions.updateObjectSize(cell);
+      cell.updateSizeToFitEmbeded();
     }
   });
 }
@@ -217,7 +217,7 @@ export function processUnfolding (_this, cellRef, links) {
       var parent = options.graph.getCell(parentId);
       if (!parent.get('originalPosition')) parent.set('originalPosition', parent.get('position'));
       if (cell.attributes.attrs.wrappingResized){
-        common.CommonFunctions.updateObjectSize(parent);
+        common.CommonFunctions.updateSizeToFitEmbeded(parent);
         return;
       }
 
@@ -226,10 +226,10 @@ export function processUnfolding (_this, cellRef, links) {
     }
     else if (cell.get('embeds') && cell.get('embeds').length) {
       // if (cell.attributes.attrs.wrappingResized){
-      //  common.CommonFunctions.updateObjectSize(cell);
+      //  common.CommonFunctions.updateSizeToFitEmbeded(cell);
       //  return;
       // }
-      common.CommonFunctions.updateObjectSize(cell);
+      common.CommonFunctions.updateSizeToFitEmbeded(cell);
     }
 
   });
