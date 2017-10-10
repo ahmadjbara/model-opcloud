@@ -1,6 +1,6 @@
 import {OpmThing} from './OpmThing';
 import {valueHandle} from '../../rappid-components/rappid-main/valueHandle';
-import {arrangeStates} from '../../config/arrangeStates';
+import {arrangeEmbedded} from '../../configuration/elementsFunctionality/arrangeStates';
 import {OpmState} from './OpmState';
 
 export class OpmObject extends OpmThing {
@@ -77,9 +77,9 @@ export class OpmObject extends OpmThing {
     defaultState.set({position: {x: xNewState, y: yNewState}});
     // Add the new state using the current states arrangement
     if (this.get('embeds').length < 2) {
-      arrangeStates(this, 'bottom');
+      arrangeEmbedded(this, 'bottom');
     } else {
-      arrangeStates(this, this.attr('statesArrange'));
+      arrangeEmbedded(this, this.attr('statesArrange'));
     }
   }
 }

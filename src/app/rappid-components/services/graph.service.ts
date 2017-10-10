@@ -4,6 +4,7 @@ import { ModelStorageInterface } from '../../services/storage/model-storage.inte
 import {TreeViewService} from "../../services/tree-view.service";
 import {linkDrawing} from '../../configuration/elementsFunctionality/linkDrawing';
 import {OpmProcess} from "../../models/DrawnPart/OpmProcess";
+import {OpmDefaultLink} from "../../models/DrawnPart/Links/OpmDefaultLink";
 const joint = require('rappid');
 const rootId="SD";
 const firebaseKeyEncode = require('firebase-key-encode');
@@ -158,7 +159,11 @@ export class GraphService {
 
     for (let k=0; k<clonedConnectedCells.length   ; k++){
       clonedConnectedCells[k].set('position', {x:x+(w+10)*k,y:y+100});
-      let link = new joint.shapes.opm.Link({source: {id:gCell.id}, target: {id:clonedConnectedCells[k].id}});
+      let link = new OpmDefaultLink ();
+      link.set({
+        source: {id: gCell.id},
+        target: {id: clonedConnectedCells[k].id},
+      });
       if (clonedConnectedCells[k] instanceof  OpmProcess) {
         link.attributes.name = 'Aggregation-Participation';
       }

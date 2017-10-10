@@ -1,7 +1,3 @@
-/**
- * Created by sameh14 on 4/26/2017.
- */
-import {basicDefinitions} from "./basicDefinitions";
 import * as common from "../common/commonFunctions";
 import {OpmProcess} from "../models/DrawnPart/OpmProcess";
 import {OpmState} from "../models/DrawnPart/OpmState";

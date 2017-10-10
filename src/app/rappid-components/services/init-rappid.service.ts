@@ -6,7 +6,7 @@ import { opmRuleSet } from '../../config/opm-validator';
 import { linkTypeSelection } from '../../configuration/elementsFunctionality/linkTypeSelection';
 import { CommandManagerService } from '../services/command-manager.service';
 import { textWrapping } from '../rappid-main/textWrapping';
-import { arrangeStates } from '../../config/arrangeStates';
+import { arrangeEmbedded } from '../../configuration/elementsFunctionality/arrangeStates';
 //treeview imports
 import { TreeViewService } from '../../services/tree-view.service';
 import { processInzooming, processUnfolding } from '../../config/process-inzooming';
@@ -494,7 +494,7 @@ export class InitRappidService {
               }
             });
             halo.on('action:arrange_up:pointerup', function () {
-              arrangeStates(this.options.cellView.model, 'top');
+              arrangeEmbedded(this.options.cellView.model, 'top');
             });
             halo.addHandle({
               name: 'arrange_down', position: 's', icon: null, attrs: {
@@ -507,7 +507,7 @@ export class InitRappidService {
               }
             });
             halo.on('action:arrange_down:pointerup', function () {
-              arrangeStates(this.options.cellView.model, 'bottom');
+              arrangeEmbedded(this.options.cellView.model, 'bottom');
             });
             halo.addHandle({
               name: 'arrange_right', position: 'w', icon: null, attrs: {
@@ -520,7 +520,7 @@ export class InitRappidService {
               }
             });
             halo.on('action:arrange_right:pointerup', function () {
-              arrangeStates(this.options.cellView.model, 'left');
+              arrangeEmbedded(this.options.cellView.model, 'left');
             });
             halo.addHandle({
               name: 'arrange_left', position: 'e', icon: null, attrs: {
@@ -533,7 +533,7 @@ export class InitRappidService {
               }
             });
             halo.on('action:arrange_left:pointerup', function () {
-              arrangeStates(this.options.cellView.model, 'right');
+              arrangeEmbedded(this.options.cellView.model, 'right');
             });
             halo.$handles.children('.arrange_up').toggleClass('hidden', !hasStates);
             halo.$handles.children('.arrange_down').toggleClass('hidden', !hasStates);
