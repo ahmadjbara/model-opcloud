@@ -28,18 +28,18 @@ export function arrangeStates(fatherObject, side) {
     });
 
     if((side === 'top') || (side === 'bottom')) {
-      var refY = (side === 'top') ? (maxHeight + 2 * common.paddingObject) : common.paddingObject;
-      fatherObject.arrangeEmbededParams(fatherObject, 0.5, refY, 'middle', 'up', side, 0, maxHeight+common.paddingObject);
+      var refY = (side === 'top') ? (maxHeight + 2 * fatherObject.get('padding')) : fatherObject.get('padding');
+      fatherObject.arrangeEmbededParams(0.5, refY, 'middle', 'up', side, 0, maxHeight+common.paddingObject);
       textWrapping.updateTextAndSize(fatherObject);
-      var marginY = (side === 'top') ? (fatherObject.getBBox().y + paddingObject) : (fatherObject.getBBox().y + fatherObject.getBBox().height - paddingObject - maxHeight);
+      var marginY = (side === 'top') ? (fatherObject.getBBox().y + paddingObject) : (fatherObject.getBBox().y + fatherObject.getBBox().height - fatherObject.get('padding') - maxHeight);
       updtaeGridLayout(embeddedStates.length, maxWidth + 5, maxHeight, fatherObject.getBBox().x + 0.5*(fatherObject.getBBox().width - (maxWidth + 5) * embeddedStates.length), marginY);
     }
     if((side === 'left') || (side === 'right')) {
-      var refX = (side === 'left') ? (maxWidth + 2 * common.paddingObject) : common.paddingObject;
-      fatherObject.arrangeEmbededParams(refX, 0.5, 'left', 'middle', side, maxWidth+common.paddingObject, 0);
+      var refX = (side === 'left') ? (maxWidth + 2 * common.paddingObject) : fatherObject.get('padding');
+      fatherObject.arrangeEmbededParams(refX, 0.5, 'left', 'middle', side, maxWidth + fatherObject.get('padding'), 0);
       textWrapping.updateTextAndSize(fatherObject);
-      var marginX = (side == 'left') ? (fatherObject.getBBox().x + paddingObject) : (fatherObject.getBBox().x + fatherObject.getBBox().width - paddingObject - maxWidth);
-      updtaeGridLayout(1, maxWidth, maxHeight + 5, marginX, fatherObject.getBBox().y + 0.5*(fatherObject.getBBox().height - (maxHeight + 5) * embeddedStates.length));
+      var marginX = (side == 'left') ? (fatherObject.getBBox().x + fatherObject.get('padding')) : (fatherObject.getBBox().x + fatherObject.getBBox().width - fatherObject.get('padding') - maxWidth);
+      updtaeGridLayout(1, maxWidth, maxHeight + 5, marginX, fatherObject.getBBox().y + 0.5 * (fatherObject.getBBox().height - (maxHeight + 5) * embeddedStates.length));
     }
   }
 

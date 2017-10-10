@@ -2,15 +2,11 @@ import { Injectable } from '@angular/core';
 import { GraphService } from '../services/graph.service';
 import { haloConfig } from '../../config/halo.config';
 import { toolbarConfig } from '../../config/toolbar.config';
-import { opmShapes } from '../../config/opm-shapes.config';
 import { opmRuleSet } from '../../config/opm-validator';
 import { linkTypeSelection } from '../../configuration/elementsFunctionality/linkTypeSelection';
-import { addState } from '../../config/add-state';
 import { CommandManagerService } from '../services/command-manager.service';
 import { textWrapping } from '../rappid-main/textWrapping';
-import { valueHandle } from '../rappid-main/valueHandle';
 import { arrangeStates } from '../../config/arrangeStates';
-import * as common from '../../common/commonFunctions';
 //treeview imports
 import { TreeViewService } from '../../services/tree-view.service';
 import { processInzooming, processUnfolding } from '../../config/process-inzooming';
@@ -485,7 +481,7 @@ export class InitRappidService {
               halo.$handles.children('.arrange_down').toggleClass('hidden', !hasStates);
               halo.$handles.children('.arrange_left').toggleClass('hidden', !hasStates);
               halo.$handles.children('.arrange_right').toggleClass('hidden', !hasStates);
-              addState(this.options.cellView.model);
+              this.options.cellView.model.addState();
             });
             halo.addHandle({
               name: 'arrange_up', position: 'n', icon: null, attrs: {

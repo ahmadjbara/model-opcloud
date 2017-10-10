@@ -1,11 +1,7 @@
 import {OpmThing} from './OpmThing';
-import {OpmLogicalElement} from "../LogicalPart/OpmLogicalElement";
-import {OpmVisualProcess} from "../VisualPart/OpmVisualProcess";
-import {OpmVisualState} from "../VisualPart/OpmVisualState";
-import {basicDefinitions} from "../../config/basicDefinitions";
-import * as common from '../../common/commonFunctions';
-import * as ConfigurationOptions from '../ConfigurationOptions';
-import {valueHandle} from "../../rappid-components/rappid-main/valueHandle";
+import {valueHandle} from '../../rappid-components/rappid-main/valueHandle';
+import {arrangeStates} from '../../config/arrangeStates';
+import {OpmState} from './OpmState';
 
 export class OpmObject extends OpmThing {
   constructor() {
@@ -21,9 +17,9 @@ export class OpmObject extends OpmThing {
 
   objectAttributes() {
     return {
-      markup: `<g class="rotatable"><g class="scalable"><rect/></g><text/></g>`,
+      markup: `<g class='rotatable'><g class='scalable'><rect/></g><text/></g>`,
       type: 'opm.Object',
-      padding: 15
+      padding: 10
     };
   }
   objectAttrs() {
@@ -67,6 +63,23 @@ export class OpmObject extends OpmThing {
         this.updateSizeToFitEmbeded();
         this.objectChangedSize = false;
       }
+    }
+  }
+  addState() {
+    this.objectChangedSize = false;
+    const defaultState = new OpmState();
+    this.embed(defaultState);     // makes the state stay in the bounds of the object
+    this.graph.addCells([this, defaultState]);
+    // Placing the new state. By default it is outside the object.
+    const xNewState = this.getBBox().center().x - defaultState.get('size').width / 2;
+    const yNewState = this.get('position').y + this.get('size').height - defaultState.get('size').height;
+    defaultState.set('father', defaultState.get('parent'));
+    defaultState.set({position: {x: xNewState, y: yNewState}});
+    // Add the new state using the current states arrangement
+    if (this.get('embeds').length < 2) {
+      arrangeStates(this, 'bottom');
+    } else {
+      arrangeStates(this, this.attr('statesArrange'));
     }
   }
 }
