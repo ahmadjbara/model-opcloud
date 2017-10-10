@@ -4,7 +4,7 @@ import { haloConfig } from '../../config/halo.config';
 import { toolbarConfig } from '../../config/toolbar.config';
 import { opmShapes } from '../../config/opm-shapes.config';
 import { opmRuleSet } from '../../config/opm-validator';
-import { linkTypeSelection } from '../../link-operating/linkTypeSelection';
+import { linkTypeSelection } from '../../configuration/elementsFunctionality/linkTypeSelection';
 import { addState } from '../../config/add-state';
 import { CommandManagerService } from '../services/command-manager.service';
 import { textWrapping } from '../rappid-main/textWrapping';

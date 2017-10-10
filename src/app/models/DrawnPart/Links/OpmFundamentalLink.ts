@@ -109,4 +109,9 @@ export class TriangleClass extends common.joint.shapes.devs.Model.extend({
       image: { 'xlink:href': '../../assets/OPM_Links/StructuralAgg.png', width: 30, height: 30},
     }
   }, common.joint.shapes.devs.Model.prototype.defaults)
-}) {}
+}) {
+  doubleClickHandle(cellView, evt, paper) {}
+  changeAttributesHandle() {}
+  changeSizeHandle() {}
+  changePositionHandle() {}
+}
