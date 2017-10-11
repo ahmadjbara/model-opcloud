@@ -30,6 +30,7 @@ export class OpmDefaultLink extends common.joint.shapes.devs.Link.extend(linkDef
     };
   }
   doubleClickHandle(cellView, evt, paper) {}
+  pointerUpHandle(paper) {}
   changeAttributesHandle() {}
   changeSizeHandle() {}
   changePositionHandle() {}

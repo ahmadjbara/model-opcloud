@@ -120,6 +120,7 @@ export class TriangleClass extends common.joint.shapes.devs.Model.extend({
   }, common.joint.shapes.devs.Model.prototype.defaults)
 }) {
   doubleClickHandle(cellView, evt, paper) {}
+  pointerUpHandle(paper) {}
   changeAttributesHandle() {}
   changeSizeHandle() {}
   changePositionHandle() {}

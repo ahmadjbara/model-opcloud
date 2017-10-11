@@ -64,4 +64,27 @@ export  class OpmThing extends OpmEntity {
       position: { x: leftSideX, y: topSideY },
       size: { width: rightSideX - leftSideX, height: bottomSideY - topSideY }});
   }
+  pointerUpHandle(paper) {
+    // When the dragged cell is dropped over another cell, let it become a child of the
+    // element below.
+    const cellViewsBelow = paper.findViewsFromPoint(this.getBBox().center());
+    const currentCellId = this.id;
+    if (cellViewsBelow.length) {
+    // Note that the findViewsFromPoint() returns the view for the `cell` itself.
+    const cellViewBelow = common._.find(cellViewsBelow, function (c) {
+      return c.model.id !== currentCellId;
+    });
+    // Prevent recursive embedding.
+    if (cellViewBelow && cellViewBelow.model.get('parent') !== currentCellId) {
+      cellViewBelow.model.embed(this);
+      /* Ahmad commented this line because it blocks the pointerdblclick event
+         for the subprocesses of in-zoomed process. It was replaced by
+         another line that roughly does the same functionality as toFront.
+      */
+      // cell.toFront();
+      this.set('z', cellViewBelow.model.attributes.z  + 1);
+      cellViewBelow.model.updateSizeToFitEmbeded();
+    }
+    }
+  }
 }

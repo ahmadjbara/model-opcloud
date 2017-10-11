@@ -70,9 +70,8 @@ export class InitRappidService {
     this.initializeKeyboardShortcuts();
     this.initializeTooltips();
     this.handleAddLink();
-    this.initializeTextEditing();
+    this.initializeEvents();
     this.initializeAttributesEvents();
-    this.handleRemoveElement();
     // This doesn't work (the event is not caught)
     this.linkHoverEvent();
 
@@ -170,30 +169,25 @@ export class InitRappidService {
    //   console.log('mouse leave link');
     });
   }
-
-  handleRemoveElement() {
-    const _this = this;
-    this.graph.on('remove', (cell) => {
-      cell.removeHandle(_this);
-    });
-  }
-
   // Check Changes. This function has been modified to update opl for each cell once graph is changed
   handleAddLink() {
-    this.graph.on('add', (cell) => {
-       if (cell instanceof OpmObject) {
-         this.opmModel.add(new OpmLogicalObject(cell.getParams(), this.opmModel));
-       } else if (cell instanceof OpmProcess) {
-         this.opmModel.add(new OpmLogicalProcess(cell.getParams(), this.opmModel));
-       } else if (cell instanceof OpmState) {
-         this.opmModel.add(new OpmLogicalState(cell.getParams(), this.opmModel));
-       } else if (cell instanceof OpmProceduralLink) {
-         this.opmModel.add(new OpmProceduralRelation(cell.getParams(), this.opmModel));
-       } else if (cell instanceof OpmTaggedLink) {
-         this.opmModel.add(new OpmTaggedRelation(cell.getParams(), this.opmModel));
-       } else if (cell instanceof OpmFundamentalLink) {
-         this.opmModel.add(new OpmFundamentalRelation(cell.getParams(), this.opmModel));
-       }
+    this.graph.on('add', (cell, collection, opt) => {
+      if (opt.stencil) {
+        this.cell$.next(cell);
+      }
+      if (cell instanceof OpmObject) {
+        this.opmModel.add(new OpmLogicalObject(cell.getParams(), this.opmModel));
+      } else if (cell instanceof OpmProcess) {
+        this.opmModel.add(new OpmLogicalProcess(cell.getParams(), this.opmModel));
+      } else if (cell instanceof OpmState) {
+        this.opmModel.add(new OpmLogicalState(cell.getParams(), this.opmModel));
+      } else if (cell instanceof OpmProceduralLink) {
+        this.opmModel.add(new OpmProceduralRelation(cell.getParams(), this.opmModel));
+      } else if (cell instanceof OpmTaggedLink) {
+        this.opmModel.add(new OpmTaggedRelation(cell.getParams(), this.opmModel));
+      } else if (cell instanceof OpmFundamentalLink) {
+        this.opmModel.add(new OpmFundamentalRelation(cell.getParams(), this.opmModel));
+      }
 
 
       if (cell.attributes.type === 'opm.Link') {
@@ -226,14 +220,7 @@ export class InitRappidService {
     });
   }
 
-
   initializePaper() {
-    this.graph.on('add', (cell, collection, opt) => {
-
-      if (opt.stencil) {
-        this.cell$.next(cell);
-      }
-    });
     const paper = this.paper = new joint.dia.Paper({
       linkConnectionPoint: joint.util.shapePerimeterConnectionPoint,
       width: 1000,
@@ -245,34 +232,6 @@ export class InitRappidService {
       multiLinks: false,
       selectionCollection: null
     });
-    paper.on('blank:mousewheel', _.partial(this.onMousewheel, null), this);
-    paper.on('cell:mousewheel', this.onMousewheel, this);
-    // When the dragged cell is dropped over another cell, let it become a child of the
-    // element below.
-    paper.on('cell:pointerup', function (cellView, evt, x, y) {
-      const cell = cellView.model;
-      if (cell.attributes.type == 'opm.Process' || cell.attributes.type == 'opm.Object') {
-        const cellViewsBelow = paper.findViewsFromPoint(cell.getBBox().center());
-        if (cellViewsBelow.length) {
-          // Note that the findViewsFromPoint() returns the view for the `cell` itself.
-          const cellViewBelow = _.find(cellViewsBelow, function (c) {
-            return c.model.id !== cell.id;
-          });
-          // Prevent recursive embedding.
-          if (cellViewBelow && cellViewBelow.model.get('parent') !== cell.id) {
-            cellViewBelow.model.embed(cell);
-            /* Ahmad commented this line because it blocks the pointerdblclick event
-               for the subprocesses of in-zoomed process. It was replaced by
-               another line that roughly does the same functionality as toFront.
-            */
-            // cell.toFront();
-            cell.set('z', cellViewBelow.model.attributes.z  + 1);
-            cellViewBelow.model.updateSizeToFitEmbeded();
-          }
-        }
-      }
-    });
-
     const paperScroller = this.paperScroller = new joint.ui.PaperScroller({
       paper: paper,
       autoResizePaper: true,
@@ -392,15 +351,20 @@ export class InitRappidService {
     this.selection.removeHandle('rotate');
   }
 
-  initializeTextEditing() {
+  initializeEvents() {
+    const _this = this;
     this.paper.on('cell:pointerdblclick', function (cellView, evt) {
       cellView.model.doubleClickHandle(cellView, evt, this.paper); }, this);
+    this.paper.on('cell:pointerup', function (cellView) {
+      cellView.model.pointerUpHandle(this.paper); }, this);
     this.graph.on('change:attrs', function (cell) {
       cell.changeAttributesHandle(); }, this);
     this.graph.on('change:size', _.bind(function (cell) {
       cell.changeSizeHandle(); }, this));
     this.graph.on('change:position', _.bind(function (cell) {
       cell.changePositionHandle(); }, this));
+    this.graph.on('remove', (cell) => {
+      cell.removeHandle(_this); });
   }
 
   initializeAttributesEvents() {

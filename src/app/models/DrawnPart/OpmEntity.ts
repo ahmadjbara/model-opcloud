@@ -62,6 +62,7 @@ export class OpmEntity extends common.joint.dia.Element.extend(entityDefinition)
       common.joint.ui.TextEditor.close();
     }, this);
   }
+  pointerUpHandle(paper) {}
   changeAttributesHandle() {
     if ((this.attr('text/text') !== this.lastEnteredText) &&
         !this.attr('wrappingResized')) {  // if the text was changed
