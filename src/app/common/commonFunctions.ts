@@ -1,4 +1,4 @@
-import { opmStyle } from '../config/opmStyle';
+import { opmStyle } from '../configuration/rappidEnviromentFunctionality/opmStyle';
 export const _ = require('lodash');
 export const paddingObject = 10;
 export const joint = require('rappid');

@@ -1,6 +1,6 @@
 import * as common from '../../common/commonFunctions';
 import {gridLayout} from '../../config/gridLayout';
-import {textWrapping} from '../../rappid-components/rappid-main/textWrapping';
+import {textWrapping} from './textWrapping';
 const joint = require('rappid');
 
 export function arrangeEmbedded(fatherObject, side) {
@@ -24,7 +24,7 @@ export function arrangeEmbedded(fatherObject, side) {
     if ((side === 'top') || (side === 'bottom')) {
       const refY = (side === 'top') ? (maxHeight + 2 * fatherObject.get('padding')) : fatherObject.get('padding');
       fatherObject.arrangeEmbededParams(0.5, refY, 'middle', 'up', side, 0, maxHeight + fatherObject.get('padding')/2);
-      textWrapping.updateTextAndSize(fatherObject);
+      fatherObject.updateTextAndSize();
       const marginY = (side === 'top') ? (fatherObject.getBBox().y + fatherObject.get('padding')) : (fatherObject.getBBox().y + fatherObject.getBBox().height - fatherObject.get('padding') - maxHeight);
       gridLayout.layout(embeddedStates, {
         columns: embeddedStates.length,
@@ -38,7 +38,7 @@ export function arrangeEmbedded(fatherObject, side) {
     if ((side === 'left') || (side === 'right')) {
       const refX = (side === 'left') ? (maxWidth + 2 * fatherObject.get('padding')) : fatherObject.get('padding');
       fatherObject.arrangeEmbededParams(refX, 0.5, 'left', 'middle', side, maxWidth + fatherObject.get('padding'), 0);
-      textWrapping.updateTextAndSize(fatherObject);
+      fatherObject.updateTextAndSize();
       const marginX = (side === 'left') ? (fatherObject.getBBox().x + fatherObject.get('padding')) : (fatherObject.getBBox().x + fatherObject.getBBox().width - fatherObject.get('padding') - maxWidth);
       gridLayout.layout(embeddedStates, {
         columns: 1,

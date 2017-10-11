@@ -92,11 +92,11 @@ export const textWrapping = {
     return newStr;
   },
 
-  refactorText(cell, width){
-    var textString = this.wrapText(cell, width);
-    //wrapText remove spaces from the end
-    var lastChar = cell.attr('text/text').charAt(cell.attr('text/text').length - 1);
-    textString = ((lastChar == ' ') || (lastChar == '\u00A0')) ? (textString + ' ') : textString;
+  refactorText(cell, width) {
+    let textString = this.wrapText(cell, width);
+    // wrapText remove spaces from the end
+    const lastChar = cell.attr('text/text').charAt(cell.attr('text/text').length - 1);
+    textString = ((lastChar === ' ') || (lastChar === '\u00A0')) ? (textString + ' ') : textString;
     textString = this.unitsNewLine(textString);
     return textString;
   },
@@ -127,11 +127,5 @@ export const textWrapping = {
     result.height = cell.get('size').height * addition;
     result.text = textString;
     return result;
-  },
-
-  updateTextAndSize(cell){
-    var newParams = this.calculateNewTextSize(cell.attr('text/text'), cell);
-    cell.attr({text: {text: newParams.text}});
-    cell.resize(newParams.width, newParams.height);
   }
 };

@@ -33,4 +33,7 @@ export class OpmProcess extends OpmThing {
     };
     return {...super.getThingParams(), ...params};
   }
+  removeHandle(options) {
+    options.treeViewService.removeNode(this.id);
+  }
 }

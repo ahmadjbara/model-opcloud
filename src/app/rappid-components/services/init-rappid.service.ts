@@ -1,11 +1,11 @@
 import { Injectable } from '@angular/core';
 import { GraphService } from '../services/graph.service';
-import { haloConfig } from '../../config/halo.config';
+import { haloConfig } from '../../configuration/rappidEnviromentFunctionality/halo.config';
 import { toolbarConfig } from '../../config/toolbar.config';
 import { opmRuleSet } from '../../config/opm-validator';
 import { linkTypeSelection } from '../../configuration/elementsFunctionality/linkTypeSelection';
 import { CommandManagerService } from '../services/command-manager.service';
-import { textWrapping } from '../rappid-main/textWrapping';
+import { textWrapping } from '../../configuration/elementsFunctionality/textWrapping';
 import { arrangeEmbedded } from '../../configuration/elementsFunctionality/arrangeStates';
 //treeview imports
 import { TreeViewService } from '../../services/tree-view.service';
@@ -66,7 +66,7 @@ export class InitRappidService {
     this.initializeHaloAndInspector();
     this.initializeValidator();
     this.initializeNavigator();
-    this.initializeToolbar();
+  //  this.initializeToolbar();
     this.initializeKeyboardShortcuts();
     this.initializeTooltips();
     this.handleAddLink();
@@ -174,29 +174,7 @@ export class InitRappidService {
   handleRemoveElement() {
     const _this = this;
     this.graph.on('remove', (cell) => {
-      if (cell.attributes.type === 'opm.Process') {
-        _this.treeViewService.removeNode(cell.id);
-      }
-      if ((cell.attributes.type === 'opm.Link') && cell.get('target').id && cell.get('source').id) {
-        if (_this.graph.getCell(cell.get('target').id).attributes.type === 'opm.TriangleAgg')
-          _this.graph.getCell(cell.get('target').id).remove();
-        if (_this.graph.getCell(cell.get('source').id).attributes.type === 'opm.TriangleAgg') {
-          const triangle = _this.graph.getCell(cell.get('source').id);
-          const numberOfTargets = triangle.get('numberOfTargets');
-          if (numberOfTargets > 1) {
-            triangle.set('numberOfTargets', (numberOfTargets - 1));
-          }
-          else
-            triangle.remove();
-        }
-      }
-      if (cell.attributes.type === 'opm.State') {
-        const fatherObject = _this.graph.getCell(cell.get('father'));
-        if (fatherObject.get('embeds').length === 0) {
-          fatherObject.arrangeEmbededParams(0.5, 0.5, 'middle', 'middle', 'bottom', 0, 0);
-          textWrapping.updateTextAndSize(fatherObject);
-        }
-      }
+      cell.removeHandle(_this);
     });
   }
 

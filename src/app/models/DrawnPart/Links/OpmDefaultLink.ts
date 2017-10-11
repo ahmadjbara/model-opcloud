@@ -33,4 +33,5 @@ export class OpmDefaultLink extends common.joint.shapes.devs.Link.extend(linkDef
   changeAttributesHandle() {}
   changeSizeHandle() {}
   changePositionHandle() {}
+  removeHandle(options) {}
 }

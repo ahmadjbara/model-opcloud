@@ -1,5 +1,5 @@
 import {OpmThing} from './OpmThing';
-import {valueHandle} from '../../rappid-components/rappid-main/valueHandle';
+import {valueHandle} from '../../configuration/elementsFunctionality/valueHandle';
 import {arrangeEmbedded} from '../../configuration/elementsFunctionality/arrangeStates';
 import {OpmState} from './OpmState';
 

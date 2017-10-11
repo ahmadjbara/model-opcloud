@@ -2,7 +2,7 @@ import * as common from '../../common/commonFunctions';
 
 export const valueHandle = {
 
-    // When a value of an object is updated, if a state exists - its value will be updates, otherwise - a new state will be added with the new value
+    //  When a value of an object is updated, if a state exists - its value will be updates, otherwise - a new state will be added with the new value
     updateState(cell, value) {
         cell.set('previousValue', value);
         var statesNumber = 0;   //currently only one value for object is allowed

@@ -1,5 +1,5 @@
 import { Component, AfterViewInit, ViewContainerRef, ViewChild, Input, OnInit } from '@angular/core';
-import { stencilConfig } from '../../config/stencil.config';
+import { stencilConfig } from '../../configuration/rappidEnviromentFunctionality/stencil.config';
 
 
 const joint = require('rappid');

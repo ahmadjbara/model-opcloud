@@ -48,4 +48,11 @@ export  class OpmState extends OpmEntity {
     const parent = this.graph.getCell(parentId);
     parent.updateSizeToFitEmbeded();
   }
+  removeHandle(options) {
+    const fatherObject = options.graph.getCell(this.get('father'));
+    if (fatherObject.get('embeds').length === 0) {
+      fatherObject.arrangeEmbededParams(0.5, 0.5, 'middle', 'middle', 'bottom', 0, 0);
+      fatherObject.updateTextAndSize();
+    }
+  }
 }

@@ -1,5 +1,5 @@
 import * as common from '../../common/commonFunctions';
-import {textWrapping} from "../../rappid-components/rappid-main/textWrapping";
+import {textWrapping} from "../../configuration/elementsFunctionality/textWrapping";
 import {OpmProceduralLink} from "./Links/OpmProceduralLink";
 
 const entityText = {
@@ -97,4 +97,10 @@ export class OpmEntity extends common.joint.dia.Element.extend(entityDefinition)
       }
     });
   }
+  updateTextAndSize() {
+    const newParams = textWrapping.calculateNewTextSize(this.attr('text/text'), this);
+    this.attr({text: {text: newParams.text}});
+    this.resize(newParams.width, newParams.height);
+  }
+  removeHandle(options) {}
 }

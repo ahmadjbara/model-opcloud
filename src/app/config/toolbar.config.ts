@@ -1,3 +1,4 @@
+// NATALI: Currently not used in our code
 export const toolbarConfig = {
   groups: {
     'undo-redo': { index: 1 },

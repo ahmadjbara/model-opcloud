@@ -12,7 +12,6 @@ export  class OpmFundamentalLink extends OpmStructuralLink {
     super();
     this.sourceElement = sourceElement;
     this.targetElement = targetElement;
-    let triangle: any;
     // Get all outgoing links from the source element
     const outboundLinks = graph.getConnectedLinks(this.sourceElement, { outbound: true });
     for (const pt in outboundLinks) {
@@ -66,6 +65,16 @@ export  class OpmFundamentalLink extends OpmStructuralLink {
     };
     return {...super.getStructuralLinkParams(), ...params};
   }
+  removeHandle(options) {
+    super.removeHandle(options);
+    const triangle = options.graph.getCell(this.get('source').id);
+    const numberOfTargets = triangle.get('numberOfTargets');
+    if (numberOfTargets > 1) {
+      triangle.set('numberOfTargets', (numberOfTargets - 1));
+    } else {
+      triangle.remove();
+    }
+  }
 }
 
 export class TriangleClass extends common.joint.shapes.devs.Model.extend({
@@ -114,4 +123,5 @@ export class TriangleClass extends common.joint.shapes.devs.Model.extend({
   changeAttributesHandle() {}
   changeSizeHandle() {}
   changePositionHandle() {}
+  removeHandle(options) {}
 }
