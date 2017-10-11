@@ -66,7 +66,6 @@ export class InitRappidService {
     this.initializeHaloAndInspector();
     this.initializeValidator();
     this.initializeNavigator();
-  //  this.initializeToolbar();
     this.initializeKeyboardShortcuts();
     this.initializeTooltips();
     this.handleAddLink();
@@ -221,7 +220,7 @@ export class InitRappidService {
   }
 
   initializePaper() {
-    const paper = this.paper = new joint.dia.Paper({
+    this.paper = new joint.dia.Paper({
       linkConnectionPoint: joint.util.shapePerimeterConnectionPoint,
       width: 1000,
       height: 1000,
@@ -232,15 +231,12 @@ export class InitRappidService {
       multiLinks: false,
       selectionCollection: null
     });
-    const paperScroller = this.paperScroller = new joint.ui.PaperScroller({
-      paper: paper,
+    this.paperScroller = new joint.ui.PaperScroller({
+      paper: this.paper,
       autoResizePaper: true,
       cursor: 'grab'
     });
-
-    /// $('.paper-container').append(paperScroller.el);
-    paperScroller.render().center();
-
+    this.paperScroller.render().center();
   }
 
   initializeKeyboardShortcuts() {
@@ -356,7 +352,7 @@ export class InitRappidService {
     this.paper.on('cell:pointerdblclick', function (cellView, evt) {
       cellView.model.doubleClickHandle(cellView, evt, this.paper); }, this);
     this.paper.on('cell:pointerup', function (cellView) {
-      cellView.model.pointerUpHandle(this.paper); }, this);
+      cellView.model.pointerUpHandle(cellView); }, this);
     this.graph.on('change:attrs', function (cell) {
       cell.changeAttributesHandle(); }, this);
     this.graph.on('change:size', _.bind(function (cell) {
@@ -390,98 +386,11 @@ export class InitRappidService {
       if (!this.selection.collection.contains(cell)) {
 
         if (cell.isElement()) {
-
-          new joint.ui.FreeTransform({
-            cellView: cellView,
-            allowRotation: false,
-            preserveAspectRatio: false,
-            allowOrthogonalResize: true,
-          }).render();
-
           const halo = new joint.ui.Halo({
             cellView: cellView,
             type: 'surrounding',
             handles: haloConfig.handles
           }).render();
-
-          if (cell.attributes.type === 'opm.Object') {
-            let hasStates = cell.getEmbeddedCells().length;
-            halo.addHandle({
-              name: 'add_state', position: 'sw', icon: null, attrs: {
-                '.handle': {
-                  'data-tooltip-class-name': 'small',
-                  'data-tooltip': 'Click to add state to the object',
-                  'data-tooltip-position': 'right',
-                  'data-tooltip-padding': 15
-                }
-              }
-            });
-            halo.on('action:add_state:pointerup', function () {
-          //    console.log("add_state");
-              hasStates = true;
-              halo.$handles.children('.arrange_up').toggleClass('hidden', !hasStates);
-              halo.$handles.children('.arrange_down').toggleClass('hidden', !hasStates);
-              halo.$handles.children('.arrange_left').toggleClass('hidden', !hasStates);
-              halo.$handles.children('.arrange_right').toggleClass('hidden', !hasStates);
-              this.options.cellView.model.addState();
-            });
-            halo.addHandle({
-              name: 'arrange_up', position: 'n', icon: null, attrs: {
-                '.handle': {
-                  'data-tooltip-class-name': 'small',
-                  'data-tooltip': 'Arrange the states at the top inside the object',
-                  'data-tooltip-position': 'top',
-                  'data-tooltip-padding': 15
-                }
-              }
-            });
-            halo.on('action:arrange_up:pointerup', function () {
-              arrangeEmbedded(this.options.cellView.model, 'top');
-            });
-            halo.addHandle({
-              name: 'arrange_down', position: 's', icon: null, attrs: {
-                '.handle': {
-                  'data-tooltip-class-name': 'small',
-                  'data-tooltip': 'Arrange the states at the bottom inside the object',
-                  'data-tooltip-position': 'bottom',
-                  'data-tooltip-padding': 15
-                }
-              }
-            });
-            halo.on('action:arrange_down:pointerup', function () {
-              arrangeEmbedded(this.options.cellView.model, 'bottom');
-            });
-            halo.addHandle({
-              name: 'arrange_right', position: 'w', icon: null, attrs: {
-                '.handle': {
-                  'data-tooltip-class-name': 'small',
-                  'data-tooltip': 'Arrange the states to the left inside the object',
-                  'data-tooltip-position': 'left',
-                  'data-tooltip-padding': 15
-                }
-              }
-            });
-            halo.on('action:arrange_right:pointerup', function () {
-              arrangeEmbedded(this.options.cellView.model, 'left');
-            });
-            halo.addHandle({
-              name: 'arrange_left', position: 'e', icon: null, attrs: {
-                '.handle': {
-                  'data-tooltip-class-name': 'small',
-                  'data-tooltip': 'Arrange the states to the right inside the object',
-                  'data-tooltip-position': 'right',
-                  'data-tooltip-padding': 15
-                }
-              }
-            });
-            halo.on('action:arrange_left:pointerup', function () {
-              arrangeEmbedded(this.options.cellView.model, 'right');
-            });
-            halo.$handles.children('.arrange_up').toggleClass('hidden', !hasStates);
-            halo.$handles.children('.arrange_down').toggleClass('hidden', !hasStates);
-            halo.$handles.children('.arrange_left').toggleClass('hidden', !hasStates);
-            halo.$handles.children('.arrange_right').toggleClass('hidden', !hasStates);
-          }
           if (cell.attributes.type === 'opm.Process') {
             halo.addHandle({
               name: 'manage_complexity', position: 'sw', icon: null, attrs: {
@@ -564,53 +473,19 @@ export class InitRappidService {
   }
 
   initializeValidator() {
-
     this.validator = new joint.dia.Validator({ commandManager: this.commandManager });
     this.RuleSet = opmRuleSet;
     this.RuleSet(this.validator, this.graph);
   }
-
   initializeNavigator() {
-
     const navigator = this.navigator = new joint.ui.Navigator({
       width: 240,
       height: 115,
       paperScroller: this.paperScroller,
       zoom: false
     });
-
-    // $('.navigator-container').append(navigator.el);
-    // navigator.render();
   }
-
-
-  initializeToolbar() {
-
-    const toolbar = this.toolbar = new joint.ui.Toolbar({
-      groups: toolbarConfig.groups,
-      tools: toolbarConfig.tools,
-      references: {
-        paperScroller: this.paperScroller,
-        commandManager: this.commandManager
-      }
-    });
-
-    toolbar.on({
-      'svg:pointerclick': _.bind(this.openAsSVG, this),
-      'png:pointerclick': _.bind(this.openAsPNG, this),
-      'fullscreen:pointerclick': _.bind(joint.util.toggleFullScreen, joint.util, document.body),
-      'to-front:pointerclick': _.bind(this.selection.collection.invoke, this.selection.collection, 'toFront'),
-      'to-back:pointerclick': _.bind(this.selection.collection.invoke, this.selection.collection, 'toBack'),
-      'layout:pointerclick': _.bind(this.layoutDirectedGraph, this),
-      // 'snapline:change': _.bind(this.changeSnapLines, this),
-      'clear:pointerclick': _.bind(this.graph.clear, this.graph),
-      'print:pointerclick': _.bind(this.paper.print, this.paper),
-      'grid-size:change': _.bind(this.paper.setGridSize, this.paper)
-    });
-  }
-
   initializeTooltips() {
-
     new joint.ui.Tooltip({
       rootTarget: document.body,
       target: '[data-tooltip]',
@@ -618,47 +493,4 @@ export class InitRappidService {
       padding: 10
     });
   }
-
-  openAsSVG() {
-
-    this.paper.toSVG(function (svg) {
-      new joint.ui.Lightbox({
-        title: '(Right-click, and use "Save As" to save the diagram in SVG format)',
-        image: 'data:image/svg+xml,' + encodeURIComponent(svg)
-      }).open();
-    }, { preserveDimensions: true, convertImagesToDataUris: true });
-  }
-
-
-  openAsPNG() {
-
-    this.paper.toPNG(function (dataURL) {
-      new joint.ui.Lightbox({
-        title: '(Right-click, and use "Save As" to save the diagram in PNG format)',
-        image: dataURL
-      }).open();
-    }, { padding: 10 });
-  }
-
-
-  onMousewheel(cellView, evt, x, y, delta) {
-
-    if (this.keyboard.isActive('alt', evt)) {
-      this.paperScroller.zoom(delta / 10, { min: 0.2, max: 5, ox: x, oy: y });
-    }
-  }
-
-
-  layoutDirectedGraph() {
-
-    joint.layout.DirectedGraph.layout(this.graph, {
-      setLinkVertices: true,
-      rankDir: 'TB',
-      marginX: 100,
-      marginY: 100
-    });
-
-    this.paperScroller.centerContent();
-  }
-
 }

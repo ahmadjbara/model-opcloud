@@ -2,6 +2,8 @@ import {OpmThing} from './OpmThing';
 import {valueHandle} from '../../configuration/elementsFunctionality/valueHandle';
 import {arrangeEmbedded} from '../../configuration/elementsFunctionality/arrangeStates';
 import {OpmState} from './OpmState';
+import {haloConfig} from "../../configuration/rappidEnviromentFunctionality/halo.config";
+import * as common from '../../common/commonFunctions';
 
 export class OpmObject extends OpmThing {
   constructor() {
@@ -29,7 +31,6 @@ export class OpmObject extends OpmThing {
       'text' : {text: 'Object'}
     };
   }
-
   getParams() {
     const params = {
       fill: this.attr('rect/fill'),
@@ -41,6 +42,61 @@ export class OpmObject extends OpmThing {
       units: this.attr('value/units')
     };
     return {...super.getThingParams(), ...params};
+  }
+  addState() {
+    this.objectChangedSize = false;
+    const defaultState = new OpmState();
+    this.embed(defaultState);     // makes the state stay in the bounds of the object
+    this.graph.addCells([this, defaultState]);
+    // Placing the new state. By default it is outside the object.
+    const xNewState = this.getBBox().center().x - defaultState.get('size').width / 2;
+    const yNewState = this.get('position').y + this.get('size').height - defaultState.get('size').height;
+    defaultState.set('father', defaultState.get('parent'));
+    defaultState.set({position: {x: xNewState, y: yNewState}});
+    // Add the new state using the current states arrangement
+    if (this.get('embeds').length < 2) {
+      arrangeEmbedded(this, 'bottom');
+    } else {
+      arrangeEmbedded(this, this.attr('statesArrange'));
+    }
+  }
+  pointerUpHandle(cellView) {
+    super.pointerUpHandle(cellView);
+    const halo = new common.joint.ui.Halo({
+      cellView: cellView,
+      type: 'surrounding',
+      handles: haloConfig.handles
+    }).render();
+    let hasStates = this.getEmbeddedCells().length;
+    halo.addHandle(this.addHandleGenerator('add_state', 'sw', 'Click to add state to the object', 'right'));
+    halo.on('action:add_state:pointerup', function () {
+      hasStates = true;
+      halo.$handles.children('.arrange_up').toggleClass('hidden', !hasStates);
+      halo.$handles.children('.arrange_down').toggleClass('hidden', !hasStates);
+      halo.$handles.children('.arrange_left').toggleClass('hidden', !hasStates);
+      halo.$handles.children('.arrange_right').toggleClass('hidden', !hasStates);
+      cellView.model.addState();
+    });
+    halo.addHandle(this.addHandleGenerator('arrange_up', 'n', 'Arrange the states at the top inside the object', 'top'));
+    halo.on('action:arrange_up:pointerup', function () {
+      arrangeEmbedded(this.options.cellView.model, 'top');
+    });
+    halo.addHandle(this.addHandleGenerator('arrange_down', 's', 'Arrange the states at the bottom inside the object', 'bottom'));
+    halo.on('action:arrange_down:pointerup', function () {
+      arrangeEmbedded(this.options.cellView.model, 'bottom');
+    });
+    halo.addHandle(this.addHandleGenerator('arrange_right', 'w', 'Arrange the states to the left inside the object', 'left'));
+    halo.on('action:arrange_right:pointerup', function () {
+      arrangeEmbedded(this.options.cellView.model, 'left');
+    });
+    halo.addHandle(this.addHandleGenerator('arrange_left', 'e', 'Arrange the states to the right inside the object', 'right'));
+    halo.on('action:arrange_left:pointerup', function () {
+      arrangeEmbedded(this.options.cellView.model, 'right');
+    });
+    halo.$handles.children('.arrange_up').toggleClass('hidden', !hasStates);
+    halo.$handles.children('.arrange_down').toggleClass('hidden', !hasStates);
+    halo.$handles.children('.arrange_left').toggleClass('hidden', !hasStates);
+    halo.$handles.children('.arrange_right').toggleClass('hidden', !hasStates);
   }
   changeAttributesHandle() {
     super.changeAttributesHandle();
@@ -63,23 +119,6 @@ export class OpmObject extends OpmThing {
         this.updateSizeToFitEmbeded();
         this.objectChangedSize = false;
       }
-    }
-  }
-  addState() {
-    this.objectChangedSize = false;
-    const defaultState = new OpmState();
-    this.embed(defaultState);     // makes the state stay in the bounds of the object
-    this.graph.addCells([this, defaultState]);
-    // Placing the new state. By default it is outside the object.
-    const xNewState = this.getBBox().center().x - defaultState.get('size').width / 2;
-    const yNewState = this.get('position').y + this.get('size').height - defaultState.get('size').height;
-    defaultState.set('father', defaultState.get('parent'));
-    defaultState.set({position: {x: xNewState, y: yNewState}});
-    // Add the new state using the current states arrangement
-    if (this.get('embeds').length < 2) {
-      arrangeEmbedded(this, 'bottom');
-    } else {
-      arrangeEmbedded(this, this.attr('statesArrange'));
     }
   }
 }

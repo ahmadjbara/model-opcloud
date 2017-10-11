@@ -64,7 +64,9 @@ export  class OpmThing extends OpmEntity {
       position: { x: leftSideX, y: topSideY },
       size: { width: rightSideX - leftSideX, height: bottomSideY - topSideY }});
   }
-  pointerUpHandle(paper) {
+  pointerUpHandle(cellView) {
+    super.pointerUpHandle(cellView);
+    const paper = cellView.paper;
     // When the dragged cell is dropped over another cell, let it become a child of the
     // element below.
     const cellViewsBelow = paper.findViewsFromPoint(this.getBBox().center());

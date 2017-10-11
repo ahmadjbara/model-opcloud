@@ -45,6 +45,18 @@ export class OpmEntity extends common.joint.dia.Element.extend(entityDefinition)
       id: this.get('id')
     };
   }
+  addHandleGenerator(handleName, handlePosition, handleTooltip, handleTooltipPosition) {
+    return {
+      name: handleName, position: handlePosition, icon: null, attrs: {
+        '.handle': {
+          'data-tooltip-class-name': 'small',
+          'data-tooltip': handleTooltip,
+          'data-tooltip-position': handleTooltipPosition,
+          'data-tooltip-padding': 15
+        }
+      }
+    };
+  }
   doubleClickHandle(cellView, evt, paper) {
     common.joint.ui.TextEditor.edit(evt.target, {
       cellView: cellView,
@@ -62,7 +74,14 @@ export class OpmEntity extends common.joint.dia.Element.extend(entityDefinition)
       common.joint.ui.TextEditor.close();
     }, this);
   }
-  pointerUpHandle(paper) {}
+  pointerUpHandle(cellView) {
+    new common.joint.ui.FreeTransform({
+      cellView: cellView,
+      allowRotation: false,
+      preserveAspectRatio: false,
+      allowOrthogonalResize: true,
+    }).render();
+  }
   changeAttributesHandle() {
     if ((this.attr('text/text') !== this.lastEnteredText) &&
         !this.attr('wrappingResized')) {  // if the text was changed
