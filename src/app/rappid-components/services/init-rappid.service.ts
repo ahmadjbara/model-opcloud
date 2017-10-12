@@ -1,16 +1,12 @@
 import { Injectable } from '@angular/core';
 import { GraphService } from '../services/graph.service';
-import { haloConfig } from '../../config/halo.config';
+import { haloConfig } from '../../configuration/rappidEnviromentFunctionality/halo.config';
 import { toolbarConfig } from '../../config/toolbar.config';
-import { opmShapes } from '../../config/opm-shapes.config';
 import { opmRuleSet } from '../../config/opm-validator';
-import { linkTypeSelection } from '../../link-operating/linkTypeSelection';
-import { addState } from '../../config/add-state';
+import { linkTypeSelection } from '../../configuration/elementsFunctionality/linkTypeSelection';
 import { CommandManagerService } from '../services/command-manager.service';
-import { textWrapping } from '../rappid-main/textWrapping';
-import { valueHandle } from '../rappid-main/valueHandle';
-import { arrangeStates } from '../../config/arrangeStates';
-import * as common from '../../common/commonFunctions';
+import { textWrapping } from '../../configuration/elementsFunctionality/textWrapping';
+import { arrangeEmbedded } from '../../configuration/elementsFunctionality/arrangeStates';
 //treeview imports
 import { TreeViewService } from '../../services/tree-view.service';
 import { processInzooming, processUnfolding } from '../../config/process-inzooming';
@@ -68,16 +64,13 @@ export class InitRappidService {
     this.initializePaper();
     this.initializeSelection();
     this.initializeHaloAndInspector();
-    this.initializeHaloAndInspector();
     this.initializeValidator();
     this.initializeNavigator();
-    this.initializeToolbar();
     this.initializeKeyboardShortcuts();
     this.initializeTooltips();
     this.handleAddLink();
-    this.initializeTextEditing();
+    this.initializeEvents();
     this.initializeAttributesEvents();
-    this.handleRemoveElement();
     // This doesn't work (the event is not caught)
     this.linkHoverEvent();
 
@@ -175,56 +168,25 @@ export class InitRappidService {
    //   console.log('mouse leave link');
     });
   }
-
-  handleRemoveElement() {
-    const _this = this;
-    this.graph.on('remove', (cell) => {
-      if (cell.attributes.type === 'opm.Process') {
-        _this.treeViewService.removeNode(cell.id);
-      }
-      if ((cell.attributes.type === 'opm.Link') && cell.get('target').id && cell.get('source').id) {
-        if (_this.graph.getCell(cell.get('target').id).attributes.type === 'opm.TriangleAgg')
-          _this.graph.getCell(cell.get('target').id).remove();
-        if (_this.graph.getCell(cell.get('source').id).attributes.type === 'opm.TriangleAgg') {
-          const triangle = _this.graph.getCell(cell.get('source').id);
-          const numberOfTargets = triangle.get('numberOfTargets');
-          if (numberOfTargets > 1) {
-            triangle.set('numberOfTargets', (numberOfTargets - 1));
-          }
-          else
-            triangle.remove();
-        }
-      }
-      if (cell.attributes.type === 'opm.State') {
-        const fatherObject = _this.graph.getCell(cell.get('father'));
-        if (fatherObject.get('embeds').length == 0) {
-          common.CommonFunctions.arrangeStatesParams(fatherObject, 0.5, 0.5, 'middle', 'middle', 'bottom', 0, 0);
-          textWrapping.updateTextAndSize(fatherObject);
-        }
-      }
-    });
-  }
-
   // Check Changes. This function has been modified to update opl for each cell once graph is changed
   handleAddLink() {
-    let _thisObj=this;
-
-  //  this.graph.on('all', (x)=>{console.log(x);})
-    this.graph.on('add', (cell) => {
-   //   console.log(cell);
-           if (cell instanceof OpmObject) {
-             this.opmModel.add(new OpmLogicalObject(cell.getParams(), this.opmModel));
-           } else if (cell instanceof OpmProcess) {
-             this.opmModel.add(new OpmLogicalProcess(cell.getParams(), this.opmModel));
-           } else if (cell instanceof OpmState) {
-             this.opmModel.add(new OpmLogicalState(cell.getParams(), this.opmModel));
-           } else if (cell instanceof OpmProceduralLink) {
-             this.opmModel.add(new OpmProceduralRelation(cell.getParams(), this.opmModel));
-           } else if (cell instanceof OpmTaggedLink) {
-             this.opmModel.add(new OpmTaggedRelation(cell.getParams(), this.opmModel));
-           } else if (cell instanceof OpmFundamentalLink) {
-             this.opmModel.add(new OpmFundamentalRelation(cell.getParams(), this.opmModel));
-           }
+    this.graph.on('add', (cell, collection, opt) => {
+      if (opt.stencil) {
+        this.cell$.next(cell);
+      }
+      if (cell instanceof OpmObject) {
+        this.opmModel.add(new OpmLogicalObject(cell.getParams(), this.opmModel));
+      } else if (cell instanceof OpmProcess) {
+        this.opmModel.add(new OpmLogicalProcess(cell.getParams(), this.opmModel));
+      } else if (cell instanceof OpmState) {
+        this.opmModel.add(new OpmLogicalState(cell.getParams(), this.opmModel));
+      } else if (cell instanceof OpmProceduralLink) {
+        this.opmModel.add(new OpmProceduralRelation(cell.getParams(), this.opmModel));
+      } else if (cell instanceof OpmTaggedLink) {
+        this.opmModel.add(new OpmTaggedRelation(cell.getParams(), this.opmModel));
+      } else if (cell instanceof OpmFundamentalLink) {
+        this.opmModel.add(new OpmFundamentalRelation(cell.getParams(), this.opmModel));
+      }
 
 
       if (cell.attributes.type === 'opm.Link') {
@@ -257,15 +219,8 @@ export class InitRappidService {
     });
   }
 
-
   initializePaper() {
-    this.graph.on('add', (cell, collection, opt) => {
-
-      if (opt.stencil) {
-        this.cell$.next(cell);
-      }
-    });
-    const paper = this.paper = new joint.dia.Paper({
+    this.paper = new joint.dia.Paper({
       linkConnectionPoint: joint.util.shapePerimeterConnectionPoint,
       width: 1000,
       height: 1000,
@@ -276,50 +231,12 @@ export class InitRappidService {
       multiLinks: false,
       selectionCollection: null
     });
-
-    this.paper.on('blank:pointerup', ()=>{
-      let l = new joint.shapes.opm.Link();
-     // console.log(l);
-
-    });
-
-    paper.on('blank:mousewheel', _.partial(this.onMousewheel, null), this);
-    paper.on('cell:mousewheel', this.onMousewheel, this);
-    // When the dragged cell is dropped over another cell, let it become a child of the
-    // element below.
-    paper.on('cell:pointerup', function (cellView, evt, x, y) {
-      const cell = cellView.model;
-      if (cell.attributes.type == 'opm.Process' || cell.attributes.type == 'opm.Object') {
-        const cellViewsBelow = paper.findViewsFromPoint(cell.getBBox().center());
-        if (cellViewsBelow.length) {
-          // Note that the findViewsFromPoint() returns the view for the `cell` itself.
-          const cellViewBelow = _.find(cellViewsBelow, function (c) {
-            return c.model.id !== cell.id;
-          });
-          // Prevent recursive embedding.
-          if (cellViewBelow && cellViewBelow.model.get('parent') !== cell.id) {
-            cellViewBelow.model.embed(cell);
-            /* Ahmad commented this line because it blocks the pointerdblclick event
-               for the subprocesses of in-zoomed process. It was replaced by
-               another line that roughly does the same functionality as toFront.
-            */
-            // cell.toFront();
-            cell.set('z', cellViewBelow.model.attributes.z  + 1);
-            common.CommonFunctions.updateObjectSize(cellViewBelow.model);
-          }
-        }
-      }
-    });
-
-    const paperScroller = this.paperScroller = new joint.ui.PaperScroller({
-      paper: paper,
+    this.paperScroller = new joint.ui.PaperScroller({
+      paper: this.paper,
       autoResizePaper: true,
       cursor: 'grab'
     });
-
-    /// $('.paper-container').append(paperScroller.el);
-    paperScroller.render().center();
-
+    this.paperScroller.render().center();
   }
 
   initializeKeyboardShortcuts() {
@@ -409,86 +326,41 @@ export class InitRappidService {
 
     }, this);
 
-    this.paper.on('element:pointerdown', function (elementView, evt) {
+    this.paper.on('cell:pointerdown', function (cellView, evt) {
 
       // Select an element if CTRL/Meta key is pressed while the element is clicked.
       if (this.keyboard.isActive('ctrl meta', evt)) {
-        this.selection.collection.add(elementView.model);
+        this.selection.collection.add(cellView.model);
         this.paper.selectionCollection = this.selection.collection;
       }
 
     }, this);
 
-    this.selection.on('selection-box:pointerdown', function (elementView, evt) {
+    this.selection.on('selection-box:pointerdown', function (cellView, evt) {
       // Unselect an element if the CTRL/Meta key is pressed while a selected element is clicked.
       if (this.keyboard.isActive('ctrl meta', evt)) {
-        this.selection.collection.remove(elementView.model);
+        this.selection.collection.remove(cellView.model);
         this.paper.selectionCollection = this.selection.collection;
       }
     }, this);
 
     this.selection.removeHandle('rotate');
-    this.selection.addHandle({ name: 'link', position: 'n', icon: '../../assets/OPM_Links/StructuralAgg.png' });
- //   this.selection.on('action:link:pointerdown', function(evt) {
- //     evt.stopPropagation()
- //     alert('My custom action.');
- //   });
   }
 
-  initializeTextEditing() {
-    let lastEnteredText;
-    let currentCellView;
-    this.paper.on('all', function (cellView, evt) {
-      //console.log(evt);
-    }, this);
-
+  initializeEvents() {
+    const _this = this;
     this.paper.on('cell:pointerdblclick', function (cellView, evt) {
-      lastEnteredText = cellView.model.attributes.attrs.text.text;
-      currentCellView = cellView.model;
-      joint.ui.TextEditor.edit(evt.target, {
-        cellView: cellView,
-        textProperty: cellView.model.isLink() ? 'labels/attrs/text/text' : 'attrs/text/text',
-        placeholder: true
-      });
-    }, this);
+      cellView.model.doubleClickHandle(cellView, evt, this.paper); }, this);
+    this.paper.on('cell:pointerup', function (cellView) {
+      cellView.model.pointerUpHandle(cellView); }, this);
     this.graph.on('change:attrs', function (cell) {
-      if ((cell.get('type') != 'opm.Link') && (cell.attr('text/text') != lastEnteredText) &&
-        !cell.attributes.attrs.wrappingResized) {  //if the text was changed
-        const textString = cell.attr('text/text');
-        let newParams = { width: cell.get('minSize').width, height: cell.get('minSize').height, text: '' };    //No
-                                                                                                                 // empty
-                                                                                                                 // name
-                                                                                                                 // is
-                                                                                                                 // allowed
-        if (textString.trim() != '') { //if there is areal text - not spaces
-          newParams = textWrapping.calculateNewTextSize(textString, cell);
-        }
-        cell.attributes.attrs.wrappingResized = true;
-        cell.attr({ text: { text: newParams.text } });
-        if (!((newParams.width <= cell.get('size').width) && (newParams.height <= cell.get('size').height) && cell.attributes.attrs.manuallyResized)) {
-          cell.resize(newParams.width, newParams.height, {cameFrom:'textEdit', wd:cell.get('size').width, hg:cell.get('size').height });
-          cell.attributes.attrs.manuallyResized = false;
-        }
-        cell.attributes.attrs.wrappingResized = false;
-      }
-    }, this);
-
-
-    this.paper.on('blank:pointerdown', function (cellView, evt) {
-      if (currentCellView && !currentCellView.isLink()) {
-        const currentText = currentCellView.attributes.attrs.text.text;
-        if (currentText == '') {
-          currentCellView.attr({ text: { text: lastEnteredText } });
-        }
-        joint.ui.TextEditor.close();
-      }
-    }, this);
-
-    this.graph.on('change:size', _.bind(function (cell, attrs) {
-      if (cell.attributes.attrs.text && !cell.attributes.attrs.wrappingResized) { //resized manually
-        textWrapping.wrapTextAfterSizeChange(cell);
-      }
-    }, this));
+      cell.changeAttributesHandle(); }, this);
+    this.graph.on('change:size', _.bind(function (cell) {
+      cell.changeSizeHandle(); }, this));
+    this.graph.on('change:position', _.bind(function (cell) {
+      cell.changePositionHandle(); }, this));
+    this.graph.on('remove', (cell) => {
+      cell.removeHandle(_this); });
   }
 
   initializeAttributesEvents() {
@@ -503,32 +375,6 @@ export class InitRappidService {
         _this.graphService.updateJSON();
       });
     });
-    this.graph.on('change:attrs', _.bind(function (cell, attrs) {
-      // If value of an object was changed - add/modify a state according to it
-      if (cell.isElement() && attrs.value) {
-        // console.log('if - value');
-        valueHandle.updateCell(this.graph, cell);
-      }
-    }, this));
-
-    this.graph.on('change:position', _.bind(function (cell) {
-      const outboundLinks = this.graph.getConnectedLinks(cell, { outbound: true });
-      const inboundLinks = this.graph.getConnectedLinks(cell, { inbound: true });
-      common._.each(outboundLinks, function (linkToUpdate) {
-        if (linkToUpdate instanceof OpmProceduralLink) {
-          linkToUpdate.UpdateVertices();
-          linkToUpdate.UpdateConditionEvent();
-        }
-        // linkDrawing.linkUpdating(linkToUpdate);
-      });
-      common._.each(inboundLinks, function (linkToUpdate) {
-        if (linkToUpdate instanceof OpmProceduralLink) {
-          linkToUpdate.UpdateVertices();
-          linkToUpdate.UpdateConditionEvent();
-        }
-        // linkDrawing.linkUpdating(linkToUpdate);
-      });
-    }, this));
   }
 
   initializeHaloAndInspector() {
@@ -540,98 +386,11 @@ export class InitRappidService {
       if (!this.selection.collection.contains(cell)) {
 
         if (cell.isElement()) {
-
-          new joint.ui.FreeTransform({
-            cellView: cellView,
-            allowRotation: false,
-            preserveAspectRatio: false,
-            allowOrthogonalResize: true,
-          }).render();
-
           const halo = new joint.ui.Halo({
             cellView: cellView,
             type: 'surrounding',
             handles: haloConfig.handles
           }).render();
-
-          if (cell.attributes.type === 'opm.Object') {
-            let hasStates = cell.getEmbeddedCells().length;
-            halo.addHandle({
-              name: 'add_state', position: 'sw', icon: null, attrs: {
-                '.handle': {
-                  'data-tooltip-class-name': 'small',
-                  'data-tooltip': 'Click to add state to the object',
-                  'data-tooltip-position': 'right',
-                  'data-tooltip-padding': 15
-                }
-              }
-            });
-            halo.on('action:add_state:pointerup', function () {
-          //    console.log("add_state");
-              hasStates = true;
-              halo.$handles.children('.arrange_up').toggleClass('hidden', !hasStates);
-              halo.$handles.children('.arrange_down').toggleClass('hidden', !hasStates);
-              halo.$handles.children('.arrange_left').toggleClass('hidden', !hasStates);
-              halo.$handles.children('.arrange_right').toggleClass('hidden', !hasStates);
-              addState.call(this);
-            });
-            halo.addHandle({
-              name: 'arrange_up', position: 'n', icon: null, attrs: {
-                '.handle': {
-                  'data-tooltip-class-name': 'small',
-                  'data-tooltip': 'Arrange the states at the top inside the object',
-                  'data-tooltip-position': 'top',
-                  'data-tooltip-padding': 15
-                }
-              }
-            });
-            halo.on('action:arrange_up:pointerup', function () {
-              arrangeStates.call(this, 'top');
-            });
-            halo.addHandle({
-              name: 'arrange_down', position: 's', icon: null, attrs: {
-                '.handle': {
-                  'data-tooltip-class-name': 'small',
-                  'data-tooltip': 'Arrange the states at the bottom inside the object',
-                  'data-tooltip-position': 'bottom',
-                  'data-tooltip-padding': 15
-                }
-              }
-            });
-            halo.on('action:arrange_down:pointerup', function () {
-              arrangeStates.call(this, 'bottom');
-            });
-            halo.addHandle({
-              name: 'arrange_right', position: 'w', icon: null, attrs: {
-                '.handle': {
-                  'data-tooltip-class-name': 'small',
-                  'data-tooltip': 'Arrange the states to the left inside the object',
-                  'data-tooltip-position': 'left',
-                  'data-tooltip-padding': 15
-                }
-              }
-            });
-            halo.on('action:arrange_right:pointerup', function () {
-              arrangeStates.call(this, 'left');
-            });
-            halo.addHandle({
-              name: 'arrange_left', position: 'e', icon: null, attrs: {
-                '.handle': {
-                  'data-tooltip-class-name': 'small',
-                  'data-tooltip': 'Arrange the states to the right inside the object',
-                  'data-tooltip-position': 'right',
-                  'data-tooltip-padding': 15
-                }
-              }
-            });
-            halo.on('action:arrange_left:pointerup', function () {
-              arrangeStates.call(this, 'right');
-            });
-            halo.$handles.children('.arrange_up').toggleClass('hidden', !hasStates);
-            halo.$handles.children('.arrange_down').toggleClass('hidden', !hasStates);
-            halo.$handles.children('.arrange_left').toggleClass('hidden', !hasStates);
-            halo.$handles.children('.arrange_right').toggleClass('hidden', !hasStates);
-          }
           if (cell.attributes.type === 'opm.Process') {
             halo.addHandle({
               name: 'manage_complexity', position: 'sw', icon: null, attrs: {
@@ -716,69 +475,19 @@ export class InitRappidService {
   }
 
   initializeValidator() {
-
     this.validator = new joint.dia.Validator({ commandManager: this.commandManager });
     this.RuleSet = opmRuleSet;
     this.RuleSet(this.validator, this.graph);
   }
-
   initializeNavigator() {
-
     const navigator = this.navigator = new joint.ui.Navigator({
       width: 240,
       height: 115,
       paperScroller: this.paperScroller,
       zoom: false
     });
-
-    // $('.navigator-container').append(navigator.el);
-    // navigator.render();
   }
-
-
-  initializeToolbar() {
-
-    const toolbar = this.toolbar = new joint.ui.Toolbar({
-      groups: toolbarConfig.groups,
-      tools: toolbarConfig.tools,
-      references: {
-        paperScroller: this.paperScroller,
-        commandManager: this.commandManager
-      }
-    });
-
-    toolbar.on({
-      'svg:pointerclick': _.bind(this.openAsSVG, this),
-      'png:pointerclick': _.bind(this.openAsPNG, this),
-      'fullscreen:pointerclick': _.bind(joint.util.toggleFullScreen, joint.util, document.body),
-      'to-front:pointerclick': _.bind(this.selection.collection.invoke, this.selection.collection, 'toFront'),
-      'to-back:pointerclick': _.bind(this.selection.collection.invoke, this.selection.collection, 'toBack'),
-      'layout:pointerclick': _.bind(this.layoutDirectedGraph, this),
-      // 'snapline:change': _.bind(this.changeSnapLines, this),
-      'clear:pointerclick': _.bind(this.graph.clear, this.graph),
-      'print:pointerclick': _.bind(this.paper.print, this.paper),
-      'grid-size:change': _.bind(this.paper.setGridSize, this.paper)
-    });
-
-    // $('.toolbar-container').append(toolbar.el);
-    // toolbar.render();
-  }
-
-
-  changeSnapLines(checked) {
-
-    /*if (checked) {
-     this.snaplines.startListening();
-     this.stencil.options.snaplines = this.snaplines;
-     } else {
-     this.snaplines.stopListening();
-     this.stencil.options.snaplines = null;
-     }*/
-  }
-
-
   initializeTooltips() {
-
     new joint.ui.Tooltip({
       rootTarget: document.body,
       target: '[data-tooltip]',
@@ -786,47 +495,4 @@ export class InitRappidService {
       padding: 10
     });
   }
-
-  openAsSVG() {
-
-    this.paper.toSVG(function (svg) {
-      new joint.ui.Lightbox({
-        title: '(Right-click, and use "Save As" to save the diagram in SVG format)',
-        image: 'data:image/svg+xml,' + encodeURIComponent(svg)
-      }).open();
-    }, { preserveDimensions: true, convertImagesToDataUris: true });
-  }
-
-
-  openAsPNG() {
-
-    this.paper.toPNG(function (dataURL) {
-      new joint.ui.Lightbox({
-        title: '(Right-click, and use "Save As" to save the diagram in PNG format)',
-        image: dataURL
-      }).open();
-    }, { padding: 10 });
-  }
-
-
-  onMousewheel(cellView, evt, x, y, delta) {
-
-    if (this.keyboard.isActive('alt', evt)) {
-      this.paperScroller.zoom(delta / 10, { min: 0.2, max: 5, ox: x, oy: y });
-    }
-  }
-
-
-  layoutDirectedGraph() {
-
-    joint.layout.DirectedGraph.layout(this.graph, {
-      setLinkVertices: true,
-      rankDir: 'TB',
-      marginX: 100,
-      marginY: 100
-    });
-
-    this.paperScroller.centerContent();
-  }
-
 }

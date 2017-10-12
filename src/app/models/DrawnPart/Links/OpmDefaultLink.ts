@@ -29,4 +29,10 @@ export class OpmDefaultLink extends common.joint.shapes.devs.Link.extend(linkDef
       strokeWidth: this.attr('.connection/stroke-width'),
     };
   }
+  doubleClickHandle(cellView, evt, paper) {}
+  pointerUpHandle(cellView) {}
+  changeAttributesHandle() {}
+  changeSizeHandle() {}
+  changePositionHandle() {}
+  removeHandle(options) {}
 }

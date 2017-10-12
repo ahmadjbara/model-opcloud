@@ -1,5 +1,5 @@
 import { Component, EventEmitter, HostListener, Inject } from '@angular/core';
-import { linkDrawing } from '../../link-operating/linkDrawing';
+import { linkDrawing } from '../../configuration/elementsFunctionality/linkDrawing';
 import { MD_DIALOG_DATA, MdDialogRef } from '@angular/material';
 
 @Component({

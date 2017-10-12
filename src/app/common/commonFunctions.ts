@@ -1,4 +1,4 @@
-import { opmStyle } from '../config/opmStyle';
+import { opmStyle } from '../configuration/rappidEnviromentFunctionality/opmStyle';
 export const _ = require('lodash');
 export const paddingObject = 10;
 export const joint = require('rappid');
@@ -6,37 +6,6 @@ export const width = require('text-width');
 export const height = require('text-height');
 
 export const CommonFunctions = {
-
-  // Function gets cell and restore default configuration in all field that states arrangement use.
-  arrangeStatesParams(cell, refX, refY, alignX, alignY, arrangeState, stateWidthPadding, statesHeightPadding){
-    cell.attr({text: {'ref-x': refX}});
-    cell.attr({text: {'ref-y': refY}});
-    cell.attr({text: {'x-alignment': alignX}});
-    cell.attr({text: {'y-alignment': alignY}});
-    cell.attr({'statesArrange': arrangeState});
-    cell.set('statesWidthPadding', stateWidthPadding);
-    cell.set('statesHeightPadding', statesHeightPadding);
-  },
-// Function updateObjectSize Update the size of the object so that no embedded cell will exceed the father border with
-// padding of 10p.
-  updateObjectSize(fatherCell) {
-    let leftSideX = fatherCell.get('position').x;
-    let topSideY = fatherCell.get('position').y;
-    let rightSideX = fatherCell.get('position').x + fatherCell.get('size').width;
-    let bottomSideY = fatherCell.get('position').y + fatherCell.get('size').height;
-
-    _.each(fatherCell.getEmbeddedCells(), function(child) {
-      let childBbox = child.getBBox();
-      // Updating the new size of the object to have margins of at least paddingObject so that the state will not touch the object
-      if (childBbox.x <= (leftSideX + paddingObject)) { leftSideX = childBbox.x-paddingObject; }
-      if (childBbox.y <= (topSideY + paddingObject)) { topSideY = childBbox.y-paddingObject; }
-      if (childBbox.corner().x >= rightSideX-paddingObject) { rightSideX = childBbox.corner().x+paddingObject; }
-      if (childBbox.corner().y >= bottomSideY-paddingObject) { bottomSideY = childBbox.corner().y+paddingObject; }
-    });
-    fatherCell.set({
-      position: { x: leftSideX, y: topSideY },
-      size: { width: rightSideX - leftSideX, height: bottomSideY - topSideY }});
-  },
 
   updateProcessSize(fatherCell){
     var leftSideX = fatherCell.get('position').x;

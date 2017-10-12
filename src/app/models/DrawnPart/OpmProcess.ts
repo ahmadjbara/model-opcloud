@@ -1,6 +1,4 @@
 import {OpmThing} from './OpmThing';
-import {basicDefinitions} from "../../config/basicDefinitions";
-import * as common from '../../common/commonFunctions';
 export class OpmProcess extends OpmThing {
   constructor() {
     super();
@@ -34,5 +32,8 @@ export class OpmProcess extends OpmThing {
       parentheses: (this.attr('value/value') === 'None') ? false : true
     };
     return {...super.getThingParams(), ...params};
+  }
+  removeHandle(options) {
+    options.treeViewService.removeNode(this.id);
   }
 }

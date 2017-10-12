@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild, ViewContainerRef,ComponentFactoryResolver,ComponentRef,Input } from '@angular/core';
-import { linkTypeSelection} from '../../link-operating/linkTypeSelection'
+import { linkTypeSelection} from '../../configuration/elementsFunctionality/linkTypeSelection'
 
 // popup imports
 import {DialogComponent} from "../../dialogs/choose-link-dialog/Dialog.component";

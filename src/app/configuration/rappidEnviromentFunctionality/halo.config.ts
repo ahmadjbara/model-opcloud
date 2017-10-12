@@ -1,5 +1,4 @@
 export const haloConfig = {
-
   handles: [
     {
       name: 'remove',
