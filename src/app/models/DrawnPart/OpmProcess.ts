@@ -69,7 +69,7 @@ export class OpmProcess extends OpmThing {
           options.treeViewService.insertNode(cellModel, 'inzoom');
           const elementlinks = options.graphService.graphLinks;
 
-          processInzooming(evt, x, y, haloThis, CellClone, elementlinks);
+          processInzooming(evt, x, y, options, CellClone, elementlinks);
 
         }
         options.treeViewService.treeView.treeModel.getNodeById(cellModel.id).toggleActivated();

@@ -12,11 +12,11 @@ const y_margin=10;//height margin between subprocess
 const childMargin=67;
 
 
-export function processInzooming (evt, x, y, _this, cellRef, links) {
+export function processInzooming (evt, x, y, options, cellRef, links) {
 
 
 
-  var options = _this.options;
+  //var options = _this.options;
   var parentObject=cellRef;
 
   parentObject.set('padding',100);

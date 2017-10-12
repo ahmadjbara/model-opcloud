@@ -38,6 +38,6 @@ export class OpmModel {
 
   inZoom(id) {
     const visualElm = this.getVisualElementById(id);
-    visualElm.clone();
+    //visualElm.clone();
   }
 }
