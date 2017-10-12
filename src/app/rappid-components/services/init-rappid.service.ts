@@ -676,6 +676,8 @@ export class InitRappidService {
 
                   processInzooming(evt, x, y, haloThis, CellClone, elementlinks);
 
+                  _this.opmModel.inZoom(cellModel.id);
+
                 }
                 _this.treeViewService.treeView.treeModel.getNodeById(cellModel.id).toggleActivated();
               });

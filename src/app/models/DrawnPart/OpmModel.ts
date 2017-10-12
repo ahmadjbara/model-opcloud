@@ -1,8 +1,9 @@
 
-import {OpmLogicalElement} from "../LogicalPart/OpmLogicalElement";
-import {OpmVisualElement} from "../VisualPart/OpmVisualElement";
-import {OpmOpd} from "./OpmOpd";
-import {OpmLogicalState} from "../LogicalPart/OpmLogicalState";
+import {OpmLogicalElement} from '../LogicalPart/OpmLogicalElement';
+import {OpmVisualElement} from '../VisualPart/OpmVisualElement';
+import {OpmOpd} from './OpmOpd';
+import {OpmLogicalState} from '../LogicalPart/OpmLogicalState';
+import {OpmVisualProcess} from '../VisualPart/OpmVisualProcess';
 
 export class OpmModel {
   private name: string;
@@ -12,6 +13,8 @@ export class OpmModel {
 
   constructor() {
     this.logicalElements = new Array<OpmLogicalElement<OpmVisualElement>>();
+    this.opds = new Array<OpmOpd>();
+    this.opds.push(new OpmOpd());
   }
   add(opmLogicalElement: OpmLogicalElement<OpmVisualElement>) {
     this.logicalElements.push(opmLogicalElement);
@@ -31,5 +34,10 @@ export class OpmModel {
           return this.logicalElements[i];
     }
     return null;
+  }
+
+  inZoom(id) {
+    const visualElm = this.getVisualElementById(id);
+    visualElm.clone();
   }
 }

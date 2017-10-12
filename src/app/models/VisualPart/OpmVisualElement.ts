@@ -19,5 +19,5 @@ export class OpmVisualElement {
       this.strokeColor = params.fill;
       this.id = params.id;
     }
-  }
+}
 
