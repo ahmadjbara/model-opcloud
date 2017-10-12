@@ -1,6 +1,7 @@
 import * as common from '../../common/commonFunctions';
 import {textWrapping} from "../../configuration/elementsFunctionality/textWrapping";
 import {OpmProceduralLink} from "./Links/OpmProceduralLink";
+import {haloConfig} from "../../configuration/rappidEnviromentFunctionality/halo.config";
 
 const entityText = {
   fill: 'black',
@@ -57,6 +58,7 @@ export class OpmEntity extends common.joint.dia.Element.extend(entityDefinition)
       }
     };
   }
+  haloConfiguration(halo, haloConfiguration) {}
   doubleClickHandle(cellView, evt, paper) {
     common.joint.ui.TextEditor.edit(evt.target, {
       cellView: cellView,
@@ -74,13 +76,19 @@ export class OpmEntity extends common.joint.dia.Element.extend(entityDefinition)
       common.joint.ui.TextEditor.close();
     }, this);
   }
-  pointerUpHandle(cellView) {
+  pointerUpHandle(cellView, options) {
     new common.joint.ui.FreeTransform({
       cellView: cellView,
       allowRotation: false,
       preserveAspectRatio: false,
       allowOrthogonalResize: true,
     }).render();
+    const halo = new common.joint.ui.Halo({
+      cellView: cellView,
+      type: 'surrounding',
+      handles: haloConfig.handles
+    }).render();
+    this.haloConfiguration(halo, options);
   }
   changeAttributesHandle() {
     if ((this.attr('text/text') !== this.lastEnteredText) &&

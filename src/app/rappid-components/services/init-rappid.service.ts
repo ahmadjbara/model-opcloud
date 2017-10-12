@@ -352,7 +352,7 @@ export class InitRappidService {
     this.paper.on('cell:pointerdblclick', function (cellView, evt) {
       cellView.model.doubleClickHandle(cellView, evt, this.paper); }, this);
     this.paper.on('cell:pointerup', function (cellView) {
-      cellView.model.pointerUpHandle(cellView); }, this);
+      cellView.model.pointerUpHandle(cellView, _this); }, this);
     this.graph.on('change:attrs', function (cell) {
       cell.changeAttributesHandle(); }, this);
     this.graph.on('change:size', _.bind(function (cell) {
