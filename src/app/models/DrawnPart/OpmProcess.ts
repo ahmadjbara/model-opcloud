@@ -1,4 +1,7 @@
 import {OpmThing} from './OpmThing';
+import {processInzooming, processUnfolding} from '../../config/process-inzooming';
+import * as common from '../../common/commonFunctions';
+
 export class OpmProcess extends OpmThing {
   constructor() {
     super();
@@ -35,5 +38,63 @@ export class OpmProcess extends OpmThing {
   }
   removeHandle(options) {
     options.treeViewService.removeNode(this.id);
+  }
+  // options = init-rappid service
+  haloConfiguration(halo, options) {
+    const haloThis = this;
+    halo.addHandle(this.addHandleGenerator('manage_complexity', 'sw', 'Click to manage complexity', 'left'));
+    halo.on('action:manage_complexity:pointerdown', function (evt, x, y) {
+      const contextToolbar = new common.joint.ui.ContextToolbar({
+        theme: 'modern',
+        tools: [
+          { action: 'In-Zoom', content:  this.options.cellView.model.attributes.attrs.ellipse['stroke-width'] === 4 ? 'Show In-Zoomed' : 'In-Zoom' },
+          { action: 'Unfold', content: this.options.cellView.model.attributes.attrs.ellipse['stroke'] === '#FF0000' ? 'Show Unfolded' : 'Unfold' }
+        ],
+        target: halo.el,
+        autoClose: true,
+        padding: 30
+      });
+      contextToolbar.on('action:In-Zoom', function() {
+        this.remove();
+        const cellModel = haloThis;
+        if (cellModel.attributes.attrs.ellipse['stroke-width'] === 4) {
+          options.graphService.changeGraphModel(cellModel.id, options.treeViewService, 'inzoom');
+        } else {
+          cellModel.attributes.attrs.ellipse['stroke-width'] = 4;
+          const CellClone = haloThis.clone();
+          const textString = haloThis.attributes.attrs.text.text;
+          CellClone.set('id', cellModel.id);
+          CellClone.attr({text: {text: textString}});
+          CellClone.set('position', cellModel.get('position'));
+          options.treeViewService.insertNode(cellModel, 'inzoom');
+          const elementlinks = options.graphService.graphLinks;
+
+          processInzooming(evt, x, y, haloThis, CellClone, elementlinks);
+
+        }
+        options.treeViewService.treeView.treeModel.getNodeById(cellModel.id).toggleActivated();
+      });
+      contextToolbar.on('action:Unfold', function() {
+        this.remove();
+        const cellModel = haloThis;
+        if (cellModel.attributes.attrs.ellipse['stroke'] === '#FF0000') {
+          options.graphService.changeGraphModel(cellModel.id, options.treeViewService, 'unfold');
+        } else {
+          cellModel.attributes.attrs.ellipse['stroke'] = '#FF0000';
+          const CellClone = haloThis.clone();
+          const textString = haloThis.attributes.attrs.text.text;
+          CellClone.set('id', cellModel.id);
+          CellClone.attr({text: {text: textString}});
+          options.treeViewService.insertNode(cellModel, 'unfold');
+          const elementlinks = options.graphService.graphLinks;
+
+          haloThis.graph.addCell(CellClone);
+          haloThis.graph.addCells(elementlinks);
+          processUnfolding(haloThis, CellClone, elementlinks);
+        }
+        options.treeViewService.treeView.treeModel.getNodeById(cellModel.id).toggleActivated();
+      });
+      contextToolbar.render();
+    });
   }
 }
