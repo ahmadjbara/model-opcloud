@@ -48,7 +48,6 @@ export class InitRappidService {
   private selection;
   private validator;
   private navigator;
-  private toolbar;
   private RuleSet;
   private opmModel: OpmModel;
 
@@ -63,7 +62,6 @@ export class InitRappidService {
     joint.setTheme('modern');
     this.initializePaper();
     this.initializeSelection();
-    this.initializeHaloAndInspector();
     this.initializeValidator();
     this.initializeNavigator();
     this.initializeKeyboardShortcuts();
@@ -376,104 +374,6 @@ export class InitRappidService {
       });
     });
   }
-
-  initializeHaloAndInspector() {
-    let _this=this;
-    this.paper.on('element:pointerup link:options', function (cellView) {
-
-      const cell = cellView.model;
-
-      if (!this.selection.collection.contains(cell)) {
-
-        if (cell.isElement()) {
-          const halo = new joint.ui.Halo({
-            cellView: cellView,
-            type: 'surrounding',
-            handles: haloConfig.handles
-          }).render();
-          if (cell.attributes.type === 'opm.Process') {
-            halo.addHandle({
-              name: 'manage_complexity', position: 'sw', icon: null, attrs: {
-                '.handle': {
-                  'data-tooltip-class-name': 'small',
-                  'data-tooltip': 'Click to manage complexity',
-                  'data-tooltip-position': 'left',
-                  'data-tooltip-padding': 15
-                }
-              }
-            });
-
-            halo.on('action:manage_complexity:pointerdown', function (evt, x, y) {
-              let contextToolbar = new joint.ui.ContextToolbar({
-                theme: 'modern',
-                tools: [
-                  { action: 'In-Zoom', content:  this.options.cellView.model.attributes.attrs.ellipse['stroke-width'] === 4 ? 'Show In-Zoomed':'In-Zoom' },
-                  { action: 'Unfold', content: this.options.cellView.model.attributes.attrs.ellipse['stroke'] === '#FF0000' ? 'Show Unfolded':'Unfold' }
-                ],
-                target:halo.el,
-                autoClose: true,
-                padding: 30
-              });
-
-              let haloThis = this;
-              contextToolbar.on('action:In-Zoom', function() {
-                this.remove();
-                const cellModel = haloThis.options.cellView.model;
-                if (cellModel.attributes.attrs.ellipse['stroke-width'] === 4) {
-                  _this.graphService.changeGraphModel(cellModel.id, _this.treeViewService,'inzoom');
-              //    console.log(cellModel);
-                }
-                else {
-                  cellModel.attributes.attrs.ellipse['stroke-width'] = 4;
-                  const CellClone = cell.clone();
-                  const textString = cell.attributes.attrs.text.text;
-                  CellClone.set('id', cellModel.id);
-                  CellClone.attr({text: {text: textString}});
-                  CellClone.set('position',cellModel.get('position'));
-                  _this.treeViewService.insertNode(cellModel, 'inzoom');
-                  const elementlinks = _this.graphService.graphLinks;
-
-                  processInzooming(evt, x, y, haloThis, CellClone, elementlinks);
-
-                  _this.opmModel.inZoom(cellModel.id);
-
-                }
-                _this.treeViewService.treeView.treeModel.getNodeById(cellModel.id).toggleActivated();
-              });
-              contextToolbar.on('action:Unfold', function() {
-                this.remove();
-                const cellModel = haloThis.options.cellView.model;
-                if (cellModel.attributes.attrs.ellipse['stroke'] === '#FF0000') {
-                  _this.graphService.changeGraphModel(cellModel.id, _this.treeViewService, 'unfold');
-                }
-                else {
-                  cellModel.attributes.attrs.ellipse['stroke'] = '#FF0000';
-                  const CellClone = cell.clone();
-                  const textString = cell.attributes.attrs.text.text;
-                  CellClone.set('id', cellModel.id);
-                  CellClone.attr({text: {text: textString}});
-                  _this.treeViewService.insertNode(cellModel, 'unfold');
-                  const elementlinks = _this.graphService.graphLinks;
-
-                  haloThis.options.graph.addCell(CellClone);
-                  haloThis.options.graph.addCells(elementlinks);
-                  processUnfolding(haloThis, CellClone, elementlinks);
-                  //console.log(_this.treeViewService.nodes);
-                }
-               _this.treeViewService.treeView.treeModel.getNodeById(cellModel.id).toggleActivated();
-              });
-              contextToolbar.render();
-            });
-          }
-
-          this.selection.collection.reset([]);
-          this.selection.collection.add(cell, { silent: true });
-        }
-        this.cell$.next(cell);
-      }
-    }, this);
-  }
-
   initializeValidator() {
     this.validator = new joint.dia.Validator({ commandManager: this.commandManager });
     this.RuleSet = opmRuleSet;

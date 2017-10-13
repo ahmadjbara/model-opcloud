@@ -77,18 +77,22 @@ export class OpmEntity extends common.joint.dia.Element.extend(entityDefinition)
     }, this);
   }
   pointerUpHandle(cellView, options) {
-    new common.joint.ui.FreeTransform({
-      cellView: cellView,
-      allowRotation: false,
-      preserveAspectRatio: false,
-      allowOrthogonalResize: true,
-    }).render();
-    const halo = new common.joint.ui.Halo({
-      cellView: cellView,
-      type: 'surrounding',
-      handles: haloConfig.handles
-    }).render();
-    this.haloConfiguration(halo, options);
+    if (!options.selection.collection.contains(cellView.model)) {
+      new common.joint.ui.FreeTransform({
+        cellView: cellView,
+        allowRotation: false,
+        preserveAspectRatio: false,
+        allowOrthogonalResize: true,
+      }).render();
+      const halo = new common.joint.ui.Halo({
+        cellView: cellView,
+        type: 'surrounding',
+        handles: haloConfig.handles
+      }).render();
+      this.haloConfiguration(halo, options);
+      options.selection.collection.reset([]);
+      options.selection.collection.add(this, { silent: true });
+    }
   }
   changeAttributesHandle() {
     if ((this.attr('text/text') !== this.lastEnteredText) &&
