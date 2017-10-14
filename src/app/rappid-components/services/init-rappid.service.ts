@@ -9,6 +9,7 @@ import {OpmModel} from '../../models/DrawnPart/OpmModel';
 import {OpmDefaultLink} from '../../models/DrawnPart/Links/OpmDefaultLink';
 import {addHandle} from '../../configuration/elementsFunctionality/graphFunctionality';
 import {defineKeyboardShortcuts} from '../../configuration/rappidEnviromentFunctionality/keyboardShortcuts';
+import {selectionConfiguration} from "../../configuration/rappidEnviromentFunctionality/selectionConfiguration";
 
 
 const joint = require('rappid');
@@ -39,10 +40,7 @@ export class InitRappidService {
     this.commandManager = commandManagerService.commandManager;
 
     joint.setTheme('modern');
-    this.initializePaper();
-    this.initializeSelection();
-    this.initializeNavigator();
-    this.initializeTooltips();
+    this.initializeDesktop();
     this.initializeEvents();
     // This doesn't work (the event is not caught)
     this.linkHoverEvent();
@@ -76,7 +74,7 @@ export class InitRappidService {
    //   console.log('mouse leave link');
     });
   }
-  initializePaper() {
+  initializeDesktop() {
     this.paper = new joint.dia.Paper({
       linkConnectionPoint: joint.util.shapePerimeterConnectionPoint,
       width: 1000,
@@ -86,7 +84,6 @@ export class InitRappidService {
       model: this.graph,
       defaultLink: new OpmDefaultLink(),
       multiLinks: false,
-      selectionCollection: null
     });
     this.paperScroller = new joint.ui.PaperScroller({
       paper: this.paper,
@@ -94,46 +91,22 @@ export class InitRappidService {
       cursor: 'grab'
     });
     this.paperScroller.render().center();
-  }
-
-  initializeSelection() {
-
+    this.navigator = new joint.ui.Navigator({
+      width: 240,
+      height: 115,
+      paperScroller: this.paperScroller,
+      zoom: false
+    });
     this.clipboard = new joint.ui.Clipboard();
     this.selection = new joint.ui.Selection({paper: this.paper});
-
-    // Initiate selecting when the user grabs the blank area of the paper while the Shift key is pressed.
-    // Otherwise, initiate paper pan.
-    this.paper.on('blank:pointerdown', function (evt, x, y) {
-      if (this.keyboard.isActive('shift', evt)) {
-        this.selection.startSelecting(evt);
-      } else {
-        this.selection.cancelSelection();
-        this.paperScroller.startPanning(evt, x, y);
-      }
-
-    }, this);
-
-    this.paper.on('cell:pointerdown', function (cellView, evt) {
-
-      // Select an element if CTRL/Meta key is pressed while the element is clicked.
-      if (this.keyboard.isActive('ctrl meta', evt)) {
-        this.selection.collection.add(cellView.model);
-        this.paper.selectionCollection = this.selection.collection;
-      }
-
-    }, this);
-
-    this.selection.on('selection-box:pointerdown', function (cellView, evt) {
-      // Unselect an element if the CTRL/Meta key is pressed while a selected element is clicked.
-      if (this.keyboard.isActive('ctrl meta', evt)) {
-        this.selection.collection.remove(cellView.model);
-        this.paper.selectionCollection = this.selection.collection;
-      }
-    }, this);
-
     this.selection.removeHandle('rotate');
+    new joint.ui.Tooltip({
+      rootTarget: document.body,
+      target: '[data-tooltip]',
+      direction: 'auto',
+      padding: 10
+    });
   }
-
   initializeEvents() {
     const _this = this;
     this.paper.on('cell:pointerdblclick', function (cellView, evt) {
@@ -144,6 +117,12 @@ export class InitRappidService {
     this.paper.on('blank:pointerclick ', function (cellView) {
       _this.graphService.updateJSON();      // save to firebase
     });
+    this.paper.on('blank:pointerdown', function (evt, x, y) {
+      selectionConfiguration.blankPointerdown(this, evt, x, y); }, this);
+    this.paper.on('cell:pointerdown', function (cellView, evt) {
+      selectionConfiguration.cellPointerdown(this, cellView, evt); }, this);
+    this.selection.on('selection-box:pointerdown', function (cellView, evt) {
+      selectionConfiguration.selectionBoxPointerdown(this, cellView, evt); }, this);
     this.graph.on('change:attrs', function (cell) {
       cell.changeAttributesHandle(); }, this);
     this.graph.on('change:size', _.bind(function (cell) {
@@ -155,22 +134,5 @@ export class InitRappidService {
     this.graph.on('add', (cell, collection, opt) => {
       addHandle(_this, cell, opt);
       cell.addHandle(_this); });
-  }
-
-  initializeNavigator() {
-    const navigator = this.navigator = new joint.ui.Navigator({
-      width: 240,
-      height: 115,
-      paperScroller: this.paperScroller,
-      zoom: false
-    });
-  }
-  initializeTooltips() {
-    new joint.ui.Tooltip({
-      rootTarget: document.body,
-      target: '[data-tooltip]',
-      direction: 'auto',
-      padding: 10
-    });
   }
 }
