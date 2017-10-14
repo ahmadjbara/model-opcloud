@@ -1,8 +1,9 @@
 import * as common from '../../../common/commonFunctions';
 import {linkConnectionType} from '../../ConfigurationOptions';
 import {linkTypeSelection} from '../../../configuration/elementsFunctionality/linkTypeSelection';
-import {OpmState} from "../OpmState";
-import {validationAlert} from "../../../configuration/rappidEnviromentFunctionality/shared";
+import {OpmState} from '../OpmState';
+import {validationAlert} from '../../../configuration/rappidEnviromentFunctionality/shared';
+import {createDialog} from '../../../configuration/elementsFunctionality/linkDialog';
 
 const linkDefinition = {
   defaults: common._.defaultsDeep({
@@ -82,7 +83,7 @@ export class OpmDefaultLink extends common.joint.shapes.devs.Link.extend(linkDef
               this.set('previousTargetId', this.attributes.target.id);
               this.set('previousSourceId', this.attributes.source.id);
               if (!b.cameFromInZooming) {
-                options.createDialog(this);
+                createDialog(options, this);
               }
             }
         }

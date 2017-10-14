@@ -27,9 +27,7 @@ export class InitRappidService {
   private keyboard;
   private clipboard;
   private selection;
-  private validator;
   private navigator;
-  private RuleSet;
   private opmModel: OpmModel;
 
 
@@ -47,79 +45,12 @@ export class InitRappidService {
     this.initializeKeyboardShortcuts();
     this.initializeTooltips();
     this.initializeEvents();
-    this.initializeAttributesEvents();
     // This doesn't work (the event is not caught)
     this.linkHoverEvent();
 
     this.opmModel = new OpmModel();
 
   }
-
-  createDialog(link) {
-    const dialogComponentRef = {
-      type: 'choose-link',
-      instance: {
-        newLink: link,
-        linkSource: link.getSourceElement(),
-        linkTarget: link.getTargetElement(),
-        opmLinks: linkTypeSelection.generateLinkWithOpl(link),
-        Structural_Links: [],
-        Agent_Links: [],
-        Instrument_Links: [],
-        Effect_links: [],
-        Consumption_links: [],
-        Result_Link: [],
-        Invocation_links: [],
-        Exception_links: [],
-      }
-    };
-
-    for (const link of dialogComponentRef.instance.opmLinks) {
-      //Structrial Links
-      if (link.name == 'Aggregation-Participation'
-        || link.name == 'Generalization-Specialization'
-        || link.name == 'Exhibition-Characterization'
-        || link.name == 'Classification-Instantiation'
-        || link.name == 'Unidirectional_Relation'
-        || link.name == 'Bidirectional_Relation') {
-
-        dialogComponentRef.instance.Structural_Links.push(link);
-      }
-      //Agent Links
-      else if (link.name == 'Agent' || link.name == 'Event_Agent' || link.name == 'Condition_Agent') {
-        dialogComponentRef.instance.Agent_Links.push(link);
-      }
-      //Instrument links
-      else if (link.name == 'Instrument' || link.name == 'Condition_Instrument' || link.name == 'Event_Instrument') {
-        dialogComponentRef.instance.Instrument_Links.push(link);
-      }
-      //Effect links
-      else if (link.name == 'Condition_Effect' || link.name == 'Event_Effect' || link.name == 'Effect') {
-        dialogComponentRef.instance.Effect_links.push(link);
-        dialogComponentRef.instance.Effect_links.reverse();
-      }
-      //Consumption links
-      else if (link.name == 'Consumption' || link.name == 'Condition_Consumption' || link.name == 'Event_Consumption') {
-        dialogComponentRef.instance.Consumption_links.push(link);
-      }
-      //Result
-      else if (link.name == 'Result') {
-        dialogComponentRef.instance.Result_Link.push(link);
-      }
-      //Invocation
-      else if (link.name == 'Invocation') {
-        dialogComponentRef.instance.Invocation_links.push(link);
-      }
-      //Exception Links
-      else if (link.name == 'Overtime_exception' || link.name == 'Undertime_exception') {
-        dialogComponentRef.instance.Exception_links.push(link);
-      }
-    }
-
-    this.dialog$.next(dialogComponentRef);
-    return dialogComponentRef;
-  }
-
   //Opl popup dialog when user hovers on a link
   createOplDialog(linkView) {
     const oplDialogComponentRef = {
@@ -278,7 +209,11 @@ export class InitRappidService {
     this.paper.on('cell:pointerdblclick', function (cellView, evt) {
       cellView.model.doubleClickHandle(cellView, evt, this.paper); }, this);
     this.paper.on('cell:pointerup', function (cellView) {
-      cellView.model.pointerUpHandle(cellView, _this); }, this);
+      cellView.model.pointerUpHandle(cellView, _this);
+      _this.graphService.updateJSON(); }, this);      // save to firebase
+    this.paper.on('blank:pointerclick ', function (cellView) {
+      _this.graphService.updateJSON();      // save to firebase
+    });
     this.graph.on('change:attrs', function (cell) {
       cell.changeAttributesHandle(); }, this);
     this.graph.on('change:size', _.bind(function (cell) {
@@ -292,19 +227,6 @@ export class InitRappidService {
       cell.addHandle(_this); });
   }
 
-  initializeAttributesEvents() {
-    const _this = this;
-    this.paper.render();
-    this.paper.on('cell:pointerup blank:pointerclick ', function (cellView) {
-      _this.graphService.updateJSON();
-    });
-    this.paper.on('cell:pointerdown', function (cellView) {
-      const cell = cellView.model;
-      cell.on('cell:pointerup', function (cellView) {
-        _this.graphService.updateJSON();
-      });
-    });
-  }
   initializeNavigator() {
     const navigator = this.navigator = new joint.ui.Navigator({
       width: 240,
