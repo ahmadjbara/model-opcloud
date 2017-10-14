@@ -1,5 +1,8 @@
 import * as common from '../../../common/commonFunctions';
 import {linkConnectionType} from '../../ConfigurationOptions';
+import {linkTypeSelection} from '../../../configuration/elementsFunctionality/linkTypeSelection';
+import {OpmState} from "../OpmState";
+import {validationAlert} from "../../../configuration/rappidEnviromentFunctionality/shared";
 
 const linkDefinition = {
   defaults: common._.defaultsDeep({
@@ -30,9 +33,60 @@ export class OpmDefaultLink extends common.joint.shapes.devs.Link.extend(linkDef
     };
   }
   doubleClickHandle(cellView, evt, paper) {}
-  pointerUpHandle(cellView) {}
+  pointerUpHandle(cellView) {
+    let errorMessage;
+    // If it is a new link and is not connected to any element - deleting it.
+    // Otherwise it will be reconnected to the previous element.
+    if (!this.attributes.target.id && !this.get('previousTargetId')) {
+      errorMessage = 'A link must be connected to a target element';
+      this.remove();
+    } else if (!this.attributes.target.id && this.get('previousTargetId')) {
+      this.set({'target': {'id': this.get('previousTargetId')}});
+    }
+    if (!this.attributes.source.id && this.get('previousSourceId')) {
+      this.set({'source': {'id': this.get('previousSourceId')}});
+    }
+    if (this.getSourceElement() && this.getTargetElement()) {
+      if (this.getTargetElement().id === this.getSourceElement().get('parent')) {
+        errorMessage = 'A state cannot be connected to his object!';
+      }
+      if ((this.getSourceElement() instanceof OpmState) &&
+        (this.getTargetElement() instanceof OpmState) &&
+        this.getSourceElement().get('parent') === this.getTargetElement().get('parent')) {
+        errorMessage = 'A link cannot connect between two states inside the same object!';
+      }
+      if (this.getSourceElement().id === this.getTargetElement().id) {
+        errorMessage = 'An element cannot be connected to itself!';
+      }
+    }
+    if (errorMessage) {
+      validationAlert(errorMessage);
+      this.remove();
+    }
+  }
   changeAttributesHandle() {}
   changeSizeHandle() {}
   changePositionHandle() {}
   removeHandle(options) {}
+  addHandle(options) {
+    this.on('change:target change:source', (link, a, b) => {
+      const source = this.getSourceElement();
+      const target = this.getTargetElement();
+      if ((source && target) && (source.id !== target.id) &&
+        (target.id !== source.get('parent')) &&
+        !((source instanceof OpmState) && (target instanceof OpmState) &&
+          source.get('parent') === target.get('parent'))) {
+         if (!this.get('previousTargetId') || (this.get('previousTargetId') !== this.attributes.target.id)) {
+            const relevantLinks = linkTypeSelection.generateLinkWithOpl(this);
+            if (relevantLinks.length > 0) {
+              this.set('previousTargetId', this.attributes.target.id);
+              this.set('previousSourceId', this.attributes.source.id);
+              if (!b.cameFromInZooming) {
+                options.createDialog(this);
+              }
+            }
+        }
+      }
+    });
+  }
 }

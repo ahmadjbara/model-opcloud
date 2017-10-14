@@ -1,6 +1,5 @@
 import * as common from '../../common/commonFunctions';
 import {gridLayout} from '../../config/gridLayout';
-import {textWrapping} from './textWrapping';
 const joint = require('rappid');
 
 export function arrangeEmbedded(fatherObject, side) {

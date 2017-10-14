@@ -1,33 +1,14 @@
 import { Injectable } from '@angular/core';
 import { GraphService } from '../services/graph.service';
-import { haloConfig } from '../../configuration/rappidEnviromentFunctionality/halo.config';
-import { toolbarConfig } from '../../config/toolbar.config';
-import { opmRuleSet } from '../../config/opm-validator';
 import { linkTypeSelection } from '../../configuration/elementsFunctionality/linkTypeSelection';
 import { CommandManagerService } from '../services/command-manager.service';
-import { textWrapping } from '../../configuration/elementsFunctionality/textWrapping';
-import { arrangeEmbedded } from '../../configuration/elementsFunctionality/arrangeStates';
 //treeview imports
 import { TreeViewService } from '../../services/tree-view.service';
-import { processInzooming, processUnfolding } from '../../config/process-inzooming';
 // popup imports
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
-
-import { TreeComponent, TreeModel, TreeNode } from 'angular-tree-component';
-import {OpmProcess} from "../../models/DrawnPart/OpmProcess";
-import {OpmObject} from "../../models/DrawnPart/OpmObject";
 import {OpmModel} from "../../models/DrawnPart/OpmModel";
-import {OpmLogicalObject} from "../../models/LogicalPart/OpmLogicalObject";
-import {OpmLogicalProcess} from "../../models/LogicalPart/OpmLogicalProcess";
-import {OpmLogicalState} from "../../models/LogicalPart/OpmLogicalState";
-import {OpmState} from "../../models/DrawnPart/OpmState";
 import {OpmDefaultLink} from "../../models/DrawnPart/Links/OpmDefaultLink";
-import {OpmProceduralLink} from "../../models/DrawnPart/Links/OpmProceduralLink";
-import {OpmProceduralRelation} from '../../models/LogicalPart/OpmProceduralRelation';
-import {OpmFundamentalLink} from '../../models/DrawnPart/Links/OpmFundamentalLink';
-import {OpmFundamentalRelation} from '../../models/LogicalPart/OpmFundamentalRelation';
-import {OpmTaggedLink} from '../../models/DrawnPart/Links/OpmTaggedLink';
-import {OpmTaggedRelation} from '../../models/LogicalPart/OpmTaggedRelation';
+import {addHandle} from "../../configuration/elementsFunctionality/graphFunctionality";
 
 
 const joint = require('rappid');
@@ -62,11 +43,9 @@ export class InitRappidService {
     joint.setTheme('modern');
     this.initializePaper();
     this.initializeSelection();
-    this.initializeValidator();
     this.initializeNavigator();
     this.initializeKeyboardShortcuts();
     this.initializeTooltips();
-    this.handleAddLink();
     this.initializeEvents();
     this.initializeAttributesEvents();
     // This doesn't work (the event is not caught)
@@ -166,57 +145,6 @@ export class InitRappidService {
    //   console.log('mouse leave link');
     });
   }
-  // Check Changes. This function has been modified to update opl for each cell once graph is changed
-  handleAddLink() {
-    this.graph.on('add', (cell, collection, opt) => {
-      if (opt.stencil) {
-        this.cell$.next(cell);
-      }
-      if (cell instanceof OpmObject) {
-        this.opmModel.add(new OpmLogicalObject(cell.getParams(), this.opmModel));
-      } else if (cell instanceof OpmProcess) {
-        this.opmModel.add(new OpmLogicalProcess(cell.getParams(), this.opmModel));
-      } else if (cell instanceof OpmState) {
-        this.opmModel.add(new OpmLogicalState(cell.getParams(), this.opmModel));
-      } else if (cell instanceof OpmProceduralLink) {
-        this.opmModel.add(new OpmProceduralRelation(cell.getParams(), this.opmModel));
-      } else if (cell instanceof OpmTaggedLink) {
-        this.opmModel.add(new OpmTaggedRelation(cell.getParams(), this.opmModel));
-      } else if (cell instanceof OpmFundamentalLink) {
-        this.opmModel.add(new OpmFundamentalRelation(cell.getParams(), this.opmModel));
-      }
-
-
-      if (cell.attributes.type === 'opm.Link') {
-        this.paper.on('cell:pointerup ', function (cellView) {
-          const cell = cellView.model;
-          //If it is a new link and is not connected to any element - deleting it. Otherwise it will be reconnected to
-          //the previous element
-          if (cell.isLink() && !cell.attributes.target.id && !cell.get('previousTargetId')) {
-            cell.remove();
-          }
-        });
-        cell.on('change:target change:source', (link,a, b) => {
-
-          if (link.attributes.source.id && link.attributes.target.id) {
-            if (link.attributes.source.id != link.attributes.target.id) {
-              if (!link.get('previousTargetId') || (link.get('previousTargetId') != link.attributes.target.id)) {
-                const relevantLinks = linkTypeSelection.generateLinkWithOpl(link);
-                if (relevantLinks.length > 0) {
-                  link.set('previousTargetId', link.attributes.target.id);
-                  if (!b.cameFromInZooming) {
-                    this.createDialog(link);
-                    console.log("here...");
-                  }
-                }
-              }
-            }
-          }
-        });
-      }
-    });
-  }
-
   initializePaper() {
     this.paper = new joint.dia.Paper({
       linkConnectionPoint: joint.util.shapePerimeterConnectionPoint,
@@ -359,6 +287,9 @@ export class InitRappidService {
       cell.changePositionHandle(); }, this));
     this.graph.on('remove', (cell) => {
       cell.removeHandle(_this); });
+    this.graph.on('add', (cell, collection, opt) => {
+      addHandle(_this, cell, opt);
+      cell.addHandle(_this); });
   }
 
   initializeAttributesEvents() {
@@ -373,11 +304,6 @@ export class InitRappidService {
         _this.graphService.updateJSON();
       });
     });
-  }
-  initializeValidator() {
-    this.validator = new joint.dia.Validator({ commandManager: this.commandManager });
-    this.RuleSet = opmRuleSet;
-    this.RuleSet(this.validator, this.graph);
   }
   initializeNavigator() {
     const navigator = this.navigator = new joint.ui.Navigator({

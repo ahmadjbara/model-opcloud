@@ -135,4 +135,5 @@ export class OpmEntity extends common.joint.dia.Element.extend(entityDefinition)
     this.resize(newParams.width, newParams.height);
   }
   removeHandle(options) {}
+  addHandle(options) {}
 }

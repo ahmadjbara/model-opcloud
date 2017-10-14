@@ -125,4 +125,5 @@ export class TriangleClass extends common.joint.shapes.devs.Model.extend({
   changeSizeHandle() {}
   changePositionHandle() {}
   removeHandle(options) {}
+  addHandle(options) {}
 }
