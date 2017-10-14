@@ -1,5 +1,6 @@
 import {linkTypeSelection} from './linkTypeSelection';
 
+// Options - init-rappid service
 export function createDialog(options, link) {
   const dialogComponentRef = {
     type: 'choose-link',
