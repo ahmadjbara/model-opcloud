@@ -9,7 +9,7 @@ import {OpmModel} from '../../models/DrawnPart/OpmModel';
 import {OpmDefaultLink} from '../../models/DrawnPart/Links/OpmDefaultLink';
 import {addHandle} from '../../configuration/elementsFunctionality/graphFunctionality';
 import {defineKeyboardShortcuts} from '../../configuration/rappidEnviromentFunctionality/keyboardShortcuts';
-import {selectionConfiguration} from "../../configuration/rappidEnviromentFunctionality/selectionConfiguration";
+import {selectionConfiguration} from '../../configuration/rappidEnviromentFunctionality/selectionConfiguration';
 
 
 const joint = require('rappid');
@@ -25,7 +25,6 @@ export class InitRappidService {
   paper;
   commandManager;
   paperScroller;
-  private keyboard;
   private clipboard;
   private selection;
   private navigator;
@@ -42,37 +41,9 @@ export class InitRappidService {
     joint.setTheme('modern');
     this.initializeDesktop();
     this.initializeEvents();
-    // This doesn't work (the event is not caught)
-    this.linkHoverEvent();
-
     this.opmModel = new OpmModel();
     defineKeyboardShortcuts(this);
 
-  }
-  // Opl popup dialog when user hovers on a link
-  createOplDialog(linkView) {
-    const oplDialogComponentRef = {
-      type: 'opl',
-      instance: {
-        link: linkView.model
-      }
-    };
-    this.dialog$.next(oplDialogComponentRef);
-  }
-
-  linkHoverEvent() {
-    let oplDialog;
-
-    this.paper.on('link:mouseover', (cellView, evt) => {
-      this.createOplDialog(cellView);
-    //  console.log('mouse over link');
-      cellView.highlight();
-    });
-    this.paper.on('link:mouseleave', (cellView, evt) => {
-      oplDialog.close();
-      this.dialog$.next('close-opl');
-   //   console.log('mouse leave link');
-    });
   }
   initializeDesktop() {
     this.paper = new joint.dia.Paper({
@@ -100,7 +71,7 @@ export class InitRappidService {
     this.clipboard = new joint.ui.Clipboard();
     this.selection = new joint.ui.Selection({paper: this.paper});
     this.selection.removeHandle('rotate');
-    new joint.ui.Tooltip({
+    const tooltip = new joint.ui.Tooltip({
       rootTarget: document.body,
       target: '[data-tooltip]',
       direction: 'auto',
@@ -114,7 +85,10 @@ export class InitRappidService {
     this.paper.on('cell:pointerup', function (cellView) {
       cellView.model.pointerUpHandle(cellView, _this);
       _this.graphService.updateJSON(); }, this);      // save to firebase
-    this.paper.on('blank:pointerclick ', function (cellView) {
+    this.paper.on('element:pointerup link:options', function (cellView) {
+      if (!this.selection.collection.contains(cellView.model)) {
+        this.cell$.next(cellView.model); }}, this);
+    this.paper.on('blank:pointerclick ', function () {
       _this.graphService.updateJSON();      // save to firebase
     });
     this.paper.on('blank:pointerdown', function (evt, x, y) {
