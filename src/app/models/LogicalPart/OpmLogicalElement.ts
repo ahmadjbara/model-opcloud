@@ -15,5 +15,13 @@
     add(opmVisualElement) {
       this.visualElements.push(opmVisualElement);
     }
+    remove(opmVisualElementId) {
+      for (let i = 0; i < this.visualElements.length; i++) {
+        if (this.visualElements[i].id === opmVisualElementId) {
+          this.visualElements.splice(i, 1);
+          break;
+        }
+      }
+    }
   }
 

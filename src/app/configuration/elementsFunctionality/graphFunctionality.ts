@@ -28,5 +28,7 @@ export function addHandle(initRappidService, cell, opt) {
   } else if (cell instanceof OpmFundamentalLink) {
     initRappidService.opmModel.add(new OpmFundamentalRelation(cell.getParams(), initRappidService.opmModel));
   }
-
+}
+export function removeHandle(initRappidService, cell) {
+  initRappidService.opmModel.remove(cell.id);
 }
