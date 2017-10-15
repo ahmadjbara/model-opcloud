@@ -1,5 +1,4 @@
 import {OpmEntity} from './OpmEntity';
-import * as common from '../../common/commonFunctions';
 
 export  class OpmState extends OpmEntity {
   initialize() {

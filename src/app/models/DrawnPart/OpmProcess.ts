@@ -1,6 +1,7 @@
 import {OpmThing} from './OpmThing';
 import {processInzooming, processUnfolding} from '../../config/process-inzooming';
 import * as common from '../../common/commonFunctions';
+import {joint} from '../../configuration/rappidEnviromentFunctionality/shared';
 
 export class OpmProcess extends OpmThing {
   constructor() {
@@ -43,7 +44,7 @@ export class OpmProcess extends OpmThing {
   haloConfiguration(halo, options) {
     halo.addHandle(this.addHandleGenerator('manage_complexity', 'sw', 'Click to manage complexity', 'left'));
     halo.on('action:manage_complexity:pointerdown', function (evt, x, y) {
-      const contextToolbar = new common.joint.ui.ContextToolbar({
+      const contextToolbar = new joint.ui.ContextToolbar({
         theme: 'modern',
         tools: [
           { action: 'In-Zoom', content:  this.options.cellView.model.attributes.attrs.ellipse['stroke-width'] === 4 ? 'Show In-Zoomed' : 'In-Zoom' },

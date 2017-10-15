@@ -1,6 +1,7 @@
 import {OpmEntity} from './OpmEntity';
 import { Essence, Affiliation } from '../ConfigurationOptions';
 import * as common from '../../common/commonFunctions';
+import {joint, _} from '../../configuration/rappidEnviromentFunctionality/shared';
 
 export  class OpmThing extends OpmEntity {
   constructor() {
@@ -52,7 +53,7 @@ export  class OpmThing extends OpmEntity {
     let bottomSideY = this.get('position').y + this.get('size').height;
     const padding = this.get('padding');
 
-    common._.each(this.getEmbeddedCells(), function(child) {
+    _.each(this.getEmbeddedCells(), function(child) {
       const childBbox = child.getBBox();
       // Updating the new size of the object to have margins of at least paddingObject so that the state will not touch the object
       if (childBbox.x <= (leftSideX + padding)) { leftSideX = childBbox.x - padding; }
@@ -73,7 +74,7 @@ export  class OpmThing extends OpmEntity {
     const currentCellId = this.id;
     if (cellViewsBelow.length) {
     // Note that the findViewsFromPoint() returns the view for the `cell` itself.
-    const cellViewBelow = common._.find(cellViewsBelow, function (c) {
+    const cellViewBelow = _.find(cellViewsBelow, function (c) {
       return c.model.id !== currentCellId;
     });
     // Prevent recursive embedding.

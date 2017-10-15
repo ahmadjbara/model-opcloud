@@ -1,7 +1,7 @@
 import { opmStyle } from '../configuration/rappidEnviromentFunctionality/opmStyle';
-export const _ = require('lodash');
+import {joint, _} from '../configuration/rappidEnviromentFunctionality/shared';
+
 export const paddingObject = 10;
-export const joint = require('rappid');
 export const width = require('text-width');
 export const height = require('text-height');
 

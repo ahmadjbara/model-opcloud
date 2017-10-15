@@ -1,8 +1,9 @@
 import * as common from '../../common/commonFunctions';
+import {joint, _} from '../../configuration/rappidEnviromentFunctionality/shared';
 
 // Options - init-rappid service
 export function defineKeyboardShortcuts(options) {
-  options.keyboard = new common.joint.ui.Keyboard();
+  options.keyboard = new joint.ui.Keyboard();
   options.keyboard.on({
     'ctrl+c': function () {
       // Copy all selected elements and their associated links.
@@ -13,7 +14,7 @@ export function defineKeyboardShortcuts(options) {
         translate: { dx: 20, dy: 20 },
         useLocalStorage: true
       });
-      const elements = common._.filter(pastedCells, function (cell) {
+      const elements = _.filter(pastedCells, function (cell) {
         return cell.isElement();
       });
       // Make sure pasted elements get selected immediately. options makes the UX better as

@@ -1,4 +1,4 @@
-import * as common from '../../common/commonFunctions';
+import {joint, _} from '../../configuration/rappidEnviromentFunctionality/shared';
 
 export const valueHandle = {
 
@@ -6,7 +6,7 @@ export const valueHandle = {
     updateState(cell, value) {
         cell.set('previousValue', value);
         var statesNumber = 0;   //currently only one value for object is allowed
-        common._.each(cell.getEmbeddedCells(), function(child) {
+        _.each(cell.getEmbeddedCells(), function(child) {
             statesNumber ++;
             //There is already a state with the value set to the object - no need to update
             child.attr({text: {text: value}});
@@ -14,7 +14,7 @@ export const valueHandle = {
         //If got to this line then it means that there is no state yet and need to add a new state
         if(statesNumber === 0) {
           cell.addState();
-            common._.each(cell.getEmbeddedCells(), function (child) {child.attr({text: {text: value}});});
+            _.each(cell.getEmbeddedCells(), function (child) {child.attr({text: {text: value}});});
         }
     },
 

@@ -4,9 +4,10 @@ import {linkTypeSelection} from '../../../configuration/elementsFunctionality/li
 import {OpmState} from '../OpmState';
 import {validationAlert} from '../../../configuration/rappidEnviromentFunctionality/shared';
 import {createDialog} from '../../../configuration/elementsFunctionality/linkDialog';
+import {joint, _} from '../../../configuration/rappidEnviromentFunctionality/shared';
 
 const linkDefinition = {
-  defaults: common._.defaultsDeep({
+  defaults: _.defaultsDeep({
     type: 'opm.Link',
     attrs: {'.connection': { 'stroke-width': 2, 'stroke-dasharray': '8 5', 'stroke': 'black'}},
     labels: [{ position: 0.5, attrs: { text: {
@@ -15,10 +16,10 @@ const linkDefinition = {
       'font-size': 10,
       fill: 'red',
       'font-weight': 200} } }]
-  }, common.joint.shapes.devs.Link.prototype.defaults)
+  }, joint.shapes.devs.Link.prototype.defaults)
 };
 
-export class OpmDefaultLink extends common.joint.shapes.devs.Link.extend(linkDefinition) {
+export class OpmDefaultLink extends joint.shapes.devs.Link.extend(linkDefinition) {
   getDefaultLinkParams() {
     return {
       sourceElementId: this.getSourceElement().get('id'),
