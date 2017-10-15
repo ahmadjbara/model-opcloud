@@ -1,9 +1,6 @@
 import { opmStyle } from '../configuration/rappidEnviromentFunctionality/opmStyle';
-import {joint, _} from '../configuration/rappidEnviromentFunctionality/shared';
+import {joint, _, paddingObject} from '../configuration/rappidEnviromentFunctionality/shared';
 
-export const paddingObject = 10;
-export const width = require('text-width');
-export const height = require('text-height');
 
 export const CommonFunctions = {
 
@@ -20,7 +17,7 @@ export const CommonFunctions = {
       //Updating the new size of the object to have margins of at least paddingObject so that the state will not touch the object
 
       if (!elps.containsPoint(childBbox.bottomLeft())){
-        bottomSideY = bottomSideY+paddingObject;
+        bottomSideY = bottomSideY + paddingObject;
         leftSideX = leftSideX - paddingObject;
       }
       if (!elps.containsPoint(childBbox.origin())){

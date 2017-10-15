@@ -1,4 +1,4 @@
-import * as common from '../../common/commonFunctions';
+import {width, height} from '../../configuration/rappidEnviromentFunctionality/shared';
 
 export const wrapAndSize = {
   width: 0,
@@ -16,7 +16,7 @@ export const textWrapping = {
   },
 
   getTextWidth(text, fontSize, fontWeight, fontFamily){
-    return common.width(text, {
+    return width(text, {
       family: fontFamily,
       size: fontSize,
       weight: fontWeight
@@ -24,32 +24,31 @@ export const textWrapping = {
   },
 
   getTextHeight(text, fontSize, fontWeight, fontFamily){
-    return common.height(text, {
+    return height(text, {
       family: fontFamily,
       size: fontSize,
       weight: fontWeight
     }).height;
   },
 
-  getParagraphWidth(text, cell){
-    var size;
-    var textArray = text.split('\n');
-    var maxLineWidth = 0;
-    for (var i = 0; i < textArray.length; i++) {
-      var textWidth = this.getTextWidth(textArray[i], cell.attributes.attrs.text['font-size'], cell.attributes.attrs.text['font-weight'], cell.attributes.attrs.text['font-family']);
+  getParagraphWidth(text, cell) {
+    const textArray = text.split('\n');
+    let maxLineWidth = 0, textWidth;
+    for (let i = 0; i < textArray.length; i++) {
+      textWidth = this.getTextWidth(textArray[i], cell.attributes.attrs.text['font-size'], cell.attributes.attrs.text['font-weight'], cell.attributes.attrs.text['font-family']);
       if (textWidth > maxLineWidth)
         maxLineWidth = textWidth;
     }
     return maxLineWidth;
   },
 
-  getParagraphHeight(text, cell){
-    var textArray = text.split('\n');
-    var textHeight = this.getTextHeight(textArray[0], cell.attributes.attrs.text['font-size'], cell.attributes.attrs.text['font-weight'], cell.attributes.attrs.text['font-family']);
+  getParagraphHeight(text, cell) {
+    const textArray = text.split('\n');
+    const textHeight = this.getTextHeight(textArray[0], cell.attributes.attrs.text['font-size'], cell.attributes.attrs.text['font-weight'], cell.attributes.attrs.text['font-family']);
     return textArray.length * textHeight;
   },
 
-  wrapTextAfterSizeChange(cell){
+  wrapTextAfterSizeChange(cell) {
     var textString = cell.attributes.attrs.text.text;
     if (!textString) return;
     cell.attributes.attrs.manuallyResized = true;
