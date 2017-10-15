@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { IActionMapping, KEYS, TREE_ACTIONS, TreeComponent, TreeNode } from 'angular-tree-component';
 import { GraphService } from '../rappid-components/services/graph.service';
-import { TreeViewService } from '../services/tree-view.service';
+import { TreeViewService } from '../rappid-components/services/tree-view.service';
 import { Node } from '../models/node.model';
 import { Subscription } from 'rxjs/Subscription';
 

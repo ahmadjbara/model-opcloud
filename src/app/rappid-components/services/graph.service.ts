@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
-import { ModelObject } from '../../services/storage/model-object.class';
-import { ModelStorageInterface } from '../../services/storage/model-storage.interface';
-import {TreeViewService} from "../../services/tree-view.service";
+import { ModelObject } from './storage/model-object.class';
+import { ModelStorageInterface } from './storage/model-storage.interface';
+import {TreeViewService} from "./tree-view.service";
 import {linkDrawing} from '../../configuration/elementsFunctionality/linkDrawing';
 import {OpmProcess} from "../../models/DrawnPart/OpmProcess";
 const joint = require('rappid');

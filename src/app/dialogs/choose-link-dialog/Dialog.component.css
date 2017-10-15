@@ -1,5 +1,5 @@
 .Structrial {
-  background: url('../../../assets/OPM_Links/Structrial.png') no-repeat top left;
+  background: url('../../../assets/icons/OPM_Links/Structrial.png') no-repeat top left;
   width: 50px;
   height: 24px;
 }
@@ -42,7 +42,7 @@
 
 /* Agents Icons  */
 .Agents {
-  background: url('../../../assets/OPM_Links/Agents.png') no-repeat top left;
+  background: url('../../../assets/icons/OPM_Links/Agents.png') no-repeat top left;
   width: 50px;
   height: 24px;
 }
@@ -67,7 +67,7 @@
 
 /*Instrument Links*/
 .Instruments {
-  background: url('../../../assets/OPM_Links/Instruments.png') no-repeat top left;
+  background: url('../../../assets/icons/OPM_Links/Instruments.png') no-repeat top left;
   width: 50px;
   height: 24px;
 }
@@ -92,7 +92,7 @@
 
 /*Effect links*/
 .Effects {
-  background: url('../../../assets/OPM_Links/Effects.png') no-repeat top left;
+  background: url('../../../assets/icons/OPM_Links/Effects.png') no-repeat top left;
   width: 50px;
   height: 24px;
 }
@@ -117,7 +117,7 @@
 
 /*Consumption links*/
 .Consumptions {
-  background: url('../../../assets/OPM_Links/Consumptions.png') no-repeat top left;
+  background: url('../../../assets/icons/OPM_Links/Consumptions.png') no-repeat top left;
   width: 50px;
   height: 24px;
 }
@@ -142,21 +142,21 @@
 
 /*Result Link*/
 .Result {
-  background: url('../../../assets/OPM_Links/Result.png') no-repeat top left;
+  background: url('../../../assets/icons/OPM_Links/Result.png') no-repeat top left;
   width: 73px;
   height: 24px;
 }
 
 /*Invocation Link*/
 .Invocation {
-  background: url('../../../assets/OPM_Links/Invocation.png') no-repeat top left;
+  background: url('../../../assets/icons/OPM_Links/Invocation.png') no-repeat top left;
   width: 73px;
   height: 24px;
 }
 
 /*Excetion Links*/
 .Exceptions {
-  background: url('../../../assets/OPM_Links/Exceptions.png') no-repeat top left;
+  background: url('../../../assets/icons/OPM_Links/Exceptions.png') no-repeat top left;
   width: 50px;
   height: 24px;
 }

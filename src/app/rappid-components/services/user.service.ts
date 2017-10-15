@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { AngularFireAuth } from 'angularfire2/auth';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
-import { environment } from '../../environments/environment';
+import { environment } from '../../../environments/environment';
 
 import * as firebase from 'firebase/app';
 import 'rxjs/add/operator/map';

@@ -2,7 +2,7 @@
 
 Copyright (c) 2015 client IO
 
- 2016-09-20 
+ 2016-09-20
 
 
 This Source Code Form is subject to the terms of the Rappid Academic License
@@ -42,7 +42,7 @@ file, You can obtain one at http://jointjs.com/license/rappid_academic_v1.txt
     background-color: transparent;
     background-position: 0 0;
     background-repeat: no-repeat;
-    background-image: url(./../assets/toolbar-icons-modern.png);
+    background-image: url(../icons/toolbar-icons-modern.png);
 }
 .joint-widget.joint-theme-modern[data-name="clear"]:after {
     background-position: 0 -62px;
@@ -165,7 +165,7 @@ file, You can obtain one at http://jointjs.com/license/rappid_academic_v1.txt
 
 @font-face {
   font-family: 'toolbar-icons-dark-kitchen-sink';
-  src: url('./../assets/toolbar-icons-dark.woff') format('woff');
+  src: url('../icons/toolbar-icons-dark.woff') format('woff');
 }
 .joint-widget.joint-theme-dark[data-name="clear"]:after,
 .joint-widget.joint-theme-dark[data-name="fullscreen"]:after,
@@ -308,7 +308,7 @@ file, You can obtain one at http://jointjs.com/license/rappid_academic_v1.txt
     content: ' ';
     background-color: transparent;
     background-repeat: no-repeat;
-    background-image: url(./../assets/toolbar-icons-material.png);
+    background-image: url(../icons/toolbar-icons-material.png);
 }
 
 @media screen and (max-width:1460px) and (min-width:1300px) {

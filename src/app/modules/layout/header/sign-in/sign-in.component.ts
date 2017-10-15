@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { MdDialogRef, MdIconRegistry } from '@angular/material';
 import { DomSanitizer } from '@angular/platform-browser';
-import { AuthActionTypes, UserService } from '../../../../services/user.service';
+import { AuthActionTypes, UserService } from '../../../../rappid-components/services/user.service';
 
 @Component({
   selector: 'opc-sign-in',

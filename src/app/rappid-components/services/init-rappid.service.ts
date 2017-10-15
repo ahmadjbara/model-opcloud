@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { GraphService } from '../services/graph.service';
 import { CommandManagerService } from '../services/command-manager.service';
 // treeview imports
-import { TreeViewService } from '../../services/tree-view.service';
+import { TreeViewService } from './tree-view.service';
 // popup imports
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import {OpmModel} from '../../models/DrawnPart/OpmModel';

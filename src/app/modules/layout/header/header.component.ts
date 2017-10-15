@@ -8,7 +8,7 @@ import { InitRappidService } from '../../../rappid-components/services/init-rapp
     <div class="app-toolbar-container">
       <md-toolbar class="app-toolbar mat-elevation-z6" color="primary">
 
-        <img src="../../../../assets/OPCloud.jpg" class="logo">
+        <img src="../../../../assets/icons/OPCloud.jpg" class="logo">
 
         <div class="model-name">{{ modelName }}</div>
 

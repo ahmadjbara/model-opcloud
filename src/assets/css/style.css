@@ -2,7 +2,7 @@
 
 Copyright (c) 2015 client IO
 
- 2016-09-20 
+ 2016-09-20
 
 
 This Source Code Form is subject to the terms of the Rappid Academic License
@@ -13,47 +13,47 @@ file, You can obtain one at http://jointjs.com/license/rappid_academic_v1.txt
 
 @font-face {
     font-family: 'Roboto Condensed';
-    src: url('../assets/fonts/Roboto_Condensed/RobotoCondensed-Light.ttf');
+    src: url('../fonts/Roboto_Condensed/RobotoCondensed-Light.ttf');
     font-weight: 300;
 }
 @font-face {
     font-family: 'Roboto Condensed';
-    src: url('../assets/fonts/Roboto_Condensed/RobotoCondensed-Regular.ttf');
+    src: url('../fonts/Roboto_Condensed/RobotoCondensed-Regular.ttf');
     font-weight: Normal;
 }
 @font-face {
     font-family: 'Roboto Condensed';
-    src: url('../assets/fonts/Roboto_Condensed/RobotoCondensed-Bold.ttf');
+    src: url('../fonts/Roboto_Condensed/RobotoCondensed-Bold.ttf');
     font-weight: Bold;
 }
 @font-face {
     font-family: 'Averia Libre';
-    src: url('../assets/fonts/Averia_Libre/AveriaLibre-Light.ttf');
+    src: url('../fonts/Averia_Libre/AveriaLibre-Light.ttf');
     font-weight: 300;
 }
 @font-face {
     font-family: 'Averia Libre';
-    src: url('../assets/fonts/Averia_Libre/AveriaLibre-Regular.ttf');
+    src: url('../fonts/Averia_Libre/AveriaLibre-Regular.ttf');
     font-weight: Normal;
 }
 @font-face {
     font-family: 'Averia Libre';
-    src: url('../assets/fonts/Averia_Libre/AveriaLibre-Bold.ttf');
+    src: url('../fonts/Averia_Libre/AveriaLibre-Bold.ttf');
     font-weight: Bold;
 }
 @font-face {
     font-family: 'Alegreya Sans';
-    src: url('../assets/fonts/Alegreya_Sans/AlegreyaSans-Light.ttf');
+    src: url('../fonts/Alegreya_Sans/AlegreyaSans-Light.ttf');
     font-weight: 300;
 }
 @font-face {
     font-family: 'Alegreya Sans';
-    src: url('../assets/fonts/Alegreya_Sans/AlegreyaSans-Regular.ttf');
+    src: url('../fonts/Alegreya_Sans/AlegreyaSans-Regular.ttf');
     font-weight: Normal;
 }
 @font-face {
     font-family: 'Alegreya Sans';
-    src: url('../assets/fonts/Alegreya_Sans/AlegreyaSans-Bold.ttf');
+    src: url('../fonts/Alegreya_Sans/AlegreyaSans-Bold.ttf');
     font-weight: Bold;
 }
 html, body, .joint-app {
@@ -131,7 +131,7 @@ body {
 }
 .joint-select-box.joint-color-palette .select-box-option:nth-child(2):not(.hover) {
     border: inset;
-    border-width: 1px;   
+    border-width: 1px;
 }
 .joint-inspector-select-box-options {
     width: 190px;

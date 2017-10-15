@@ -1,6 +1,6 @@
 import {OpmEntity} from './OpmEntity';
 import { Essence, Affiliation } from '../ConfigurationOptions';
-import {joint, _} from '../../configuration/rappidEnviromentFunctionality/shared';
+import {joint, _, paddingObject} from '../../configuration/rappidEnviromentFunctionality/shared';
 
 export  class OpmThing extends OpmEntity {
   constructor() {
@@ -50,15 +50,14 @@ export  class OpmThing extends OpmEntity {
     let topSideY = this.get('position').y;
     let rightSideX = this.get('position').x + this.get('size').width;
     let bottomSideY = this.get('position').y + this.get('size').height;
-    const padding = this.get('padding');
 
     _.each(this.getEmbeddedCells(), function(child) {
       const childBbox = child.getBBox();
       // Updating the new size of the object to have margins of at least paddingObject so that the state will not touch the object
-      if (childBbox.x <= (leftSideX + padding)) { leftSideX = childBbox.x - padding; }
-      if (childBbox.y <= (topSideY + padding)) { topSideY = childBbox.y - padding; }
-      if (childBbox.corner().x >= rightSideX - padding) { rightSideX = childBbox.corner().x + padding; }
-      if (childBbox.corner().y >= bottomSideY - padding) { bottomSideY = childBbox.corner().y + padding; }
+      if (childBbox.x <= (leftSideX + paddingObject)) { leftSideX = childBbox.x - paddingObject; }
+      if (childBbox.y <= (topSideY + paddingObject)) { topSideY = childBbox.y - paddingObject; }
+      if (childBbox.corner().x >= rightSideX - paddingObject) { rightSideX = childBbox.corner().x + paddingObject; }
+      if (childBbox.corner().y >= bottomSideY - paddingObject) { bottomSideY = childBbox.corner().y + paddingObject; }
     });
     this.set({
       position: { x: leftSideX, y: topSideY },

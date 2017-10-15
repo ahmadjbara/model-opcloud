@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewContainerRef } from '@angular/core';
 import { MdDialog } from '@angular/material';
 import { SignInComponent } from '../sign-in/sign-in.component';
-import { AuthActionTypes, UserService } from '../../../../services/user.service';
+import { AuthActionTypes, UserService } from '../../../../rappid-components/services/user.service';
 
 @Component({
   selector: 'opc-user-status',
