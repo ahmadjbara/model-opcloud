@@ -131,8 +131,12 @@ export class OpmEntity extends joint.dia.Element.extend(entityDefinition) {
   }
   updateTextAndSize() {
     const newParams = textWrapping.calculateNewTextSize(this.attr('text/text'), this);
-    this.attr({text: {text: newParams.text}});
-    this.resize(newParams.width, newParams.height);
+    if (newParams.text !== this.attr('text/text')) {
+      this.attr({text: {text: newParams.text}});
+    }
+    if ((newParams.width !== this.get('size').width) || (newParams.height !== this.get('size').height)) {
+      this.resize(newParams.width, newParams.height);
+    }
   }
   removeHandle(options) {}
   addHandle(options) {}
