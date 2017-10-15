@@ -1,5 +1,5 @@
 import {OpmThing} from './OpmThing';
-import {processInzooming, processUnfolding} from '../../config/process-inzooming';
+import {processInzooming, processUnfolding} from '../../configuration/elementsFunctionality/process-inzooming';
 import {joint, _, paddingObject} from '../../configuration/rappidEnviromentFunctionality/shared';
 
 export class OpmProcess extends OpmThing {

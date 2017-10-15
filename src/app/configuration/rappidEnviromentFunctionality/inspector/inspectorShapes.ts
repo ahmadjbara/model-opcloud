@@ -1,7 +1,7 @@
 import { selectOptions } from './selectOptions';
 import {createGroup} from './inspector.config';
 import {createColorsObject, createRangeObject, createSelection, createTextContentObject}
-        from '../configuration/rappidEnviromentFunctionality/shared';
+        from '../shared';
 
 export const inspectorShapes = {
 

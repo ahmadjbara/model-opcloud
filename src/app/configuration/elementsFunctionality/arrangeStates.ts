@@ -1,4 +1,4 @@
-import {gridLayout} from '../../config/gridLayout';
+import {gridLayout} from '../rappidEnviromentFunctionality/gridLayout';
 import {joint, _} from '../../configuration/rappidEnviromentFunctionality/shared';
 
 export function arrangeEmbedded(fatherObject, side) {

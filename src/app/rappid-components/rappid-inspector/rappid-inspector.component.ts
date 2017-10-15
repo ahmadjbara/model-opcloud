@@ -1,5 +1,5 @@
 import { Component, ViewContainerRef, ViewChild, Input, OnChanges } from '@angular/core';
-import { inspectorConfig } from '../../config/inspector.config';
+import { inspectorConfig } from '../../configuration/rappidEnviromentFunctionality/inspector/inspector.config';
 import {joint, _, jquery} from '../../configuration/rappidEnviromentFunctionality/shared';
 
 @Component({

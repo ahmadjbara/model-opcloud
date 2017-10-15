@@ -1,4 +1,4 @@
-import {opmStyle} from "./opmStyle";
+import {opmStyle} from "./inspector/opmStyle";
 
 export const _ = require('lodash');
 export const paddingObject = 10;

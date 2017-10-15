@@ -1,5 +1,5 @@
 import { selectOptions } from './selectOptions';
-import {createSelection} from '../configuration/rappidEnviromentFunctionality/shared';
+import {createSelection} from '../shared';
 import {createGroup} from './inspector.config';
 
 export const inspectorLinks = {
