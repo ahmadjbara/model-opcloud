@@ -1,9 +1,11 @@
 import { selectOptions } from './selectOptions';
-import {CommonFunctions} from "../common/commonFunctions";
+import {createGroup} from './inspector.config';
+import {createColorsObject, createRangeObject, createSelection, createTextContentObject}
+        from '../configuration/rappidEnviromentFunctionality/shared';
 
 export const inspectorShapes = {
 
-  //From this point defined different variables that build the attributes of the elements of the diagram.
+  // From this point defined different variables that build the attributes of the elements of the diagram.
 
   /**
    filter: Showed as a select-box with options as defined in shadowStyle. Used for essence definition.
@@ -15,11 +17,11 @@ export const inspectorShapes = {
    stroke-width: The width of the element's stroke. Picked from a range bar (0-30). Appears in styling group.Ordered eighth.
    */
   shapeDefinition: {
-    'filter': CommonFunctions.createSelection('select', selectOptions.shadowStyle, 'Essence', 'presentation', 2),
-    'stroke-dasharray': CommonFunctions.createSelection('select', selectOptions.strokeStyle, 'Affiliation', 'presentation', 2),
-    fill: CommonFunctions.createColorsObject('Shape fill', 6),
-    stroke: CommonFunctions.createColorsObject('Outline', 7),
-    'stroke-width': CommonFunctions.createRangeObject(0, 30, 'Outline thickness', 8)
+    'filter': createSelection('select', selectOptions.shadowStyle, 'Essence', 'presentation', 2),
+    'stroke-dasharray': createSelection('select', selectOptions.strokeStyle, 'Affiliation', 'presentation', 2),
+    fill: createColorsObject('Shape fill', 6),
+    stroke: createColorsObject('Outline', 7),
+    'stroke-width': createRangeObject(0, 30, 'Outline thickness', 8)
   },
 
   /*Definition of the element's text - content, color and size.
@@ -28,27 +30,42 @@ export const inspectorShapes = {
    font-size: The size of the text shown on the element. Picked from a range bar. Appears in styling group.Ordered fifth.
    */
   textDefinition: {
-    text: CommonFunctions.createTextContentObject('Text', 'text', 3),
-    fill: CommonFunctions.createColorsObject('Text fill', 4),
-    'font-size': CommonFunctions.createRangeObject(10, 80, 'Font size', 5)
+    text: createTextContentObject('Text', 'text', 3),
+    fill: createColorsObject('Text fill', 4),
+    'font-size': createRangeObject(10, 80, 'Font size', 5)
   },
 
   falseDefinition: {  },
 
   valueDefinition: {
-    'valueType' : CommonFunctions.createSelection('select-box', selectOptions.valueTypes, 'Type', 'computation', 9),
-    'value': CommonFunctions.createTextContentObject('Value', 'computation', 10),
-    'units' : CommonFunctions.createTextContentObject('Units', 'computation', 11),
+    'valueType' : createSelection('select-box', selectOptions.valueTypes, 'Type', 'computation', 9),
+    'value': createTextContentObject('Value', 'computation', 10),
+    'units' : createTextContentObject('Units', 'computation', 11),
   },
 
   functionDefinition: {
-    'value': CommonFunctions.createSelection('select-box', selectOptions.predefinedFunctions, 'Function', 'computation', 9)
+    'value': createSelection('select-box', selectOptions.predefinedFunctions, 'Function', 'computation', 9)
   },
 
-  //From this point defined  the groups that all the inspector parameters are grouped by.
+  // From this point defined  the groups that all the inspector parameters are grouped by.
   groupsDefinition: {
-    presentation: CommonFunctions.createGroup('Presentation', 1),
-    text: CommonFunctions.createGroup('Text', 2),
-    styling: CommonFunctions.createGroup('Styling', 3, true)
+    presentation: createGroup('Presentation', 1),
+    text: createGroup('Text', 2),
+    styling: createGroup('Styling', 3, true)
+  },
+
+  // Function CreateInspectorPart gets shapeName and needed definitions and generates suitable fields in the inspector.
+  // Fits for object, process and state (doesn't fit for link)
+  CreateInspectorShapesPart(shapeName, shapeDefinition, textDefinition, valueDefinition, groupsDefinition) {
+    return {
+      inputs: {
+        attrs: {
+          [shapeName]: shapeDefinition,
+          text: textDefinition,
+          value: valueDefinition,
+        }
+      },
+      groups: groupsDefinition
+    };
   }
 };

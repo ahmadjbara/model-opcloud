@@ -1,20 +1,21 @@
 import { selectOptions } from './selectOptions';
-import {CommonFunctions} from "../common/commonFunctions";
+import {createSelection} from '../configuration/rappidEnviromentFunctionality/shared';
+import {createGroup} from './inspector.config';
 
 export const inspectorLinks = {
-  //From this point defined  the groups that all the inspector parameters are grouped by.
+  // From this point defined  the groups that all the inspector parameters are grouped by.
   groupsDefinition: {
-    marker: CommonFunctions.createGroup('Marker', 1),
-    labels: CommonFunctions.createGroup('Labels', 2)
+    marker: createGroup('Marker', 1),
+    labels: createGroup('Labels', 2)
   },
 
   linkDefinition: {
-    '.marker-source': CommonFunctions.createSelection('select-box', selectOptions.SourceLinkType, 'source link type', 'Marker', 1),
-    '.marker-target': CommonFunctions.createSelection('select-box', selectOptions.DestLinkType, 'destination link type', 'Marker', 2),
+    '.marker-source': createSelection('select-box', selectOptions.SourceLinkType, 'source link type', 'Marker', 1),
+    '.marker-target': createSelection('select-box', selectOptions.DestLinkType, 'destination link type', 'Marker', 2),
   },
 
   labelDefinition: [{
-    position: CommonFunctions.createSelection('select-box', selectOptions.labelPosition, 'Position', 'Labels', 4),
+    position: createSelection('select-box', selectOptions.labelPosition, 'Position', 'Labels', 4),
     attrs: {
       text: {
         text: {
