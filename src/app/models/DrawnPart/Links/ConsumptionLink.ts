@@ -11,4 +11,7 @@ export  class ConsumptionLink extends OpmProceduralLink {
     const params = { linkType: linkType.Consumption };
     return {...super.getProceduralLinkParams(), ...params};
   }
+  clone(){
+    return new ConsumptionLink(this.sourceElement, this.targetElement, this.condition, this.event);
+  }
 }

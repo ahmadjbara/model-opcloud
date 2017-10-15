@@ -17,8 +17,8 @@ const linkDefinition = {
 export class OpmDefaultLink extends common.joint.shapes.devs.Link.extend(linkDefinition) {
   getDefaultLinkParams() {
     return {
-      sourceElementId: this.getSourceElement().get('id'),
-      targetElementId: this.getTargetElement().get('id'),
+      sourceElementId:  this.getSourceElement().get('id'),
+      targetElementId:  this.getTargetElement().get('id'),
       vertices: this.get('vertices'),
       linkConnectionType: (this.attr('.connection/stroke-dasharray') === 0) ? linkConnectionType.systemic : linkConnectionType.enviromental,
       textColor: this.get('labels')[0].attrs.text.fill,

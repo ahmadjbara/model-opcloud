@@ -15,8 +15,8 @@ export  class OpmProceduralLink extends OpmDefaultLink {
     this.targetElement = targetElement;
     this.condition = condition;
     this.event = event;
-    this.set({'source': {'id': sourceElement.id}});
-    this.set({'target': {'id': targetElement.id}});
+    this.set({'source': {'id': typeof sourceElement != 'undefined'? this.sourceElement.id: ''}});
+    this.set({'target': {'id': typeof targetElement != 'undefined'? this.targetElement.id: ''}});
     this.attr({'.connection': {'stroke-dasharray': '0'}});
     this.attr({'.marker-source' : {'stroke-width': 2}});
     this.attr({'.marker-target' : {'stroke-width': 2}});

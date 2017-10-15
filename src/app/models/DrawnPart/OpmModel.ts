@@ -10,11 +10,17 @@ export class OpmModel {
   private description: string;
   logicalElements: Array<OpmLogicalElement<OpmVisualElement>>;
   opds: Array<OpmOpd>;
+  currentOpd: OpmOpd;
 
   constructor() {
     this.logicalElements = new Array<OpmLogicalElement<OpmVisualElement>>();
     this.opds = new Array<OpmOpd>();
-    this.opds.push(new OpmOpd());
+    this.currentOpd = new OpmOpd('SD');
+    this.opds.push(this.currentOpd);
+  }
+  addOpd(opd: OpmOpd){
+    this.opds.push(opd);
+    this.currentOpd = opd;
   }
   add(opmLogicalElement: OpmLogicalElement<OpmVisualElement>) {
     this.logicalElements.push(opmLogicalElement);

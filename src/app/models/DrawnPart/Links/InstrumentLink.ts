@@ -11,4 +11,7 @@ export  class InstrumentLink extends OpmProceduralLink {
     const params = { linkType: linkType.Instrument };
     return {...super.getProceduralLinkParams(), ...params};
   }
+  clone(){
+    return new InstrumentLink(this.sourceElement, this.targetElement, this.condition, this.event);
+  }
 }

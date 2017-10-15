@@ -11,4 +11,7 @@ export  class AgentLink extends OpmProceduralLink {
     const params = { linkType: linkType.Agent };
     return {...super.getProceduralLinkParams(), ...params};
   }
+  clone(){
+    return new AgentLink(this.sourceElement, this.targetElement, this.condition, this.event);
+  }
 }

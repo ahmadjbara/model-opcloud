@@ -1,6 +1,8 @@
 import * as common from "../common/commonFunctions";
 import {OpmProcess} from "../models/DrawnPart/OpmProcess";
 import {OpmState} from "../models/DrawnPart/OpmState";
+import {ResultLink} from "../models/DrawnPart/Links/ResultLink";
+import {ConsumptionLink} from "../models/DrawnPart/Links/ConsumptionLink";
 
 const joint = require('rappid');
 const initial_subprocess=3;
@@ -21,9 +23,12 @@ export function processInzooming (evt, x, y, options, cellRef, links) {
 
   parentObject.set('padding',100);
 
-  options.graph.addCell(parentObject);
 
-  options.graph.addCells(links);
+ // options.graph.addCell(parentObject);
+
+  //console.log(links);
+  //options.graph.addCells(links);
+
 
   parentObject.attributes.attrs.text['ref-y']=.1;
   parentObject.attributes.attrs.text['ref-x']=.5;
@@ -32,7 +37,7 @@ export function processInzooming (evt, x, y, options, cellRef, links) {
 
    //parentObject.attributes.attrs.text({refx:'30%'});
   //zoom out current elements in the paper
-  var cells = options.graph.getElements();
+  var cells = cellRef.graph.getElements();
   for (var cellIndex = 0; cellIndex < cells.length; cellIndex++) {
     var cell = cells[cellIndex];
     if (!(cell instanceof OpmState)) {
@@ -73,7 +78,8 @@ export function processInzooming (evt, x, y, options, cellRef, links) {
 
 
    options.graph.getConnectedLinks(parentObject, { inbound: true }).forEach(function(link) {
-     if (link.attributes.name === 'Consumption') {
+     if (link instanceof ConsumptionLink) {
+       console.log(link);
        link.set('target', {id: first_process_id},{cameFromInZooming:true});
        //Ahmad: I don't like this solution. For now it solves the problem of navigating
        // between OPDs when there is a consumption link. Need to find where is a circular pointer created in the code.
@@ -82,7 +88,7 @@ export function processInzooming (evt, x, y, options, cellRef, links) {
    });
 
    options.graph.getConnectedLinks(parentObject, { outbound: true}).forEach(function(link) {
-     if (link.attributes.name === 'Result') {
+     if (link instanceof ResultLink) {
        link.set('source', {id: last_process_id});
      }
    });

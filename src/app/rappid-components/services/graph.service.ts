@@ -5,6 +5,7 @@ import {TreeViewService} from "../../services/tree-view.service";
 import {linkDrawing} from '../../configuration/elementsFunctionality/linkDrawing';
 import {OpmProcess} from "../../models/DrawnPart/OpmProcess";
 import {OpmDefaultLink} from "../../models/DrawnPart/Links/OpmDefaultLink";
+import {ResultLink} from "../../models/DrawnPart/Links/ResultLink";
 const joint = require('rappid');
 const rootId="SD";
 const firebaseKeyEncode = require('firebase-key-encode');
@@ -77,36 +78,6 @@ export class GraphService {
   }
 
 
-//   this.fireDB.ref('/models/' + this.modelName).on('value', function (snapshot) {
-//   getModel(snapshot.val());
-// });
-
-/*
-
-   this.graph.listen = function () {
-   function getModel(model) {
-   if (this.graph.myChangeLock) {
-   //console.log('my change');
-   this.graph.myChangeLock = false;
-   return;
-   }
-   this.graph.JSON_string = model.graph;
-   this.graph.JSON = JSON.parse(this.graph.JSON_string);
-   this.graph.fromJSON(JSON.parse(this.graph.JSON_string));
-   this.graph.OPL = model.opl;
-   document.getElementById("opl").innerHTML = this.graph.OPL;
-   };
-   if (this.modelName !== 'undefined') {
-   this.fireDB.ref('/models/' + this.modelName).on('value', function (snapshot) {
-   getModel(snapshot.val());
-   });
-   }
-   };
-   _.bind(this.graph.listen, this.graph);
-   this.graph.listen();
-   }
-*/
-
   getGraphById(ElementId: string) {
     this.graph.fromJSON(JSON.parse(localStorage.getItem(ElementId)));
   }
@@ -118,37 +89,32 @@ export class GraphService {
 
   graphSetUpdate(ElementId: string, newNodeRef, treeViewService, type) {
 
-    localStorage.setItem(this.currentGraphId, JSON.stringify(this.graph.toJSON()));
-    //AHMAD treeViewService.getNodeByIdType(this.currentGraphId, this.type).graph = JSON.stringify(this.graph.toJSON());
     treeViewService.getNodeByIdType(this.currentGraphId, this.type).graph = new joint.dia.Graph;
     treeViewService.getNodeByIdType(this.currentGraphId, this.type).graph.resetCells(this.graph.getCells());
     var newGraph = new joint.dia.Graph;
+    let clonedProcess;
     if (type==='unfold') {
       this.copyEmbeddedGraphElements(newGraph, ElementId, treeViewService);
     }
     else
-      this.copyConntectedGraphElements(newGraph,ElementId);
-    //AHMAD newGraph=newGraph.toJSON();
-    localStorage.setItem(ElementId, JSON.stringify(newGraph));
-    //AHMAD newNodeRef.graph = JSON.stringify(newGraph);
-    //AHMAD newNodeRef.graph = JSON.stringify(newGraph);
+       clonedProcess= this.copyConntectedGraphElements(newGraph,ElementId);
+
     newNodeRef.graph = newGraph;
-    //AHMAD this.graph.fromJSON(newGraph);
     this.graph.resetCells(newGraph.getCells());
     this.currentGraphId = ElementId;
     this.type=type;
+
+    return clonedProcess;
   }
 
   private copyEmbeddedGraphElements(newGraph, elementID, treeViewService) {
     let gCell=this.graph.getCell(elementID);
     let tmp = new joint.dia.Graph;
     let connctedCells= treeViewService.getNodeByIdType(elementID, 'inzoom').graph.getCell(elementID).getEmbeddedCells({deep:true});
-    //tmp.fromJSON(JSON.parse(treeViewService.getNodeByIdType(elementID, 'inzoom').graph)).getCell(elementID).getEmbeddedCells({deep:true});
     let clonedConnectedCells = [];
 
     clonedConnectedCells = connctedCells.map((c) => c.clone(), connctedCells);
-   // for (let k=0; k< connctedCells.length;k++)
-     // clonedConnectedCells.push(connctedCells[k].clone());
+
     newGraph.addCells(clonedConnectedCells);
 
     let w = gCell.get('size').width;
@@ -189,34 +155,49 @@ export class GraphService {
   private copyConntectedGraphElements(newGraph, elementId) {
     let gCell=this.graph.getCell(elementId);
     let connctedCells=this.graph.getNeighbors(gCell);
-    newGraph.addCells(connctedCells);
+    connctedCells.push(gCell);
     let graphServiceThis = this;
-    connctedCells.forEach(function(elm){
+    connctedCells.forEach(function(elm) {
       let parentId = elm.get('parent');
       if (parentId) {
-        newGraph.addCells(graphServiceThis.graph.getCell(parentId).getEmbeddedCells());
+        connctedCells.push(graphServiceThis.graph.getCell(parentId));
+      }
+    });
+    let temp = this.graph.cloneSubgraph(connctedCells,{deep:true});
+    let clonedConnectedCells=[];
+    for (let key in temp) {
+      let cloned =  temp[key];
+      let src = this.graph.getCell(key);
+      cloned.set('position', src.get('position'));
+      cloned.set('size', src.get('size'));
+      cloned.set('z', src.get('z'));
+      clonedConnectedCells.push(temp[key]);
+    }
+    newGraph.addCells(clonedConnectedCells);
+    return temp[elementId];
+   /*let graphServiceThis = this;
+    clonedConnectedCells.forEach(function(elm){
+      let parentId = elm.get('parent');
+      if (parentId) {
+        let temp = graphServiceThis.graph.getCell(parentId).getEmbeddedCells();
+        let tmp = graphServiceThis.graph.cloneCells(temp);
+        let newCells = [];
+        for (let key in tmp)
+          newCells.push(tmp[key]);
+        newGraph.addCells(newCells);
         newGraph.addCell(graphServiceThis.graph.getCell(parentId));
       }
-  });
-    this.graphLinks = this.graph.getConnectedLinks(gCell);
+  });*/
+    // this.graphLinks = this.graph.getConnectedLinks(gCell);
   }
 
   changeGraphModel(elementId, treeViewService, type) {
     console.log(treeViewService);
     if (elementId == this.currentGraphId && this.type===type)
       return 0;
-    //localStorage.setItem(this.currentGraphId, JSON.stringify(this.graph.toJSON()));
-    //AHMAD treeViewService.getNodeByIdType(this.currentGraphId, this.type).graph = JSON.stringify(this.graph.toJSON());
     treeViewService.getNodeByIdType(this.currentGraphId, this.type).graph.resetCells(this.graph.getCells());
 
-
-   // console.log(JSON.parse(treeViewService.getNodeByIdType(elementId, type).graph));
-    //AHMAD this.graph.fromJSON(JSON.parse(treeViewService.getNodeByIdType(elementId, type).graph));
-
     this.graph.resetCells(treeViewService.getNodeByIdType(elementId, type).graph.getCells());
-
-
-    //this.graph.fromJSON(JSON.parse(localStorage.getItem(elementId)));
     this.currentGraphId = elementId;
     this.type = type;
   }

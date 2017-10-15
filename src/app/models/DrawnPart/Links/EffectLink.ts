@@ -11,4 +11,7 @@ export  class EffectLink extends OpmProceduralLink {
     const params = { linkType: linkType.Effect };
     return {...super.getProceduralLinkParams(), ...params};
   }
+  clone(){
+    return new EffectLink(this.sourceElement, this.targetElement, this.condition, this.event);
+  }
 }
