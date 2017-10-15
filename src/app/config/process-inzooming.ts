@@ -61,7 +61,7 @@ export function processInzooming (evt, x, y, options, cellRef, links) {
     //console.log('child object2'+JSON.stringify(defaultProcess));
   }
 
-  common.CommonFunctions.updateProcessSize(parentObject);
+  parentObject.updateProcessSize();
   parentObject.set('statesHeightPadding', 180);
 
 
@@ -106,7 +106,7 @@ export function processInzooming (evt, x, y, options, cellRef, links) {
         return;
       }
       if (!parent.get('originalSize')) parent.set('originalSize', parent.get('size'));
-       common.CommonFunctions.updateProcessSize(parent);
+      parent.updateProcessSize();
     }
     else if (cell.get('embeds') && cell.get('embeds').length) {
      // if (cell.attributes.attrs.wrappingResized){

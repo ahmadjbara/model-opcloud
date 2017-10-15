@@ -1,7 +1,6 @@
 import {OpmThing} from './OpmThing';
 import {processInzooming, processUnfolding} from '../../config/process-inzooming';
-import * as common from '../../common/commonFunctions';
-import {joint} from '../../configuration/rappidEnviromentFunctionality/shared';
+import {joint, _, paddingObject} from '../../configuration/rappidEnviromentFunctionality/shared';
 
 export class OpmProcess extends OpmThing {
   constructor() {
@@ -97,5 +96,38 @@ export class OpmProcess extends OpmThing {
       });
       contextToolbar.render();
     });
+  }
+  updateProcessSize() {
+    let leftSideX = this.get('position').x;
+    let topSideY = this.get('position').y;
+    let rightSideX = this.get('position').x + this.get('size').width;
+    let bottomSideY = this.get('position').y + this.get('size').height;
+
+    const elps = joint.g.ellipse.fromRect(this.getBBox());
+    _.each(this.getEmbeddedCells(), function(child) {
+
+      const childBbox = child.getBBox();
+      // Updating the new size of the object to have margins of at least paddingObject so that the state will not touch the object
+
+      if (!elps.containsPoint(childBbox.bottomLeft())) {
+        bottomSideY = bottomSideY + paddingObject;
+        leftSideX = leftSideX - paddingObject;
+      }
+      if (!elps.containsPoint(childBbox.origin())) {
+        topSideY = topSideY - paddingObject ;
+        leftSideX = leftSideX - paddingObject;
+      }
+      if (!elps.containsPoint(childBbox.corner())) {
+        bottomSideY = bottomSideY + paddingObject;
+        rightSideX = rightSideX + paddingObject;
+      }
+      if (!elps.containsPoint(childBbox.topRight())) {
+        topSideY = topSideY - paddingObject ;
+        rightSideX = rightSideX + paddingObject;
+      }
+    });
+    this.set({
+      position: { x: leftSideX, y: topSideY },
+      size: { width: rightSideX - leftSideX, height: bottomSideY - topSideY }}, {skipExtraCall: true});
   }
 }
