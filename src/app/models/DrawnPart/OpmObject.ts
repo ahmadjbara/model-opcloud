@@ -2,8 +2,6 @@ import {OpmThing} from './OpmThing';
 import {valueHandle} from '../../configuration/elementsFunctionality/valueHandle';
 import {arrangeEmbedded} from '../../configuration/elementsFunctionality/arrangeStates';
 import {OpmState} from './OpmState';
-import {haloConfig} from "../../configuration/rappidEnviromentFunctionality/halo.config";
-import * as common from '../../common/commonFunctions';
 
 export class OpmObject extends OpmThing {
   constructor() {

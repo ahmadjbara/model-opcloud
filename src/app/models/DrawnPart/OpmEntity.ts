@@ -1,7 +1,6 @@
-import * as common from '../../common/commonFunctions';
-import {textWrapping} from "../../configuration/elementsFunctionality/textWrapping";
-import {OpmProceduralLink} from "./Links/OpmProceduralLink";
-import {haloConfig} from "../../configuration/rappidEnviromentFunctionality/halo.config";
+import {textWrapping} from '../../configuration/elementsFunctionality/textWrapping';
+import {OpmProceduralLink} from './Links/OpmProceduralLink';
+import {haloConfig} from '../../configuration/rappidEnviromentFunctionality/halo.config';
 import {joint, _} from '../../configuration/rappidEnviromentFunctionality/shared';
 
 const entityText = {

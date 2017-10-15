@@ -1,4 +1,3 @@
-import * as common from '../../common/commonFunctions';
 import {joint, _} from '../../configuration/rappidEnviromentFunctionality/shared';
 
 // Options - init-rappid service

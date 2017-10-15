@@ -1,4 +1,3 @@
-import * as common from "../common/commonFunctions";
 import {OpmProcess} from "../models/DrawnPart/OpmProcess";
 import {OpmState} from "../models/DrawnPart/OpmState";
 

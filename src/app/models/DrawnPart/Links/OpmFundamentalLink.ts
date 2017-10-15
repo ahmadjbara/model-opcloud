@@ -1,7 +1,6 @@
 import {OpmDefaultLink} from './OpmDefaultLink';
 import {OpmEntity} from '../OpmEntity';
 import {OpmStructuralLink} from './OpmStructuralLink';
-import * as common from '../../../common/commonFunctions';
 import {joint, _} from '../../../configuration/rappidEnviromentFunctionality/shared';
 
 

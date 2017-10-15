@@ -1,6 +1,5 @@
 import {OpmEntity} from './OpmEntity';
 import { Essence, Affiliation } from '../ConfigurationOptions';
-import * as common from '../../common/commonFunctions';
 import {joint, _} from '../../configuration/rappidEnviromentFunctionality/shared';
 
 export  class OpmThing extends OpmEntity {

@@ -1,4 +1,3 @@
-import * as common from '../../../common/commonFunctions';
 import {linkConnectionType} from '../../ConfigurationOptions';
 import {linkTypeSelection} from '../../../configuration/elementsFunctionality/linkTypeSelection';
 import {OpmState} from '../OpmState';
