@@ -15,5 +15,15 @@
       this.width = params.width;
       this.height = params.height;
     }
+    getParams() {
+      const params =  {
+        xPos: this.xPos,
+        yPos: this.yPos,
+        width: this.width,
+        height: this.height,
+        fill: this.fill,
+      };
+      return {...super.getElementParams(), ...params};
+    }
   }
 

@@ -14,6 +14,8 @@
     }
     add(opmVisualElement) {
       this.visualElements.push(opmVisualElement);
+      opmVisualElement.pointToFather(this);
+      this.opmModel.currentOpd.add(opmVisualElement);
     }
     remove(opmVisualElementId) {
       for (let i = 0; i < this.visualElements.length; i++) {

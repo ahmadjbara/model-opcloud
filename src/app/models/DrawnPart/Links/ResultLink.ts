@@ -11,4 +11,7 @@ export  class ResultLink extends OpmProceduralLink {
     const params = { linkType: linkType.Result };
     return {...super.getProceduralLinkParams(), ...params};
   }
+  clone(){
+    return new ResultLink(this.sourceElement, this.targetElement, this.condition, this.event);
+  }
 }
