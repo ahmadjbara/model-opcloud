@@ -36,7 +36,7 @@ export class TreeViewService {
   }
 
 
-  getNodes(): Observable<Node[]>{
+  getNodes(): Observable<Node[]> {
     return this.nodesSubject.asObservable();
   }
 
