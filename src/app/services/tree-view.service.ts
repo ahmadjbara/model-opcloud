@@ -40,7 +40,7 @@ export class TreeViewService {
     return this.nodesSubject.asObservable();
   }
 
-  insertNode(cellModelRef, type)
+  insertNode(cellModelRef, type, initRappid)
   {
     let element_id=cellModelRef.id;
     let parent_id=cellModelRef.get('parent')?cellModelRef.get('parent'):rootId;
@@ -56,7 +56,7 @@ export class TreeViewService {
       type: type,
     });
 
-    let clonedProcess = this.graphService.graphSetUpdate(element_id, newNode, this, type);
+    let clonedProcess = this.graphService.graphSetUpdate(element_id, newNode, this, type, initRappid);
     parentNode.addChildren(newNode);
     this.nodesSubject.next(this.nodes);
     return clonedProcess;

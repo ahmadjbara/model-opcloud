@@ -72,7 +72,6 @@ export class InitRappidService {
     this.initializeEvents();
     this.initializeAttributesEvents();
     // This doesn't work (the event is not caught)
-    this.linkHoverEvent();
 
     this.opmModel = new OpmModel();
     console.log(this.opmModel);
@@ -143,31 +142,6 @@ export class InitRappidService {
     return dialogComponentRef;
   }
 
-  //Opl popup dialog when user hovers on a link
-  createOplDialog(linkView) {
-    const oplDialogComponentRef = {
-      type: 'opl',
-      instance: {
-        link: linkView.model
-      }
-    };
-    this.dialog$.next(oplDialogComponentRef);
-  }
-
-  linkHoverEvent() {
-    let oplDialog;
-
-    this.paper.on('link:mouseover', (cellView, evt) => {
-      this.createOplDialog(cellView);
-    //  console.log('mouse over link');
-      cellView.highlight();
-    });
-    this.paper.on('link:mouseleave', (cellView, evt) => {
-      oplDialog.close();
-      this.dialog$.next('close-opl');
-   //   console.log('mouse leave link');
-    });
-  }
   // Check Changes. This function has been modified to update opl for each cell once graph is changed
   handleAddLink() {
     this.graph.on('add', (cell, collection, opt) => {
