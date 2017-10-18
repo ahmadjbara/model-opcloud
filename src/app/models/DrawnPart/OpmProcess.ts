@@ -61,7 +61,7 @@ export class OpmProcess extends OpmThing {
           // CellClone.set('id', cellModel.id);
           CellClone.attr('text/text', textString);
           CellClone.set('position', cellModel.get('position'));
-          let clonedProcess = options.treeViewService.insertNode(cellModel, 'inzoom');
+          let clonedProcess = options.treeViewService.insertNode(cellModel, 'inzoom', options);
           clonedProcess.set('position', cellModel.get('position'));
           const elementlinks = options.graphService.graphLinks;
           processInzooming(evt, x, y, haloThis.options, clonedProcess, elementlinks);
@@ -84,7 +84,7 @@ export class OpmProcess extends OpmThing {
           const textString = cellModel.attributes.attrs.text.text;
           CellClone.set('id', cellModel.id);
           CellClone.attr({text: {text: textString}});
-          const clonedProcess = options.treeViewService.insertNode(cellModel, 'unfold');
+          const clonedProcess = options.treeViewService.insertNode(cellModel, 'unfold', options);
           const elementlinks = options.graphService.graphLinks;
 
           haloThis.graph.addCell(CellClone);

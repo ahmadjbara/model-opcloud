@@ -6,6 +6,8 @@ import {linkDrawing} from '../../configuration/elementsFunctionality/linkDrawing
 import {OpmProcess} from '../../models/DrawnPart/OpmProcess';
 import {OpmDefaultLink} from '../../models/DrawnPart/Links/OpmDefaultLink';
 import {ResultLink} from '../../models/DrawnPart/Links/ResultLink';
+import {OpmObject} from "../../models/DrawnPart/OpmObject";
+import {OpmVisualObject} from "../../models/VisualPart/OpmVisualObject";
 
 const joint = require('rappid');
 const rootId='SD';
@@ -88,7 +90,7 @@ export class GraphService {
     localStorage.removeItem(ElementId);
   }
 
-  graphSetUpdate(ElementId: string, newNodeRef, treeViewService, type) {
+  graphSetUpdate(ElementId: string, newNodeRef, treeViewService, type, initRappid) {
 
     treeViewService.getNodeByIdType(this.currentGraphId, this.type).graph = new joint.dia.Graph;
     treeViewService.getNodeByIdType(this.currentGraphId, this.type).graph.resetCells(this.graph.getCells());
@@ -98,7 +100,7 @@ export class GraphService {
       this.copyEmbeddedGraphElements(newGraph, ElementId, treeViewService);
     }
     else
-       clonedProcess= this.copyConntectedGraphElements(newGraph,ElementId);
+       clonedProcess= this.copyConntectedGraphElements(newGraph,ElementId, initRappid);
 
     newNodeRef.graph = newGraph;
     this.graph.resetCells(newGraph.getCells());
@@ -154,7 +156,7 @@ export class GraphService {
   }
   //star
 
-  private copyConntectedGraphElements(newGraph, elementId) {
+  private copyConntectedGraphElements(newGraph, elementId, initRappid) {
     let gCell=this.graph.getCell(elementId);
     let connctedCells=this.graph.getNeighbors(gCell);
     connctedCells.push(gCell);
@@ -174,6 +176,10 @@ export class GraphService {
       cloned.set('size', src.get('size'));
       cloned.set('z', src.get('z'));
       clonedConnectedCells.push(temp[key]);
+      if (temp[key] instanceof OpmObject) {
+        let lg = initRappid.opmModel.getLogicalElementByVisualId(key);
+        lg.add(new OpmVisualObject(temp[key].getParams(), lg));
+      }
     }
     newGraph.addCells(clonedConnectedCells);
     return temp[elementId];
