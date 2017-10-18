@@ -23,7 +23,7 @@
         height: this.height,
         fill: this.fill,
       };
-      return {...super.getParams(), ...params};
+      return {...super.getElementParams(), ...params};
     }
   }
 

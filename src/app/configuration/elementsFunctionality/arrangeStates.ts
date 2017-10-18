@@ -18,12 +18,12 @@ export function arrangeEmbedded(fatherObject, side) {
     common._.each(embeddedStates, function (child) {
       const stateWidth = (child.getBBox().width * 2 > maxWidth) ? maxWidth : child.getBBox().width;
       const stateHeight = (child.getBBox().height * 2 > maxHeight) ? maxHeight : child.getBBox().height;
-      child.set({size: {height: stateHeight, width: stateWidth}});
+      child.resize(stateWidth, stateHeight);
     });
 
     if ((side === 'top') || (side === 'bottom')) {
       const refY = (side === 'top') ? (maxHeight + 2 * fatherObject.get('padding')) : fatherObject.get('padding');
-      fatherObject.arrangeEmbededParams(0.5, refY, 'middle', 'up', side, 0, maxHeight + fatherObject.get('padding')/2);
+      fatherObject.arrangeEmbededParams(0.5, refY, 'middle', 'up', side, 0, maxHeight + fatherObject.get('padding'));
       fatherObject.updateTextAndSize();
       const marginY = (side === 'top') ? (fatherObject.getBBox().y + fatherObject.get('padding')) : (fatherObject.getBBox().y + fatherObject.getBBox().height - fatherObject.get('padding') - maxHeight);
       gridLayout.layout(embeddedStates, {

@@ -22,16 +22,16 @@ export class OpmVisualElement {
     pointToFather(opmLogicalElement){
       this.logicalElement = opmLogicalElement;
     }
-  getParams() {
-    return {
-      textFontWeight: this.textFontWeight,
-      textFontSize: this.textFontSize,
-      textFontFamily: this.textFontFamily,
-      textColor: this.textColor,
-      strokeWidth: this.strokeWidth,
-      strokeColor: this.strokeColor,
-      id: this.id
-    };
-  }
+    getElementParams() {
+      return {
+        textFontWeight: this.textFontWeight,
+        textFontSize: this.textFontSize,
+        textFontFamily: this.textFontFamily,
+        textColor: this.textColor,
+        strokeWidth: this.strokeWidth,
+        strokeColor: this.strokeColor,
+        id: this.id
+      };
+    }
 }
 

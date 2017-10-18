@@ -1,15 +1,16 @@
 import { Injectable } from '@angular/core';
-import { ModelObject } from '../../services/storage/model-object.class';
-import { ModelStorageInterface } from '../../services/storage/model-storage.interface';
-import {TreeViewService} from "../../services/tree-view.service";
+import { ModelObject } from './storage/model-object.class';
+import { ModelStorageInterface } from './storage/model-storage.interface';
+import {TreeViewService} from './tree-view.service';
 import {linkDrawing} from '../../configuration/elementsFunctionality/linkDrawing';
-import {OpmProcess} from "../../models/DrawnPart/OpmProcess";
-import {OpmDefaultLink} from "../../models/DrawnPart/Links/OpmDefaultLink";
-import {ResultLink} from "../../models/DrawnPart/Links/ResultLink";
+import {OpmProcess} from '../../models/DrawnPart/OpmProcess';
+import {OpmDefaultLink} from '../../models/DrawnPart/Links/OpmDefaultLink';
+import {ResultLink} from '../../models/DrawnPart/Links/ResultLink';
 import {OpmObject} from "../../models/DrawnPart/OpmObject";
 import {OpmVisualObject} from "../../models/VisualPart/OpmVisualObject";
+
 const joint = require('rappid');
-const rootId="SD";
+const rootId='SD';
 const firebaseKeyEncode = require('firebase-key-encode');
 
 
@@ -104,7 +105,6 @@ export class GraphService {
     newNodeRef.graph = newGraph;
     this.graph.resetCells(newGraph.getCells());
     this.graph.getCells().map((cell) => cell.graph = this.graph);
-
     this.currentGraphId = ElementId;
     this.type=type;
 
@@ -210,3 +210,4 @@ export class GraphService {
     this.type = type;
   }
 }
+

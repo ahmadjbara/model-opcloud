@@ -1,8 +1,8 @@
 import {OpmThing} from './OpmThing';
-import {processInzooming, processUnfolding} from '../../config/process-inzooming';
-import * as common from '../../common/commonFunctions';
-import {OpmVisualProcess} from "../VisualPart/OpmVisualProcess";
-import {OpmOpd} from "./OpmOpd";
+import {processInzooming, processUnfolding} from '../../configuration/elementsFunctionality/process-inzooming';
+import {OpmVisualProcess} from '../VisualPart/OpmVisualProcess';
+import {OpmOpd} from './OpmOpd';
+import {joint, _, paddingObject} from '../../configuration/rappidEnviromentFunctionality/shared';
 
 export class OpmProcess extends OpmThing {
   constructor() {
@@ -15,7 +15,7 @@ export class OpmProcess extends OpmThing {
   }
   processAttributes() {
     return {
-      markup: `<g class="rotatable"><g class="scalable"><ellipse/></g><text/></g>`,
+      markup: `<g class='rotatable'><g class='scalable'><ellipse/></g><text/></g>`,
       type: 'opm.Process',
       padding: 35
     };
@@ -43,14 +43,13 @@ export class OpmProcess extends OpmThing {
   }
   // options = init-rappid service
   haloConfiguration(halo, options) {
-    const haloThis = this;
-    const OpmProcessThis = this;
     halo.addHandle(this.addHandleGenerator('manage_complexity', 'sw', 'Click to manage complexity', 'left'));
     halo.on('action:manage_complexity:pointerdown', function (evt, x, y) {
-      const contextToolbar = OpmProcessThis.createContextToolbar(halo);
+      const contextToolbar = this.options.cellView.model.createContextToolbar(halo);
+      const haloThis = this;
       contextToolbar.on('action:In-Zoom', function() {
         this.remove();
-        const cellModel = OpmProcessThis;
+        const cellModel = haloThis.options.cellView.model;
         if (cellModel.attributes.attrs.ellipse['stroke-width'] === 4) {
           options.graphService.changeGraphModel(cellModel.id, options.treeViewService, 'inzoom');
         } else {
@@ -59,34 +58,33 @@ export class OpmProcess extends OpmThing {
           cellModel.attributes.attrs.ellipse['stroke-width'] = 4;
           const CellClone = cellModel.clone();
           const textString = cellModel.attr('text/text');
-         //CellClone.set('id', cellModel.id);
+          // CellClone.set('id', cellModel.id);
           CellClone.attr('text/text', textString);
           CellClone.set('position', cellModel.get('position'));
           let clonedProcess = options.treeViewService.insertNode(cellModel, 'inzoom', options);
           clonedProcess.set('position', cellModel.get('position'));
           const elementlinks = options.graphService.graphLinks;
-          processInzooming(evt, x, y, options, clonedProcess, elementlinks);
+          processInzooming(evt, x, y, haloThis.options, clonedProcess, elementlinks);
 
           let visualElement = new OpmVisualProcess(CellClone.getParams(), null);
           options.opmModel.getLogicalElementByVisualId(cellModel.id).add(visualElement);
 
           opd.add(visualElement);
-
         }
         options.treeViewService.treeView.treeModel.getNodeById(cellModel.id).toggleActivated();
       });
       contextToolbar.on('action:Unfold', function() {
         this.remove();
-        const cellModel = haloThis;
+        const cellModel = haloThis.options.cellView.model;
         if (cellModel.attributes.attrs.ellipse['stroke'] === '#FF0000') {
           options.graphService.changeGraphModel(cellModel.id, options.treeViewService, 'unfold');
         } else {
           cellModel.attributes.attrs.ellipse['stroke'] = '#FF0000';
-          const CellClone = haloThis.clone();
-          const textString = haloThis.attributes.attrs.text.text;
+          const CellClone = cellModel.clone();
+          const textString = cellModel.attributes.attrs.text.text;
           CellClone.set('id', cellModel.id);
           CellClone.attr({text: {text: textString}});
-          let clonedProcess = options.treeViewService.insertNode(cellModel, 'unfold', options);
+          const clonedProcess = options.treeViewService.insertNode(cellModel, 'unfold', options);
           const elementlinks = options.graphService.graphLinks;
 
           haloThis.graph.addCell(CellClone);
@@ -98,8 +96,8 @@ export class OpmProcess extends OpmThing {
       contextToolbar.render();
     });
   }
-  createContextToolbar(halo){
-    return new common.joint.ui.ContextToolbar({
+  createContextToolbar(halo) {
+    return new joint.ui.ContextToolbar({
       theme: 'modern',
       tools: [
         { action: 'In-Zoom', content:  halo.options.cellView.model.attributes.attrs.ellipse['stroke-width'] === 4 ? 'Show In-Zoomed' : 'In-Zoom' },
@@ -109,5 +107,38 @@ export class OpmProcess extends OpmThing {
       autoClose: true,
       padding: 30
     });
+  }
+  updateProcessSize() {
+    let leftSideX = this.get('position').x;
+    let topSideY = this.get('position').y;
+    let rightSideX = this.get('position').x + this.get('size').width;
+    let bottomSideY = this.get('position').y + this.get('size').height;
+
+    const elps = joint.g.ellipse.fromRect(this.getBBox());
+    _.each(this.getEmbeddedCells(), function(child) {
+
+      const childBbox = child.getBBox();
+      // Updating the new size of the object to have margins of at least paddingObject so that the state will not touch the object
+
+      if (!elps.containsPoint(childBbox.bottomLeft())) {
+        bottomSideY = bottomSideY + paddingObject;
+        leftSideX = leftSideX - paddingObject;
+      }
+      if (!elps.containsPoint(childBbox.origin())) {
+        topSideY = topSideY - paddingObject ;
+        leftSideX = leftSideX - paddingObject;
+      }
+      if (!elps.containsPoint(childBbox.corner())) {
+        bottomSideY = bottomSideY + paddingObject;
+        rightSideX = rightSideX + paddingObject;
+      }
+      if (!elps.containsPoint(childBbox.topRight())) {
+        topSideY = topSideY - paddingObject ;
+        rightSideX = rightSideX + paddingObject;
+      }
+    });
+    this.set({
+      position: { x: leftSideX, y: topSideY },
+      size: { width: rightSideX - leftSideX, height: bottomSideY - topSideY }}, {skipExtraCall: true});
   }
 }

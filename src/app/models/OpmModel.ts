@@ -25,6 +25,23 @@ export class OpmModel {
   add(opmLogicalElement: OpmLogicalElement<OpmVisualElement>) {
     this.logicalElements.push(opmLogicalElement);
   }
+  remove(opmVisualElementId) {
+    const logicalElement = this.getLogicalElementByVisualId(opmVisualElementId);
+    if (logicalElement) {
+      logicalElement.remove(opmVisualElementId);
+      if (logicalElement.visualElements.length === 0) {
+        this.removeLogicalElement(logicalElement);
+      }
+    }
+  }
+  removeLogicalElement(opmLogicalElement) {
+    for (let i = 0; i < this.logicalElements.length; i++) {
+      if (this.logicalElements[i] === opmLogicalElement) {
+        this.logicalElements.splice(i, 1);
+        break;
+      }
+    }
+  }
   getVisualElementById(visualID) {
     for (let i = 0; i < this.logicalElements.length; i++) {
       for (let j = 0; j < this.logicalElements[i].visualElements.length; j++)
@@ -40,10 +57,5 @@ export class OpmModel {
           return this.logicalElements[i];
     }
     return null;
-  }
-
-  inZoom(id) {
-    const visualElm = this.getVisualElementById(id);
-    //visualElm.clone();
   }
 }

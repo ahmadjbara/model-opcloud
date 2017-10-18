@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import {Node} from '../models/node.model';
-import { GraphService } from '../rappid-components/services/graph.service';
+import {Node} from '../../models/node.model';
+import { GraphService } from './graph.service';
 
 import { Observable } from 'rxjs/Observable';
 import {BehaviorSubject} from 'rxjs/Rx';
@@ -40,8 +40,7 @@ export class TreeViewService {
     return this.nodesSubject.asObservable();
   }
 
-  insertNode(cellModelRef, type, initRappid)
-  {
+  insertNode(cellModelRef, type, initRappid) {
     let element_id=cellModelRef.id;
     let parent_id=cellModelRef.get('parent')?cellModelRef.get('parent'):rootId;
     let parentNode=this.getNodeById(parent_id);
