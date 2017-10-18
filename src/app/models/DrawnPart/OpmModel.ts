@@ -27,9 +27,11 @@ export class OpmModel {
   }
   remove(opmVisualElementId) {
     const logicalElement = this.getLogicalElementByVisualId(opmVisualElementId);
-    logicalElement.remove(opmVisualElementId);
-    if (logicalElement.visualElements.length === 0) {
-      this.removeLogicalElement(logicalElement);
+    if (logicalElement) {
+      logicalElement.remove(opmVisualElementId);
+      if (logicalElement.visualElements.length === 0) {
+        this.removeLogicalElement(logicalElement);
+      }
     }
   }
   removeLogicalElement(opmLogicalElement) {
@@ -55,10 +57,5 @@ export class OpmModel {
           return this.logicalElements[i];
     }
     return null;
-  }
-
-  inZoom(id) {
-    const visualElm = this.getVisualElementById(id);
-    //visualElm.clone();
   }
 }

@@ -43,14 +43,13 @@ export class OpmProcess extends OpmThing {
   }
   // options = init-rappid service
   haloConfiguration(halo, options) {
-    const haloThis = this;
-    const OpmProcessThis = this;
     halo.addHandle(this.addHandleGenerator('manage_complexity', 'sw', 'Click to manage complexity', 'left'));
     halo.on('action:manage_complexity:pointerdown', function (evt, x, y) {
-      const contextToolbar = OpmProcessThis.createContextToolbar(halo);
+      const contextToolbar = this.options.cellView.model.createContextToolbar(halo);
+      const haloThis = this;
       contextToolbar.on('action:In-Zoom', function() {
         this.remove();
-        const cellModel = OpmProcessThis;
+        const cellModel = haloThis.options.cellView.model;
         if (cellModel.attributes.attrs.ellipse['stroke-width'] === 4) {
           options.graphService.changeGraphModel(cellModel.id, options.treeViewService, 'inzoom');
         } else {
@@ -59,34 +58,33 @@ export class OpmProcess extends OpmThing {
           cellModel.attributes.attrs.ellipse['stroke-width'] = 4;
           const CellClone = cellModel.clone();
           const textString = cellModel.attr('text/text');
-         //CellClone.set('id', cellModel.id);
+          // CellClone.set('id', cellModel.id);
           CellClone.attr('text/text', textString);
           CellClone.set('position', cellModel.get('position'));
           let clonedProcess = options.treeViewService.insertNode(cellModel, 'inzoom');
           clonedProcess.set('position', cellModel.get('position'));
           const elementlinks = options.graphService.graphLinks;
-          processInzooming(evt, x, y, options, clonedProcess, elementlinks);
+          processInzooming(evt, x, y, haloThis.options, clonedProcess, elementlinks);
 
           let visualElement = new OpmVisualProcess(CellClone.getParams(), null);
           options.opmModel.getLogicalElementByVisualId(cellModel.id).add(visualElement);
 
           opd.add(visualElement);
-
         }
         options.treeViewService.treeView.treeModel.getNodeById(cellModel.id).toggleActivated();
       });
       contextToolbar.on('action:Unfold', function() {
         this.remove();
-        const cellModel = haloThis;
+        const cellModel = haloThis.options.cellView.model;
         if (cellModel.attributes.attrs.ellipse['stroke'] === '#FF0000') {
           options.graphService.changeGraphModel(cellModel.id, options.treeViewService, 'unfold');
         } else {
           cellModel.attributes.attrs.ellipse['stroke'] = '#FF0000';
-          const CellClone = haloThis.clone();
-          const textString = haloThis.attributes.attrs.text.text;
+          const CellClone = cellModel.clone();
+          const textString = cellModel.attributes.attrs.text.text;
           CellClone.set('id', cellModel.id);
           CellClone.attr({text: {text: textString}});
-          let clonedProcess = options.treeViewService.insertNode(cellModel, 'unfold');
+          const clonedProcess = options.treeViewService.insertNode(cellModel, 'unfold');
           const elementlinks = options.graphService.graphLinks;
 
           haloThis.graph.addCell(CellClone);
@@ -98,7 +96,7 @@ export class OpmProcess extends OpmThing {
       contextToolbar.render();
     });
   }
-  createContextToolbar(halo){
+  createContextToolbar(halo) {
     return new joint.ui.ContextToolbar({
       theme: 'modern',
       tools: [

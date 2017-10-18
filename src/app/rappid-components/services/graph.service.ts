@@ -102,6 +102,7 @@ export class GraphService {
 
     newNodeRef.graph = newGraph;
     this.graph.resetCells(newGraph.getCells());
+    this.graph.getCells().map((cell) => cell.graph = this.graph);
     this.currentGraphId = ElementId;
     this.type=type;
 
