@@ -1,7 +1,8 @@
 import {OpmDefaultLink} from './OpmDefaultLink';
 import {OpmEntity} from '../OpmEntity';
 import {OpmStructuralLink} from './OpmStructuralLink';
-import * as common from '../../../common/commonFunctions';
+import {joint, _} from '../../../configuration/rappidEnviromentFunctionality/shared';
+
 
 export  class OpmFundamentalLink extends OpmStructuralLink {
   sourceElement: OpmEntity;
@@ -77,9 +78,9 @@ export  class OpmFundamentalLink extends OpmStructuralLink {
   }
 }
 
-export class TriangleClass extends common.joint.shapes.devs.Model.extend({
+export class TriangleClass extends joint.shapes.devs.Model.extend({
   markup: '<image/>',
-  defaults: common._.defaultsDeep({
+  defaults: _.defaultsDeep({
     type: 'opm.TriangleAgg',
     size: {width: 31, height: 30},
     inPorts: ['in'],
@@ -117,7 +118,7 @@ export class TriangleClass extends common.joint.shapes.devs.Model.extend({
     attrs: {
       image: { 'xlink:href': '../../assets/OPM_Links/StructuralAgg.png', width: 30, height: 30},
     }
-  }, common.joint.shapes.devs.Model.prototype.defaults)
+  }, joint.shapes.devs.Model.prototype.defaults)
 }) {
   doubleClickHandle(cellView, evt, paper) {}
   pointerUpHandle(cellView) {}
@@ -125,4 +126,5 @@ export class TriangleClass extends common.joint.shapes.devs.Model.extend({
   changeSizeHandle() {}
   changePositionHandle() {}
   removeHandle(options) {}
+  addHandle(options) {}
 }

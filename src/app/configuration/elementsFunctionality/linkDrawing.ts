@@ -54,8 +54,8 @@ export const linkDrawing = {
     }else if (linkName.includes('Instantiation')) {
       newLink = new InstantiationLink(link.getSourceElement(), link.getTargetElement(), graph);
     }
-    console.log(newLink);
-    console.log(newLink.clone());
+    newLink.set('previousTargetId', link.get('previousTargetId'));
+    newLink.set('previousSourceId', link.get('previousSourceId'));
     graph.addCell(newLink);
     link.remove();
 /*

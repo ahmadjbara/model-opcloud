@@ -1,7 +1,5 @@
-import * as common from '../../common/commonFunctions';
-import {gridLayout} from '../../config/gridLayout';
-import {textWrapping} from './textWrapping';
-const joint = require('rappid');
+import {gridLayout} from '../rappidEnviromentFunctionality/gridLayout';
+import {joint, _} from '../../configuration/rappidEnviromentFunctionality/shared';
 
 export function arrangeEmbedded(fatherObject, side) {
   const embeddedStates = fatherObject.getEmbeddedCells();
@@ -10,12 +8,12 @@ export function arrangeEmbedded(fatherObject, side) {
   // If the Object has any embedded states
   if (embeddedStates.length) {
     // Find the maximum Height and Width of all the states
-    common._.each(embeddedStates, function (child) {
+    _.each(embeddedStates, function (child) {
       if (child.getBBox().width > maxWidth) maxWidth = child.getBBox().width;
       if (child.getBBox().height > maxHeight) maxHeight = child.getBBox().height;
     });
     // Set the Height and Width fo every state
-    common._.each(embeddedStates, function (child) {
+    _.each(embeddedStates, function (child) {
       const stateWidth = (child.getBBox().width * 2 > maxWidth) ? maxWidth : child.getBBox().width;
       const stateHeight = (child.getBBox().height * 2 > maxHeight) ? maxHeight : child.getBBox().height;
       child.resize(stateWidth, stateHeight);

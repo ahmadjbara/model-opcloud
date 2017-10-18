@@ -1,7 +1,7 @@
-import * as common from '../../common/commonFunctions';
-import {textWrapping} from "../../configuration/elementsFunctionality/textWrapping";
-import {OpmProceduralLink} from "./Links/OpmProceduralLink";
-import {haloConfig} from "../../configuration/rappidEnviromentFunctionality/halo.config";
+import {textWrapping} from '../../configuration/elementsFunctionality/textWrapping';
+import {OpmProceduralLink} from './Links/OpmProceduralLink';
+import {haloConfig} from '../../configuration/rappidEnviromentFunctionality/halo.config';
+import {joint, _} from '../../configuration/rappidEnviromentFunctionality/shared';
 
 const entityText = {
   fill: 'black',
@@ -14,17 +14,17 @@ const entityText = {
 };
 
 const entityDefinition = {
-  defaults: common._.defaultsDeep({
+  defaults: _.defaultsDeep({
     size: {width: 90, height: 50},
     attrs: {
       'text': entityText,
       'wrappingResized' : false,
       'manuallyResized' : false,
     }
-  }, common.joint.shapes.basic.Generic.prototype.defaults),
+  }, joint.shapes.basic.Generic.prototype.defaults),
 };
 
-export class OpmEntity extends common.joint.dia.Element.extend(entityDefinition) {
+export class OpmEntity extends joint.dia.Element.extend(entityDefinition) {
   entityShape() {
     return {
       fill: '#DCDCDC',
@@ -60,7 +60,7 @@ export class OpmEntity extends common.joint.dia.Element.extend(entityDefinition)
   }
   haloConfiguration(halo, haloConfiguration) {}
   doubleClickHandle(cellView, evt, paper) {
-    common.joint.ui.TextEditor.edit(evt.target, {
+    joint.ui.TextEditor.edit(evt.target, {
       cellView: cellView,
       textProperty: 'attrs/text/text',
       placeholder: true
@@ -73,22 +73,26 @@ export class OpmEntity extends common.joint.dia.Element.extend(entityDefinition)
       if (this.attr('text/text') === '') {
         this.attr({ text: { text: this.lastEnteredText } });
       }
-      common.joint.ui.TextEditor.close();
+      joint.ui.TextEditor.close();
     }, this);
   }
   pointerUpHandle(cellView, options) {
-    new common.joint.ui.FreeTransform({
-      cellView: cellView,
-      allowRotation: false,
-      preserveAspectRatio: false,
-      allowOrthogonalResize: true,
-    }).render();
-    const halo = new common.joint.ui.Halo({
-      cellView: cellView,
-      type: 'surrounding',
-      handles: haloConfig.handles
-    }).render();
-    this.haloConfiguration(halo, options);
+    if (!options.selection.collection.contains(cellView.model)) {
+      new joint.ui.FreeTransform({
+        cellView: cellView,
+        allowRotation: false,
+        preserveAspectRatio: false,
+        allowOrthogonalResize: true,
+      }).render();
+      const halo = new joint.ui.Halo({
+        cellView: cellView,
+        type: 'surrounding',
+        handles: haloConfig.handles
+      }).render();
+      this.haloConfiguration(halo, options);
+      options.selection.collection.reset([]);
+      options.selection.collection.add(this, { silent: true });
+    }
   }
   changeAttributesHandle() {
     if ((this.attr('text/text') !== this.lastEnteredText) &&
@@ -118,7 +122,7 @@ export class OpmEntity extends common.joint.dia.Element.extend(entityDefinition)
     // C and E signs on condition end event links
     const outboundLinks = this.graph.getConnectedLinks(this, { outbound: true });
     const inboundLinks = this.graph.getConnectedLinks(this, { inbound: true });
-    common._.each(outboundLinks.concat(inboundLinks), function (linkToUpdate) {
+    _.each(outboundLinks.concat(inboundLinks), function (linkToUpdate) {
       if (linkToUpdate instanceof OpmProceduralLink) {
         linkToUpdate.UpdateVertices();
         linkToUpdate.UpdateConditionEvent();
@@ -135,4 +139,5 @@ export class OpmEntity extends common.joint.dia.Element.extend(entityDefinition)
     }
   }
   removeHandle(options) {}
+  addHandle(options) {}
 }

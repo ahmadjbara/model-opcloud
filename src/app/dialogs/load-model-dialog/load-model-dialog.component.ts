@@ -1,6 +1,6 @@
 import { Component, OnInit, Optional } from '@angular/core';
 import { MdDialogRef } from '@angular/material';
-import { ModelStorageInterface } from '../../services/storage/model-storage.interface';
+import { ModelStorageInterface } from '../../rappid-components/services/storage/model-storage.interface';
 
 @Component({
   selector: 'app-load-model-dialog',

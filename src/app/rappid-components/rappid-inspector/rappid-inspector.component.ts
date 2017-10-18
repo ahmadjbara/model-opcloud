@@ -1,11 +1,6 @@
 import { Component, ViewContainerRef, ViewChild, Input, OnChanges } from '@angular/core';
-import { inspectorConfig } from '../../config/inspector.config';
-
-const _ = require('lodash');
-const jquery = require('jquery');
-const joint = require('rappid');
-
-
+import { inspectorConfig } from '../../configuration/rappidEnviromentFunctionality/inspector/inspector.config';
+import {joint, _, jquery} from '../../configuration/rappidEnviromentFunctionality/shared';
 
 @Component({
   selector: 'opcloud-rappid-inspector',

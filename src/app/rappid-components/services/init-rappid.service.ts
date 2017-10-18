@@ -5,7 +5,7 @@ import { CommandManagerService } from '../services/command-manager.service';
 import { TreeViewService } from './tree-view.service';
 // popup imports
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
-import {OpmModel} from '../../models/DrawnPart/OpmModel';
+import {OpmModel} from '../../models/OpmModel';
 import {OpmDefaultLink} from '../../models/DrawnPart/Links/OpmDefaultLink';
 import {addHandle, removeHandle} from '../../configuration/elementsFunctionality/graphFunctionality';
 import {defineKeyboardShortcuts} from '../../configuration/rappidEnviromentFunctionality/keyboardShortcuts';
@@ -43,6 +43,7 @@ export class InitRappidService {
     this.initializeEvents();
     this.opmModel = new OpmModel();
     defineKeyboardShortcuts(this);
+    console.log(this.opmModel);
 
   }
   initializeDesktop() {

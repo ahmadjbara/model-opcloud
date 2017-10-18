@@ -2,7 +2,6 @@ import {OpmProceduralLink} from './OpmProceduralLink';
 import {linkType} from "../../ConfigurationOptions";
 
 export  class ResultLink extends OpmProceduralLink {
-
   constructor(sourceElement, targetElement, condition, event) {
     super(sourceElement, targetElement, condition, event);
     this.attr({'.marker-source' : {d: ''}});

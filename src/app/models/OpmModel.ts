@@ -1,9 +1,9 @@
 
-import {OpmLogicalElement} from '../LogicalPart/OpmLogicalElement';
-import {OpmVisualElement} from '../VisualPart/OpmVisualElement';
+import {OpmLogicalElement} from './LogicalPart/OpmLogicalElement';
+import {OpmVisualElement} from './VisualPart/OpmVisualElement';
 import {OpmOpd} from './OpmOpd';
-import {OpmLogicalState} from '../LogicalPart/OpmLogicalState';
-import {OpmVisualProcess} from '../VisualPart/OpmVisualProcess';
+import {OpmLogicalState} from './LogicalPart/OpmLogicalState';
+import {OpmVisualProcess} from './VisualPart/OpmVisualProcess';
 
 export class OpmModel {
   private name: string;

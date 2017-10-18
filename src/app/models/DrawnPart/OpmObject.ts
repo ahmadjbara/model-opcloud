@@ -2,8 +2,6 @@ import {OpmThing} from './OpmThing';
 import {valueHandle} from '../../configuration/elementsFunctionality/valueHandle';
 import {arrangeEmbedded} from '../../configuration/elementsFunctionality/arrangeStates';
 import {OpmState} from './OpmState';
-import {haloConfig} from "../../configuration/rappidEnviromentFunctionality/halo.config";
-import * as common from '../../common/commonFunctions';
 
 export class OpmObject extends OpmThing {
   constructor() {
@@ -61,7 +59,6 @@ export class OpmObject extends OpmThing {
     }
   }
   haloConfiguration(halo, options) {
-    const _thisCell = this;
     let hasStates = this.getEmbeddedCells().length;
     halo.addHandle(this.addHandleGenerator('add_state', 'sw', 'Click to add state to the object', 'right'));
     halo.on('action:add_state:pointerup', function () {
@@ -70,7 +67,7 @@ export class OpmObject extends OpmThing {
       halo.$handles.children('.arrange_down').toggleClass('hidden', !hasStates);
       halo.$handles.children('.arrange_left').toggleClass('hidden', !hasStates);
       halo.$handles.children('.arrange_right').toggleClass('hidden', !hasStates);
-      _thisCell.addState();
+      this.options.cellView.model.addState();
     });
     halo.addHandle(this.addHandleGenerator('arrange_up', 'n', 'Arrange the states at the top inside the object', 'top'));
     halo.on('action:arrange_up:pointerup', function () {

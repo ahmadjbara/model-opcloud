@@ -6,11 +6,5 @@
       super(params, logicalElement);
       this.parentheses = params.parentheses;
     }
-    getParams() {
-      const params = {
-        parentheses: this.parentheses,
-      };
-      return {...super.getParams(), ...params};
-    }
   }
 
