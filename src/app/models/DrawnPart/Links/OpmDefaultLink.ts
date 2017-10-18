@@ -31,6 +31,7 @@ export class OpmDefaultLink extends joint.shapes.devs.Link.extend(linkDefinition
       textFontFamily: this.get('labels')[0].attrs.text['font-family'],
       strokeColor: this.attr('.connection/stroke'),
       strokeWidth: this.attr('.connection/stroke-width'),
+      id: this.get('id')
     };
   }
   doubleClickHandle(cellView, evt, paper) {}

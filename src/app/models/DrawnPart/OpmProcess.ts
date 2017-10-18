@@ -56,17 +56,13 @@ export class OpmProcess extends OpmThing {
           let opd = new OpmOpd('');
           options.opmModel.addOpd(opd);
           cellModel.attributes.attrs.ellipse['stroke-width'] = 4;
-          const CellClone = cellModel.clone();
           const textString = cellModel.attr('text/text');
-          // CellClone.set('id', cellModel.id);
-          CellClone.attr('text/text', textString);
-          CellClone.set('position', cellModel.get('position'));
-          let clonedProcess = options.treeViewService.insertNode(cellModel, 'inzoom', options);
+          const clonedProcess = options.treeViewService.insertNode(cellModel, 'inzoom', options);
           clonedProcess.set('position', cellModel.get('position'));
           const elementlinks = options.graphService.graphLinks;
           processInzooming(evt, x, y, haloThis.options, clonedProcess, elementlinks);
 
-          let visualElement = new OpmVisualProcess(CellClone.getParams(), null);
+          let visualElement = new OpmVisualProcess(clonedProcess.getParams(), null);
           options.opmModel.getLogicalElementByVisualId(cellModel.id).add(visualElement);
 
           opd.add(visualElement);
