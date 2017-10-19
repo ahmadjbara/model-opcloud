@@ -49,6 +49,7 @@ export class OpmProcess extends OpmThing {
       const haloThis = this;
       contextToolbar.on('action:In-Zoom', function() {
         this.remove();
+        let clonedProcess;
         const cellModel = haloThis.options.cellView.model;
         if (cellModel.attributes.attrs.ellipse['stroke-width'] === 4) {
           options.graphService.changeGraphModel(cellModel.id, options.treeViewService, 'inzoom');
@@ -57,7 +58,7 @@ export class OpmProcess extends OpmThing {
           options.opmModel.addOpd(opd);
           cellModel.attributes.attrs.ellipse['stroke-width'] = 4;
           const textString = cellModel.attr('text/text');
-          const clonedProcess = options.treeViewService.insertNode(cellModel, 'inzoom', options);
+          clonedProcess = options.treeViewService.insertNode(cellModel, 'inzoom', options);
           clonedProcess.set('position', cellModel.get('position'));
           const elementlinks = options.graphService.graphLinks;
           processInzooming(evt, x, y, haloThis.options, clonedProcess, elementlinks);
@@ -67,7 +68,7 @@ export class OpmProcess extends OpmThing {
 
           opd.add(visualElement);
         }
-        options.treeViewService.treeView.treeModel.getNodeById(cellModel.id).toggleActivated();
+        options.treeViewService.treeView.treeModel.getNodeById(clonedProcess.id).toggleActivated();
       });
       contextToolbar.on('action:Unfold', function() {
         this.remove();

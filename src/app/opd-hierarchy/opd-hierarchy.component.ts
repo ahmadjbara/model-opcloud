@@ -63,7 +63,6 @@ export class OPDHierarchyComponent implements OnInit {
   };
 
   onEvent(event) {
-
   }
 
   changeGraphModel($event, node) {
@@ -72,6 +71,19 @@ export class OPDHierarchyComponent implements OnInit {
   }
 
   getNodeNum(node) {
+    let path = node.path;
+    if (path.length==1)
+      return '';
+    let result='';
+    for (let k=1; k< path.length; k++) {
+      let next = this.treeView.treeModel.getNodeById(path[k]);
+      if (result=='')
+        result=(next.index+1);
+      else
+        result = result+'.'+(next.index+1);
+    }
+    return result;
+    /*
     let num = '';
     let nodeNum = node.index + 1;
     if (node.level > 1) {
@@ -82,7 +94,7 @@ export class OPDHierarchyComponent implements OnInit {
       }
     }
     return num;
-
+    */
   }
 
 

@@ -44,7 +44,6 @@ export class InitRappidService {
     this.opmModel = new OpmModel();
     defineKeyboardShortcuts(this);
     console.log(this.opmModel);
-
   }
   initializeDesktop() {
     this.paper = new joint.dia.Paper({

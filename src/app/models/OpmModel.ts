@@ -1,5 +1,5 @@
-import {OpmLogicalElement} from '../LogicalPart/OpmLogicalElement';
-import {OpmVisualElement} from '../VisualPart/OpmVisualElement';
+import {OpmLogicalElement} from './LogicalPart/OpmLogicalElement';
+import {OpmVisualElement} from './VisualPart/OpmVisualElement';
 import {OpmOpd} from './OpmOpd';
 
 export class OpmModel {

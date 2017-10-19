@@ -8,6 +8,7 @@ import {OpmDefaultLink} from '../../models/DrawnPart/Links/OpmDefaultLink';
 import {ResultLink} from '../../models/DrawnPart/Links/ResultLink';
 import {OpmObject} from "../../models/DrawnPart/OpmObject";
 import {OpmVisualObject} from "../../models/VisualPart/OpmVisualObject";
+import {OpmState} from "../../models/DrawnPart/OpmState";
 
 const joint = require('rappid');
 const rootId='SD';
@@ -85,7 +86,7 @@ export class GraphService {
     this.graph.fromJSON(JSON.parse(localStorage.getItem(ElementId)));
   }
 
-  removeGraphById(ElementId: string,ParentId: string) {
+  removeGraphById(ElementId: string, ParentId: string) {
      this.changeGraphModel(ParentId, null, null);
     localStorage.removeItem(ElementId);
   }
@@ -96,17 +97,18 @@ export class GraphService {
     treeViewService.getNodeByIdType(this.currentGraphId, this.type).graph.resetCells(this.graph.getCells());
     var newGraph = new joint.dia.Graph;
     let clonedProcess;
-    if (type==='unfold') {
+    if (type === 'unfold') {
       this.copyEmbeddedGraphElements(newGraph, ElementId, treeViewService);
     }
     else
-       clonedProcess= this.copyConntectedGraphElements(newGraph,ElementId, initRappid);
+       clonedProcess = this.copyConntectedGraphElements(newGraph, ElementId, initRappid);
 
     newNodeRef.graph = newGraph;
     this.graph.resetCells(newGraph.getCells());
     this.graph.getCells().map((cell) => cell.graph = this.graph);
-    this.currentGraphId = ElementId;
-    this.type=type;
+    newNodeRef.id = clonedProcess.id;
+    this.currentGraphId = newNodeRef.id;
+    this.type = type;
 
     return clonedProcess;
   }
@@ -163,7 +165,7 @@ export class GraphService {
     let graphServiceThis = this;
     connctedCells.forEach(function(elm) {
       let parentId = elm.get('parent');
-      if (parentId) {
+      if (parentId && graphServiceThis.graph.getCell(parentId) instanceof OpmState) {
         connctedCells.push(graphServiceThis.graph.getCell(parentId));
       }
     });
