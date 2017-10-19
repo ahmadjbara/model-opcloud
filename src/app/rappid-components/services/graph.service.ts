@@ -202,7 +202,6 @@ export class GraphService {
   }
 
   changeGraphModel(elementId, treeViewService, type) {
-    console.log(treeViewService);
     if (elementId == this.currentGraphId && this.type===type)
       return 0;
     treeViewService.getNodeByIdType(this.currentGraphId, this.type).graph.resetCells(this.graph.getCells());

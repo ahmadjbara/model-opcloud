@@ -26,5 +26,11 @@
         }
       }
     }
+    findVisualElement(id){
+      for (let k=0; k<this.visualElements.length; k++)
+        if (this.visualElements[k].id === id)
+          return this.visualElements[k];
+      return null;
+    }
   }
 

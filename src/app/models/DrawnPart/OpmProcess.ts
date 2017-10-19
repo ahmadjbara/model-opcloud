@@ -52,7 +52,9 @@ export class OpmProcess extends OpmThing {
         let clonedProcess;
         const cellModel = haloThis.options.cellView.model;
         if (cellModel.attributes.attrs.ellipse['stroke-width'] === 4) {
-          options.graphService.changeGraphModel(cellModel.id, options.treeViewService, 'inzoom');
+          clonedProcess = options.opmModel.getVisualElementById(cellModel.id).refinee;
+          let pid = clonedProcess.id;
+          options.graphService.changeGraphModel(pid, options.treeViewService, 'inzoom');
         } else {
           let opd = new OpmOpd('');
           options.opmModel.addOpd(opd);
@@ -62,9 +64,9 @@ export class OpmProcess extends OpmThing {
           clonedProcess.set('position', cellModel.get('position'));
           const elementlinks = options.graphService.graphLinks;
           processInzooming(evt, x, y, haloThis.options, clonedProcess, elementlinks);
-
           let visualElement = new OpmVisualProcess(clonedProcess.getParams(), null);
           options.opmModel.getLogicalElementByVisualId(cellModel.id).add(visualElement);
+          visualElement.connectRefinementElements(cellModel.id);
 
           opd.add(visualElement);
         }
@@ -76,6 +78,8 @@ export class OpmProcess extends OpmThing {
         if (cellModel.attributes.attrs.ellipse['stroke'] === '#FF0000') {
           options.graphService.changeGraphModel(cellModel.id, options.treeViewService, 'unfold');
         } else {
+          let opd = new OpmOpd('');
+          options.opmModel.addOpd(opd);
           cellModel.attributes.attrs.ellipse['stroke'] = '#FF0000';
           const CellClone = cellModel.clone();
           const textString = cellModel.attributes.attrs.text.text;
@@ -84,9 +88,14 @@ export class OpmProcess extends OpmThing {
           const clonedProcess = options.treeViewService.insertNode(cellModel, 'unfold', options);
           const elementlinks = options.graphService.graphLinks;
 
-          haloThis.graph.addCell(CellClone);
+          haloThis.graph.addCell(clonedProcess);
           haloThis.graph.addCells(elementlinks);
           processUnfolding(haloThis, clonedProcess, elementlinks);
+          let visualElement = new OpmVisualProcess(clonedProcess.getParams(), null);
+          options.opmModel.getLogicalElementByVisualId(cellModel.id).add(visualElement);
+          visualElement.connectRefinementElements(cellModel.id);
+
+          opd.add(visualElement);
         }
         options.treeViewService.treeView.treeModel.getNodeById(cellModel.id).toggleActivated();
       });
