@@ -98,7 +98,7 @@ export class GraphService {
     var newGraph = new joint.dia.Graph;
     let clonedProcess;
     if (type === 'unfold') {
-      this.copyEmbeddedGraphElements(newGraph, ElementId, treeViewService);
+      clonedProcess = this.copyEmbeddedGraphElements(newGraph, ElementId, treeViewService, initRappid);
     }
     else
        clonedProcess = this.copyConntectedGraphElements(newGraph, ElementId, initRappid);
@@ -113,10 +113,14 @@ export class GraphService {
     return clonedProcess;
   }
 
-  private copyEmbeddedGraphElements(newGraph, elementID, treeViewService) {
+  private copyEmbeddedGraphElements(newGraph, elementID, treeViewService, initRappid) {
     let gCell=this.graph.getCell(elementID);
     let tmp = new joint.dia.Graph;
-    let connctedCells= treeViewService.getNodeByIdType(elementID, 'inzoom').graph.getCell(elementID).getEmbeddedCells({deep:true});
+    let pid = initRappid.opmModel.getVisualElementById(elementID).refinee.id;
+    let tempGraph = treeViewService.getNodeByIdType(pid, 'inzoom').graph;
+    let embeds = tempGraph.getCell(pid).get('embeds');
+     let connctedCells = embeds.map((e)=>tempGraph.getCell(e));
+   // let connctedCells= tempGraph.getCell(pid).getEmbeddedCells({deep:true});
     let clonedConnectedCells = [];
 
     clonedConnectedCells = connctedCells.map((c) => c.clone(), connctedCells);
@@ -147,6 +151,7 @@ export class GraphService {
       linkDrawing.drawLink(link, link.attributes.name);
     }
     let graphServiceThis = this;
+    return gCell.clone();
    /* connctedCells.forEach(function(elm){
       let parentId = elm.get('parent');
       if (parentId) {

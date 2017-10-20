@@ -78,7 +78,6 @@ export function processInzooming (evt, x, y, options, cellRef, links) {
 
   options.graph.getConnectedLinks(parentObject, { inbound: true }).forEach(function(link) {
     if (link instanceof ConsumptionLink) {
-      console.log(link);
       link.set('target', {id: first_process_id}, {cameFromInZooming: true});
       // Ahmad: I don't like this solution. For now it solves the problem of navigating
       // between OPDs when there is a consumption link. Need to find where is a circular pointer created in the code.

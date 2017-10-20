@@ -88,8 +88,8 @@ export class OpmProcess extends OpmThing {
           const clonedProcess = options.treeViewService.insertNode(cellModel, 'unfold', options);
           const elementlinks = options.graphService.graphLinks;
 
-          haloThis.graph.addCell(clonedProcess);
-          haloThis.graph.addCells(elementlinks);
+          //options.graph.addCell(clonedProcess);
+          //haloThis.graph.addCells(elementlinks);
           processUnfolding(haloThis, clonedProcess, elementlinks);
           let visualElement = new OpmVisualProcess(clonedProcess.getParams(), null);
           options.opmModel.getLogicalElementByVisualId(cellModel.id).add(visualElement);
