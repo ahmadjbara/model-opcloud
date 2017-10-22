@@ -4,7 +4,7 @@ import {linkType} from "../../ConfigurationOptions";
 export  class GeneralizationLink extends OpmFundamentalLink {
   constructor(sourceElement, targetElement, graph) {
     super(sourceElement, targetElement, graph);
-    const image = '../../assets/OPM_Links/StructuralGeneral.png';
+    const image = '../../../../assets/icons/OPM_Links/StructuralGeneral.png';
     this.triangle.attr({image: {'xlink:href': image}});
   }
   getParams() {
