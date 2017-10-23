@@ -99,9 +99,12 @@ export class GraphService {
     let clonedProcess;
     if (type === 'unfold') {
       clonedProcess = this.copyEmbeddedGraphElements(newGraph, ElementId, treeViewService, initRappid);
+      newNodeRef.color = '#0096FF';
     }
-    else
-       clonedProcess = this.copyConntectedGraphElements(newGraph, ElementId, initRappid);
+    else {
+      clonedProcess = this.copyConntectedGraphElements(newGraph, ElementId, initRappid);
+      newNodeRef.color = '#0000FF';
+    }
 
     newNodeRef.graph = newGraph;
     this.graph.resetCells(newGraph.getCells());
@@ -119,12 +122,15 @@ export class GraphService {
     let pid = initRappid.opmModel.getVisualElementById(elementID).refinee.id;
     let tempGraph = treeViewService.getNodeByIdType(pid, 'inzoom').graph;
     let embeds = tempGraph.getCell(pid).get('embeds');
-     let connctedCells = embeds.map((e)=>tempGraph.getCell(e));
+    let connctedCells = embeds.map((e)=>tempGraph.getCell(e));
    // let connctedCells= tempGraph.getCell(pid).getEmbeddedCells({deep:true});
     let clonedConnectedCells = [];
 
     clonedConnectedCells = connctedCells.map((c) => c.clone(), connctedCells);
 
+    let clonedProcess = gCell.clone();
+    clonedProcess.attributes.attrs.ellipse['stroke'] = gCell.attributes.attrs.ellipse['stroke'];
+    clonedProcess.attributes.attrs.ellipse['stroke-width'] = gCell.attributes.attrs.ellipse['stroke-width'];
     newGraph.addCells(clonedConnectedCells);
 
     let w = gCell.get('size').width;
@@ -137,7 +143,7 @@ export class GraphService {
       clonedConnectedCells[k].set('position', {x:x+(w+10)*k,y:y+100});
       let link = new OpmDefaultLink ();
       link.set({
-        source: {id: gCell.id},
+        source: {id: clonedProcess.id},
         target: {id: clonedConnectedCells[k].id},
       });
       if (clonedConnectedCells[k] instanceof  OpmProcess) {
@@ -146,12 +152,12 @@ export class GraphService {
       else{
         link.attributes.name = 'Exhibition-Characterization';
       }
-      newGraph.addCells([gCell, link, clonedConnectedCells[k]]);
+      newGraph.addCells([clonedProcess, link, clonedConnectedCells[k]]);
       link.set('graph', newGraph);
       linkDrawing.drawLink(link, link.attributes.name);
     }
     let graphServiceThis = this;
-    return gCell.clone();
+    return clonedProcess;
    /* connctedCells.forEach(function(elm){
       let parentId = elm.get('parent');
       if (parentId) {

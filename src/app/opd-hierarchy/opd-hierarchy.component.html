@@ -10,7 +10,7 @@
              [focused]="true"
              (onEvent)="onEvent($event)">
     <ng-template #treeNodeTemplate let-node>
-      <button (click)="changeGraphModel($event,node)"><span title="{{node.data.subTitle}}">{{ node.data.name }}{{getNodeNum(node)}}</span>
+      <button (click)="changeGraphModel($event,node)" style="border: 1px solid {{getColorByType(node)}}"><span title="{{node.data.subTitle}}">{{ node.data.name }}{{getNodeNum(node)}}</span>
       </button>
     </ng-template>
     <ng-template #loadingTemplate>Loading, please hold....</ng-template>

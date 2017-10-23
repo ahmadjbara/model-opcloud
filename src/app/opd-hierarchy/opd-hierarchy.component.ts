@@ -109,5 +109,12 @@ export class OPDHierarchyComponent implements OnInit {
       .setActiveAndVisible();
   }
 
-
+  getColorByType(node) {
+    console.log(node.data.type);
+    if (node.data.type === 'inzoom')
+      return '#0000FF';
+    if (node.data.type === 'unfold')
+      return '#0096FF';
+    return '#000000';
+  }
 }
