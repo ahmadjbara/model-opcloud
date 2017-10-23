@@ -4,7 +4,7 @@ import { GraphService } from '../rappid-components/services/graph.service';
 import { TreeViewService } from '../rappid-components/services/tree-view.service';
 import { Node } from '../models/node.model';
 import { Subscription } from 'rxjs/Subscription';
-
+import {DomSanitizer} from "@angular/platform-browser"
 
 const actionMapping: IActionMapping = {
   mouse: {
@@ -39,7 +39,7 @@ export class OPDHierarchyComponent implements OnInit {
   private graph;
   showApi = false;
 
-  constructor(private graphService: GraphService, public _treeViewService: TreeViewService) {
+  constructor(private graphService: GraphService, public _treeViewService: TreeViewService, private sanitizer: DomSanitizer) {
     this.graph = graphService.getGraph();
     this.subscription = new Subscription();
   }
@@ -110,11 +110,11 @@ export class OPDHierarchyComponent implements OnInit {
   }
 
   getColorByType(node) {
-    console.log(node.data.type);
-    if (node.data.type === 'inzoom')
-      return '#0000FF';
+    if (node.data.type === 'inzoom') {
+      return '2px solid #0000FF';
+    }
     if (node.data.type === 'unfold')
-      return '#0096FF';
-    return '#000000';
+      return '2px solid #0096FF';
+    return '1px solid #000000';
   }
 }

@@ -99,11 +99,9 @@ export class GraphService {
     let clonedProcess;
     if (type === 'unfold') {
       clonedProcess = this.copyEmbeddedGraphElements(newGraph, ElementId, treeViewService, initRappid);
-      newNodeRef.color = '#0096FF';
     }
     else {
       clonedProcess = this.copyConntectedGraphElements(newGraph, ElementId, initRappid);
-      newNodeRef.color = '#0000FF';
     }
 
     newNodeRef.graph = newGraph;
@@ -119,7 +117,7 @@ export class GraphService {
   private copyEmbeddedGraphElements(newGraph, elementID, treeViewService, initRappid) {
     let gCell=this.graph.getCell(elementID);
     let tmp = new joint.dia.Graph;
-    let pid = initRappid.opmModel.getVisualElementById(elementID).refinee.id;
+    let pid = initRappid.opmModel.getVisualElementById(elementID).refineeInzooming.id;
     let tempGraph = treeViewService.getNodeByIdType(pid, 'inzoom').graph;
     let embeds = tempGraph.getCell(pid).get('embeds');
     let connctedCells = embeds.map((e)=>tempGraph.getCell(e));
@@ -129,6 +127,7 @@ export class GraphService {
     clonedConnectedCells = connctedCells.map((c) => c.clone(), connctedCells);
 
     let clonedProcess = gCell.clone();
+    clonedProcess.set('position', {x: 350, y: 100});
     clonedProcess.attributes.attrs.ellipse['stroke'] = gCell.attributes.attrs.ellipse['stroke'];
     clonedProcess.attributes.attrs.ellipse['stroke-width'] = gCell.attributes.attrs.ellipse['stroke-width'];
     newGraph.addCells(clonedConnectedCells);
@@ -140,7 +139,7 @@ export class GraphService {
 
 
     for (let k=0; k<clonedConnectedCells.length   ; k++){
-      clonedConnectedCells[k].set('position', {x:x+(w+10)*k,y:y+100});
+      clonedConnectedCells[k].set('position', {x:x+(w+10)*k,y:y+150});
       let link = new OpmDefaultLink ();
       link.set({
         source: {id: clonedProcess.id},
@@ -213,7 +212,7 @@ export class GraphService {
   }
 
   changeGraphModel(elementId, treeViewService, type) {
-    if (elementId == this.currentGraphId && this.type===type)
+    if (elementId == this.currentGraphId && this.type === type)
       return 0;
     treeViewService.getNodeByIdType(this.currentGraphId, this.type).graph.resetCells(this.graph.getCells());
 

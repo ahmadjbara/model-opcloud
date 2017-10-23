@@ -10,7 +10,7 @@ const inzoomed_height = 200;
 const inzoomed_width = 300;
 const x_margin = 70;
 const y_margin = 10; // height margin between subprocess
-const childMargin = 67;
+const childMargin = 55;
 
 
 export function processInzooming (evt, x, y, options, cellRef, links) {
@@ -54,7 +54,7 @@ export function processInzooming (evt, x, y, options, cellRef, links) {
   let dy = y_margin;
 
   for (let i = 0; i < initial_subprocess; i++) {
-    const yp = y + dy;
+    const yp = y + dy + 50;
     const xp = x + childMargin;
     // let defaultProcess = new joint.shapes.opm.Process(basicDefinitions.defineShape('ellipse'));
     let defaultProcess = new OpmProcess();
@@ -91,8 +91,8 @@ export function processInzooming (evt, x, y, options, cellRef, links) {
     }
   });
   options.graph.on('change:position change:size', function (cell, value, opt) {
-    if (opt.skipExtraCall)
-      return;
+   // if (opt.skipExtraCall)
+    //  return;
     if (opt.cameFrom === 'textEdit') {
       const maxWidth = opt.wd > value.width ? opt.wd : value.width;
       const maxHeight = opt.hg > value.height ? opt.hg : value.height;

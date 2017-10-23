@@ -13,7 +13,6 @@ export class Node {
   children: Node[] = [];
   graph: joint.dia.Graph;
   type:string='';
-  color: string='';
   constructor(node: any) {
     this.id = node.id;
     this.name = node.name || '';
@@ -26,7 +25,6 @@ export class Node {
     this.children = node.children || [];
     this.graph = node.graph || '';
     this.type = node.type || '';
-
   }
 
   public addChildren(children) {

@@ -4,14 +4,18 @@
   export class OpmVisualProcess extends OpmVisualThing {
     parentheses: boolean;
     refineable : OpmVisualElement;
-    refinee : OpmVisualElement;
+    refineeInzooming : OpmVisualElement;
+    refineeUnfolding: OpmVisualElement;
     constructor(params, logicalElement) {
       super(params, logicalElement);
       this.parentheses = params.parentheses;
     }
 
-    connectRefinementElements(id) {
-      (<OpmVisualProcess>this.logicalElement.findVisualElement(id)).refinee = this;
+    connectRefinementElements(id, type) {
+      if (type=='inzoom')
+      (<OpmVisualProcess>this.logicalElement.findVisualElement(id)).refineeInzooming = this;
+      else
+        (<OpmVisualProcess>this.logicalElement.findVisualElement(id)).refineeUnfolding = this;
       this.refineable = this.logicalElement.findVisualElement(id);
     }
   }

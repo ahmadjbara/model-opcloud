@@ -52,7 +52,7 @@ export class OpmProcess extends OpmThing {
         let clonedProcess;
         const cellModel = haloThis.options.cellView.model;
         if (cellModel.attributes.attrs.ellipse['stroke-width'] === 4) {
-          clonedProcess = options.opmModel.getVisualElementById(cellModel.id).refinee;
+          clonedProcess = options.opmModel.getVisualElementById(cellModel.id).refineeInzooming;
           let pid = clonedProcess.id;
           options.graphService.changeGraphModel(pid, options.treeViewService, 'inzoom');
         } else {
@@ -60,12 +60,12 @@ export class OpmProcess extends OpmThing {
           options.opmModel.addOpd(opd);
           cellModel.attributes.attrs.ellipse['stroke-width'] = 4;
           clonedProcess = options.treeViewService.insertNode(cellModel, 'inzoom', options);
-          clonedProcess.set('position', cellModel.get('position'));
+          clonedProcess.set('position', {x:350, y:100});
           const elementlinks = options.graphService.graphLinks;
-          processInzooming(evt, x, y, haloThis.options, clonedProcess, elementlinks);
+          processInzooming(evt, 350, 100, haloThis.options, clonedProcess, elementlinks);
           let visualElement = new OpmVisualProcess(clonedProcess.getParams(), null);
           options.opmModel.getLogicalElementByVisualId(cellModel.id).add(visualElement);
-          visualElement.connectRefinementElements(cellModel.id);
+          visualElement.connectRefinementElements(cellModel.id, 'inzoom');
 
           opd.add(visualElement);
         }
@@ -76,12 +76,14 @@ export class OpmProcess extends OpmThing {
         let clonedProcess;
         this.remove();
         const cellModel = haloThis.options.cellView.model;
-        if (cellModel.attributes.attrs.ellipse['stroke'] === '#0096ff') {
-          options.graphService.changeGraphModel(cellModel.id, options.treeViewService, 'unfold');
+        if (cellModel.attributes.attrs.ellipse['stroke'] === '#0096FF') {
+          clonedProcess = options.opmModel.getVisualElementById(cellModel.id).refineeUnfolding;
+          let pid = clonedProcess.id;
+          options.graphService.changeGraphModel(pid, options.treeViewService, 'unfold');
         } else {
           let opd = new OpmOpd('');
           options.opmModel.addOpd(opd);
-          cellModel.attributes.attrs.ellipse['stroke'] = '#0096ff';
+          cellModel.attributes.attrs.ellipse['stroke'] = '#0096FF';
           clonedProcess = options.treeViewService.insertNode(cellModel, 'unfold', options);
           const elementlinks = options.graphService.graphLinks;
           console.log(cellModel.id);
@@ -91,7 +93,7 @@ export class OpmProcess extends OpmThing {
           //processUnfolding(haloThis, clonedProcess, elementlinks);
           let visualElement = new OpmVisualProcess(clonedProcess.getParams(), null);
           options.opmModel.getLogicalElementByVisualId(cellModel.id).add(visualElement);
-          visualElement.connectRefinementElements(cellModel.id);
+          visualElement.connectRefinementElements(cellModel.id, 'unfold');
 
           opd.add(visualElement);
         }
@@ -106,7 +108,7 @@ export class OpmProcess extends OpmThing {
       theme: 'modern',
       tools: [
         { action: 'In-Zoom', content:  halo.options.cellView.model.attributes.attrs.ellipse['stroke-width'] === 4 ? 'Show In-Zoomed' : 'In-Zoom' },
-        { action: 'Unfold', content: halo.options.cellView.model.attributes.attrs.ellipse['stroke'] === '#FF0000' ? 'Show Unfolded' : 'Unfold' }
+        { action: 'Unfold', content: halo.options.cellView.model.attributes.attrs.ellipse['stroke'] === '#0096FF' ? 'Show Unfolded' : 'Unfold' }
       ],
       target: halo.el,
       autoClose: true,
