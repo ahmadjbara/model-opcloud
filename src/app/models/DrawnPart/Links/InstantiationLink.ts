@@ -4,7 +4,7 @@ import {linkType} from "../../ConfigurationOptions";
 export  class InstantiationLink extends OpmFundamentalLink {
   constructor(sourceElement, targetElement, graph) {
     super(sourceElement, targetElement, graph);
-    const image = '../../assets/OPM_Links/StructuralSpecify.png';
+    const image = '../../../../assets/icons/OPM_Links/StructuralSpecify.png';
     this.triangle.attr({image: {'xlink:href': image}});
   }
   getParams() {
