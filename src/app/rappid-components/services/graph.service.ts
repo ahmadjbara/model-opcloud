@@ -182,7 +182,7 @@ export class GraphService {
     let graphServiceThis = this;
     connctedCells.forEach(function(elm) {
       let parentId = elm.get('parent');
-      if (parentId && graphServiceThis.graph.getCell(parentId) instanceof OpmState) {
+      if (parentId && elm instanceof OpmState) {
         connctedCells.push(graphServiceThis.graph.getCell(parentId));
       }
     });
