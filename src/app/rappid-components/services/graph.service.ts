@@ -117,20 +117,27 @@ export class GraphService {
   private copyEmbeddedGraphElements(newGraph, elementID, treeViewService, initRappid) {
     let gCell=this.graph.getCell(elementID);
     let tmp = new joint.dia.Graph;
-    let pid = initRappid.opmModel.getVisualElementById(elementID).refineeInzooming.id;
-    let tempGraph = treeViewService.getNodeByIdType(pid, 'inzoom').graph;
-    let embeds = tempGraph.getCell(pid).get('embeds');
-    let connctedCells = embeds.map((e)=>tempGraph.getCell(e));
-   // let connctedCells= tempGraph.getCell(pid).getEmbeddedCells({deep:true});
+    let connctedCells;
     let clonedConnectedCells = [];
-
-    clonedConnectedCells = connctedCells.map((c) => c.clone(), connctedCells);
-
     let clonedProcess = gCell.clone();
     clonedProcess.set('position', {x: 350, y: 100});
     clonedProcess.attributes.attrs.ellipse['stroke'] = gCell.attributes.attrs.ellipse['stroke'];
     clonedProcess.attributes.attrs.ellipse['stroke-width'] = gCell.attributes.attrs.ellipse['stroke-width'];
-    newGraph.addCells(clonedConnectedCells);
+
+    if (typeof initRappid.opmModel.getVisualElementById(elementID).refineeInzooming !== 'undefined' ) {
+      let pid = initRappid.opmModel.getVisualElementById(elementID).refineeInzooming.id;
+      let tempGraph = treeViewService.getNodeByIdType(pid, 'inzoom').graph;
+      let embeds = tempGraph.getCell(pid).get('embeds');
+      connctedCells = embeds.map((e) => tempGraph.getCell(e));
+      // let connctedCells= tempGraph.getCell(pid).getEmbeddedCells({deep:true});
+
+
+
+      clonedConnectedCells = connctedCells.map((c) => c.clone(), connctedCells);
+      newGraph.addCells(clonedConnectedCells);
+    }
+    else
+      newGraph.addCell(clonedProcess);
 
     let w = gCell.get('size').width;
     let h = gCell.get('size').height;
