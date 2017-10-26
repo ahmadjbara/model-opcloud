@@ -4,6 +4,8 @@ import { MdDialog } from '@angular/material';
 import { LoadModelDialogComponent } from '../../dialogs/load-model-dialog/load-model-dialog.component';
 import { CommandManagerService } from '../services/command-manager.service';
 import { InitRappidService } from '../services/init-rappid.service';
+import {AboutDialogComponent} from '../../dialogs/About/about';
+
 
 const commandGroups = [
   {
@@ -26,7 +28,8 @@ const commandGroups = [
       { name: 'zoomin', tooltip: 'zoom in', icon: 'zoom_in' },
       { name: 'zoomout', tooltip: 'zoom out', icon: 'zoom_out' },
       { name: 'zoomtofit', tooltip: 'zoom to fit', icon: 'zoom_out_map' },
-      { name: 'zoomtodefault', tooltip: 'default zoom', icon: 'youtube_searched_for' }
+      { name: 'zoomtodefault', tooltip: 'default zoom', icon: 'youtube_searched_for' },
+      { name: 'about', tooltip: 'About', icon: 'info' }
     ]
   }
 ];
@@ -126,5 +129,15 @@ export class RappidToolbarComponent implements OnInit {
 
   zoomtodefault() {
     this.initRappidService.paperScroller.zoom(1, { absolute: true });
+  }
+
+  about() {
+    const dialogRef = this._dialog.open(AboutDialogComponent);
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (!!result) {
+
+      }
+    });
   }
 }

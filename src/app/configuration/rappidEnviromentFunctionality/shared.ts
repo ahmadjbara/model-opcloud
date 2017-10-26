@@ -1,11 +1,10 @@
-import {opmStyle} from "./inspector/opmStyle";
-
+import {opmStyle} from './inspector/opmStyle';
+export const jquery = require('jQuery');
 export const _ = require('lodash');
 export const paddingObject = 10;
 export const joint = require('rappid');
 export const width = require('text-width');
 export const height = require('text-height');
-export const jquery = require('jquery');
 
 export function validationAlert(errorMessage) {
   if (errorMessage) {

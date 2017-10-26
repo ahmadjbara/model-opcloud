@@ -97,7 +97,7 @@
 
     <div *ngIf=check_empty(Exception_links)>
       <tabs>
-        <tab [tabTitle]="'Overtime exception'">
+        <tab [tabTitle]="'Overtime Exception'">
           <md-grid-list cols="2" (click)="onClickedExit(Exception_links[0])" rowHeight="8:1">
             <md-grid-tile>
               <div class='Exceptions {{Exception_links[0].name}}'></div>
@@ -113,7 +113,7 @@
             </md-grid-tile>
           </md-grid-list>
         </tab>
-        <tab [tabTitle]="'Undertime exception'">
+        <tab [tabTitle]="'Undertime Exception'">
           <md-grid-list cols="2" (click)="onClickedExit(Exception_links[1])" rowHeight="8:1">
             <md-grid-tile>
               <div class='Exceptions {{Exception_links[1].name}}'></div>
@@ -126,6 +126,22 @@
             <md-grid-tile class="item">
               <p class="opl" [innerHtml]="Exception_links[1].opl">
                 {{Exception_links[1].opl}}</p>
+            </md-grid-tile>
+          </md-grid-list>
+        </tab>
+        <tab [tabTitle]="'Undertime and Overtime Exception'">
+          <md-grid-list cols="2" (click)="onClickedExit(Exception_links[2])" rowHeight="8:1">
+            <md-grid-tile>
+              <div class='Exceptions {{Exception_links[2].name}}'></div>
+              <md-grid-tile>
+                <p class="oplname">
+                  {{replacename(Exception_links[2].name)}}
+                </p>
+              </md-grid-tile>
+            </md-grid-tile>
+            <md-grid-tile class="item">
+              <p class="opl" [innerHtml]="Exception_links[2].opl">
+                {{Exception_links[2].opl}}</p>
             </md-grid-tile>
           </md-grid-list>
         </tab>

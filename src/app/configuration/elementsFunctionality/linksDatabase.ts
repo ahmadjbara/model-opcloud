@@ -100,6 +100,11 @@ export class dataBase {
       {sourceType: "object1.state1", targetType1: "object1.state2",targetType2: "null", linkName: "Undertime_exception"},
       {sourceType: "object1.state", targetType1: "object1",targetType2: "null", linkName: "Undertime_exception"},
 
+      {sourceType: "process1", targetType1: "process2",targetType2: "null", linkName: "Undertime_and_overtime_exception"},
+      {sourceType: "object1.state", targetType1: "process2",targetType2: "null", linkName: "Undertime_and_overtime_exception"},
+      {sourceType: "object1.state1", targetType1: "object1.state2",targetType2: "null", linkName: "Undertime_and_overtime_exception"},
+      {sourceType: "object1.state", targetType1: "object1",targetType2: "null", linkName: "Undertime_and_overtime_exception"},
+
 //      {sourceType: "process1", targetType1: "process2",targetType2: "null", linkName: "Undertime_and_overtime_exeption"},
 
       {sourceType: "object1", targetType1: "process2",targetType2: "null", linkName: "Condition_Consumption"},

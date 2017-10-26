@@ -1,6 +1,6 @@
 import { Component, ViewContainerRef, ViewChild, Input, OnChanges } from '@angular/core';
 import { inspectorConfig } from '../../configuration/rappidEnviromentFunctionality/inspector/inspector.config';
-import {joint, _, jquery} from '../../configuration/rappidEnviromentFunctionality/shared';
+import {jquery, joint, _} from '../../configuration/rappidEnviromentFunctionality/shared';
 
 @Component({
   selector: 'opcloud-rappid-inspector',
@@ -23,13 +23,10 @@ export class RappidInspectorComponent implements OnChanges {
   }
 
   createInspector() {
-
-    const inspector = new joint.ui.Inspector(jquery.extend(true,{
+    const inspector = new joint.ui.Inspector(jquery.extend(true, {
       cell: this.cell
     }, inspectorConfig[this.cell.get('type')]));
     this.inspectorContainer.element.nativeElement.appendChild(inspector.el);
-    //console.log('aaa');
-    //console.log(this.cell);
     inspector.render();
   }
 

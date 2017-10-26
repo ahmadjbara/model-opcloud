@@ -173,6 +173,12 @@
   height: 24px;
 }
 
+.Exceptions.Undertime_and_overtime_exception {
+  background-position: -0px -48px;
+  width: 73px;
+  height: 24px;
+}
+
 #dialog {
   position: fixed;
   border-radius: 10px;
