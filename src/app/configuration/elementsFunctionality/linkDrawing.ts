@@ -56,6 +56,7 @@ export const linkDrawing = {
     }
     newLink.set('previousTargetId', link.get('previousTargetId'));
     newLink.set('previousSourceId', link.get('previousSourceId'));
+    newLink.set('name', link.get('name'));
     graph.addCell(newLink);
     link.remove();
 /*

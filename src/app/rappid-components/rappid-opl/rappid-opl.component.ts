@@ -52,6 +52,9 @@ export class RappidOplComponent implements OnInit {
             cell.attributes['opl'] = `${parent} can be ${cell.attributes.attrs.text.text}`;
           }
         }
+        if (cell.attributes.type === 'opm.Link') {
+          this.updateLinkOPL(cell);
+        }
       });
 
       this.graph.on('change', (cell) => {
