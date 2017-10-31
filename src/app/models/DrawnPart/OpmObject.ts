@@ -41,14 +41,15 @@ export class OpmObject extends OpmThing {
     };
     return {...super.getThingParams(), ...params};
   }
-  addState() {
+  addState(stateName = null) {
     this.objectChangedSize = false;
-    const statesCounter = this.getEmbeddedCells().length;
-    this.createNewState('state' + (statesCounter + 1));
-    if (statesCounter === 0) {
-      this.createNewState('state' + (statesCounter + 2));
-      this.createNewState('state' + (statesCounter + 3));
+    const statesNumber = this.getEmbeddedCells().length;
+    this.createNewState((stateName ? stateName : ('state' + (statesNumber + 1))));
+    if (!stateName && (statesNumber === 0)) {
+      this.createNewState(('state' + (statesNumber + 2)));
+      this.createNewState(('state' + (statesNumber + 3)));
     }
+
     // Add the new state using the current states arrangement
     if (this.get('embeds').length < 2) {
       arrangeEmbedded(this, 'bottom');
@@ -57,17 +58,15 @@ export class OpmObject extends OpmThing {
     }
   }
   createNewState(stateName) {
-    const defaultState = new OpmState();
+    const defaultState = new OpmState(stateName);
     this.embed(defaultState);     // makes the state stay in the bounds of the object
     this.graph.addCells([this, defaultState]);
     // Placing the new state. By default it is outside the object.
     const xNewState = this.getBBox().center().x - defaultState.get('size').width / 2;
     const yNewState = this.get('position').y + this.get('size').height - defaultState.get('size').height;
-    defaultState.attr('text/text', stateName);
     defaultState.set('father', defaultState.get('parent'));
     defaultState.set({position: {x: xNewState, y: yNewState}});
   }
-
   haloConfiguration(halo, options) {
     let hasStates = this.getEmbeddedCells().length;
     halo.addHandle(this.addHandleGenerator('add_state', 'sw', 'Click to add state to the object', 'right'));

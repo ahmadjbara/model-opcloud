@@ -1,11 +1,10 @@
 import {OpmEntity} from './OpmEntity';
 
 export  class OpmState extends OpmEntity {
-  initialize() {
-    super.initialize();
+  constructor(stateName = 'State') {
+    super();
     this.set(this.stateAttributes());
-    this.attr(this.stateAttrs());
-
+    this.attr(this.stateAttrs(stateName));
   }
   stateAttributes() {
     return {
@@ -17,10 +16,10 @@ export  class OpmState extends OpmEntity {
       'father': null,
     };
   }
-  stateAttrs() {
+  stateAttrs(stateName) {
     return {
       rect: {...this.entityShape(), ...{width: 50, height: 25, stroke: '#808000', rx: 10, ry: 10, cx: null, cy: null}},
-      'text' : {text: 'State', 'font-weight': 300}
+      'text' : {text: stateName, 'font-weight': 300}
     };
   }
   getParams() {

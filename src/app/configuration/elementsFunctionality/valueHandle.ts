@@ -12,9 +12,9 @@ export const valueHandle = {
             child.attr({text: {text: value}});
         });
         //If got to this line then it means that there is no state yet and need to add a new state
-        if(statesNumber === 0) {
-          cell.addState();
-            _.each(cell.getEmbeddedCells(), function (child) {child.attr({text: {text: value}});});
+        if (statesNumber === 0) {
+          cell.addState(value);
+          //  _.each(cell.getEmbeddedCells(), function (child) {child.attr({text: {text: value}});});
         }
     },
 
