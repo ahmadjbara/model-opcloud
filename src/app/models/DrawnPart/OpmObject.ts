@@ -43,14 +43,12 @@ export class OpmObject extends OpmThing {
   }
   addState() {
     this.objectChangedSize = false;
-    const defaultState = new OpmState();
-    this.embed(defaultState);     // makes the state stay in the bounds of the object
-    this.graph.addCells([this, defaultState]);
-    // Placing the new state. By default it is outside the object.
-    const xNewState = this.getBBox().center().x - defaultState.get('size').width / 2;
-    const yNewState = this.get('position').y + this.get('size').height - defaultState.get('size').height;
-    defaultState.set('father', defaultState.get('parent'));
-    defaultState.set({position: {x: xNewState, y: yNewState}});
+    const statesCounter = this.getEmbeddedCells().length;
+    this.createNewState('state' + (statesCounter + 1));
+    if (statesCounter === 0) {
+      this.createNewState('state' + (statesCounter + 2));
+      this.createNewState('state' + (statesCounter + 3));
+    }
     // Add the new state using the current states arrangement
     if (this.get('embeds').length < 2) {
       arrangeEmbedded(this, 'bottom');
@@ -58,6 +56,18 @@ export class OpmObject extends OpmThing {
       arrangeEmbedded(this, this.attr('statesArrange'));
     }
   }
+  createNewState(stateName) {
+    const defaultState = new OpmState();
+    this.embed(defaultState);     // makes the state stay in the bounds of the object
+    this.graph.addCells([this, defaultState]);
+    // Placing the new state. By default it is outside the object.
+    const xNewState = this.getBBox().center().x - defaultState.get('size').width / 2;
+    const yNewState = this.get('position').y + this.get('size').height - defaultState.get('size').height;
+    defaultState.attr('text/text', stateName);
+    defaultState.set('father', defaultState.get('parent'));
+    defaultState.set({position: {x: xNewState, y: yNewState}});
+  }
+
   haloConfiguration(halo, options) {
     let hasStates = this.getEmbeddedCells().length;
     halo.addHandle(this.addHandleGenerator('add_state', 'sw', 'Click to add state to the object', 'right'));
