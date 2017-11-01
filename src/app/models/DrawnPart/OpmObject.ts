@@ -45,11 +45,12 @@ export class OpmObject extends OpmThing {
     this.objectChangedSize = false;
     const statesNumber = this.getEmbeddedCells().length;
     this.createNewState((stateName ? stateName : ('state' + (statesNumber + 1))));
+    // For the first time of clicking on general addState should be added 3 states
     if (!stateName && (statesNumber === 0)) {
-      this.createNewState(('state' + (statesNumber + 2)));
-      this.createNewState(('state' + (statesNumber + 3)));
+      for (let i = 2; i <= 3; i++) {
+        this.createNewState(('state' + (statesNumber + i)));
+      }
     }
-
     // Add the new state using the current states arrangement
     if (this.get('embeds').length < 2) {
       arrangeEmbedded(this, 'bottom');
