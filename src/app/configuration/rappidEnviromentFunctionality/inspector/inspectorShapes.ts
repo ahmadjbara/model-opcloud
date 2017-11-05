@@ -1,7 +1,5 @@
 import { selectOptions } from './selectOptions';
-import {createGroup} from './inspector.config';
-import {createColorsObject, createRangeObject, createSelection, createTextContentObject}
-        from '../shared';
+import {createColorsObject, createRangeObject, createSelection, createTextContentObject, createGroup} from '../shared';
 
 export const inspectorShapes = {
 
