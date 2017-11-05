@@ -17,8 +17,6 @@ const entityDefinition = {
   defaults: _.defaultsDeep({
     size: {width: 90, height: 50},
     attrs: {
-      '.outer':'',
-      '.inner':'',
       'text': entityText,
       'wrappingResized' : false,
       'manuallyResized' : false,
