@@ -12,6 +12,7 @@ import {OpmState} from '../../models/DrawnPart/OpmState';
 import {joint, _, vectorizer} from '../../configuration/rappidEnviromentFunctionality/shared';
 import {InstrumentLink} from "../../models/DrawnPart/Links/InstrumentLink";
 import {ConsumptionLink} from "../../models/DrawnPart/Links/ConsumptionLink";
+import {compute} from "../../configuration/elementsFunctionality/computationalPart";
 
 const rootId = 'SD';
 const firebaseKeyEncode = require('firebase-key-encode');
@@ -228,49 +229,18 @@ export class GraphService {
     this.type = type;
   }
   execute(initRappid) {
-    console.log('execute now');
     // get all processes in the graph
     let graphProcesses = this.graph.get('cells').models.filter(element => element.get('type') === 'opm.Process')
     // sort processes from top to bottom
     graphProcesses = graphProcesses.sort((p1, p2) => p1.get('position').y - p2.get('position').y);
     // go over all processes
     for (let i = 0; i < graphProcesses.length; i++) {
-      // get the inbound link and filter them to include only consumption and instrument links
+      // get the inbound links
       let inbound = this.graph.getConnectedLinks(graphProcesses[i], {inbound: true});
-      inbound = inbound.filter(link => ((link instanceof InstrumentLink) ||
-        (link instanceof ConsumptionLink)));
-      // get the outbound links and filter them to include only the result links
+      // get the outbound links
       let outbound = this.graph.getConnectedLinks(graphProcesses[i], {outbound: true});
-      outbound = outbound.filter(link => (link instanceof ResultLink));
-      const valuesArray = new Array();
-      for (let j = 0; j < inbound.length; j++) {
-        const token = vectorizer.V('circle', {r: 5, fill: 'green', stroke: 'red'});
-        const sourceElement = inbound[j].getSourceElement();
-        if ((sourceElement.attr('value/valueType') !== 'None') &&
-          (sourceElement.attr('value/value') !== 'None')) {
-          inbound[j].findView(initRappid.paper).sendToken(token.node, 1000);
-          valuesArray.push(sourceElement.attr('value/value'));
-        }
-      }
       const functionValue = graphProcesses[i].attr('value/value');
-      let resultValue;
-      if (functionValue === 'Add') {
-        resultValue = this.Add(valuesArray);
-      }
-      if (resultValue) {
-        for (let j = 0; j < outbound.length; j++) {
-          const token = vectorizer.V('circle', {r: 5, fill: 'green', stroke: 'red'});
-          outbound[j].findView(initRappid.paper).sendToken(token.node, 1000);
-          const targetElement = outbound[j].getTargetElement();
-          targetElement.attr({value: {value: resultValue.toString()}});
-        }
-      }
+      compute(inbound, outbound, initRappid.paper, functionValue);
     }
-  }
-  Add(valuesArray) {
-    // convert the elements from strings to numbers
-    const intArray = valuesArray.map(item => +item);
-    // sum the values of the array
-    return intArray.reduce((a, b) => a + b);
   }
 }

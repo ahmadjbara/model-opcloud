@@ -52,6 +52,11 @@ export  class OpmState extends OpmEntity {
     if (fatherObject.get('embeds').length === 0) {
       fatherObject.arrangeEmbededParams(0.5, 0.5, 'middle', 'middle', 'bottom', 0, 0);
       fatherObject.updateTextAndSize();
+      // if the state was a value of the object then delete the value from the object
+      if (fatherObject.attr('value/value')) {
+        fatherObject.attr({value: {value: 'None'}});
+        fatherObject.set('previousValue', null);
+      }
     } else {
       arrangeEmbedded(fatherObject, fatherObject.attr('statesArrange'));
     }

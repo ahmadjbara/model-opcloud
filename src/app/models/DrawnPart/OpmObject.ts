@@ -119,6 +119,9 @@ export class OpmObject extends OpmThing {
     const valueType = this.attr('value/valueType');
     const value = this.attr('value/value');
     const units = this.attr('value/units');
+    if ((valueType !== 'None') && (this.attr('rect/filter/args/dx') !== 0)) {
+      this.attr('rect/filter/args', {dx: 0, dy: 0, blur: 0, color: 'grey'});
+    }
     if ((!this.get('previousValue') || (value !== this.get('previousValue'))) && (value !== 'None')) {
       this.updateState(value);
     }
