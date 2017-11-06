@@ -32,12 +32,12 @@ export function compute(inbound, outbound, paper, functionValue) {
     resultValue = divide(valuesArray);
   }
   if (resultValue) {
-  for (let j = 0; j < outbound.length; j++) {
-    const token = vectorizer.V('circle', {r: 5, fill: 'green', stroke: 'red'});
-    outbound[j].findView(paper).sendToken(token.node, 1000);
-    const targetElement = outbound[j].getTargetElement();
-    targetElement.attr({value: {value: resultValue.toString()}});
-  }
+    for (let j = 0; j < outbound.length; j++) {
+      const token = vectorizer.V('circle', {r: 5, fill: 'green', stroke: 'red'});
+      outbound[j].findView(paper).sendToken(token.node, 1000);
+      const targetElement = outbound[j].getTargetElement();
+      targetElement.attr({value: {value: resultValue.toString()}});
+    }
   }
 }
 function add(valuesArray) {
