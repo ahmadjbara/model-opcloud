@@ -15,6 +15,8 @@ export const inspectorConfig = {
   'opm.Link': {
     inputs: {
       attrs: inspectorLinks.linkDefinition,
+      router : inspectorLinks.LinkRouter,
+      connector : inspectorLinks.LinkConnector,
       labels: inspectorLinks.labelDefinition
     },
     groups: inspectorLinks.groupsDefinition

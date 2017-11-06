@@ -45,6 +45,7 @@ export class InitRappidService {
     defineKeyboardShortcuts(this);
     console.log(this.opmModel);
   }
+
   initializeDesktop() {
     this.paper = new joint.dia.Paper({
       linkConnectionPoint: joint.util.shapePerimeterConnectionPoint,

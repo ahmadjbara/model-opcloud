@@ -1,7 +1,8 @@
 import { Component, EventEmitter, HostListener, Inject } from '@angular/core';
-import { linkDrawing } from '../../configuration/elementsFunctionality/linkDrawing';
+import {linkDrawing} from "../../configuration/elementsFunctionality/linkDrawing";
 import { MD_DIALOG_DATA, MdDialogRef } from '@angular/material';
-
+import {GraphService} from '../../rappid-components/services/graph.service';
+const joint = require('rappid');
 @Component({
   selector: 'opcloud-choose-link-dialog',
   templateUrl: './Dialog.component.html',
@@ -21,7 +22,6 @@ export class DialogComponent {
   draggingCorner: boolean;
   draggingWindow: boolean;
   resizer: Function;
-
   close = new EventEmitter();
   public newLink: any;
   public linkSource: any;
@@ -40,18 +40,26 @@ export class DialogComponent {
   public Result_Link: Array<any> = [];
   public Exception_links: Array<any> = [];
   public Invocation_links: Array<any> = [];
+  public Relation_Links: Array<any> = [];
+  public In_out_Link_Pair:Array<any> = [];
+  Graph = null;
+  graph = null;
+
+
 
   constructor(
     @Inject(MD_DIALOG_DATA) private data: any,
-    public dialogRef: MdDialogRef<DialogComponent>) {
+    public dialogRef: MdDialogRef<DialogComponent>,private graphService:GraphService) {
+    this.Graph = graphService.getGraph();
+    this.graph = this.Graph;
     this.x = 400;
     this.y = 100;
     this.px = 0;
     this.py = 0;
     this.width = 455;
-    this.height = 370;
+    this.height = 420;
     this.width_min = 455;
-    this.height_min = 370;
+    this.height_min = 420;
     this.draggingCorner = false;
     this.draggingWindow = false;
     this.minArea = 150000;
@@ -68,18 +76,18 @@ export class DialogComponent {
     this.Result_Link = data.Result_Link;
     this.Exception_links = data.Exception_links;
     this.Invocation_links = data.Invocation_links;
+    this.Relation_Links = data.Relation_Links;
+    this.In_out_Link_Pair = data.In_out_Link_Pair;
+
+
   }
 
   onClickedExit(link) {
     this.selected = link;
     this.newLink.attributes.name = this.selected.name;
-
     linkDrawing.drawLink(this.newLink, this.selected.name);
-    // createCode(link.name, this.linkSource.attributes.attrs.text.text, this.linkTarget.attributes.attrs.text.text);
-
     this.newLink.attributes.opl = this.selected.opl;
     this.close.emit(this.selected);
-
     this.dialogRef.close(this.selected);
   }
 
@@ -89,10 +97,12 @@ export class DialogComponent {
 
     switch (data) {
       case 'opm.Object':
-        return 'darkgreen';
+        return '#006400';
 
       case 'opm.Process':
-        return 'darkblue';
+        return '#00008B';
+      case 'opm.State':
+        return '#808000';
     }
   }
 
@@ -108,10 +118,12 @@ export class DialogComponent {
   replacename(linkname) {
     let serv = linkname;
     if (typeof linkname !== 'undefined') {
-      if (serv.indexOf('_') >= 0) {
-        serv = linkname.replace('_', ' ');
-      } else if (serv.indexOf('-') >= 0) {
-        serv = linkname.replace('-', ' ');
+      for (let ch of serv) {
+        if (serv.indexOf('_') >= 0) {
+          serv = linkname.replace(/_/g, ' ');
+        } else if (serv.indexOf('-') >= 0) {
+          serv = linkname.replace(/-/g, ' ');
+        }
       }
     }
     return serv;
@@ -207,6 +219,10 @@ export class DialogComponent {
   onCornerRelease(event: MouseEvent) {
     this.draggingWindow = false;
     this.draggingCorner = false;
+  }
+
+  ShowAlret(){
+    return this.noshow;
   }
 
 }
