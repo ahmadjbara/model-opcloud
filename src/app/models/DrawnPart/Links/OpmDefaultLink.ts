@@ -5,9 +5,13 @@ import {validationAlert} from '../../../configuration/rappidEnviromentFunctional
 import {createDialog} from '../../../configuration/elementsFunctionality/linkDialog';
 import {joint, _} from '../../../configuration/rappidEnviromentFunctionality/shared';
 
+
 const linkDefinition = {
   defaults: _.defaultsDeep({
     type: 'opm.Link',
+    connector:{
+      name : 'jumpover'
+    },
     attrs: {'.connection': { 'stroke-width': 2, 'stroke-dasharray': '8 5', 'stroke': 'black'}},
     labels: [{ position: 0.5, attrs: { text: {
       text: '',
@@ -19,6 +23,7 @@ const linkDefinition = {
 };
 
 export class OpmDefaultLink extends joint.shapes.devs.Link.extend(linkDefinition) {
+
   getDefaultLinkParams() {
     return {
       sourceElementId: this.getSourceElement().get('id'),
@@ -84,7 +89,7 @@ export class OpmDefaultLink extends joint.shapes.devs.Link.extend(linkDefinition
               this.set('previousTargetId', this.attributes.target.id);
               this.set('previousSourceId', this.attributes.source.id);
               if (!b.cameFromInZooming) {
-                createDialog(options, this);
+                createDialog(options, this );
               }
             }
         }

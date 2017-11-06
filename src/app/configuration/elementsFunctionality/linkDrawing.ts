@@ -22,42 +22,50 @@ export const linkDrawing = {
     const graph = link.graph;
     const isCondition = linkName.includes('Condition');
     const isEvent = linkName.includes('Event');
-    let newLink;
+    let newLink = [];
     if (linkName.includes('Agent')) {
-      newLink = new AgentLink(link.getSourceElement(), link.getTargetElement(), isCondition, isEvent);
+      newLink.push(new AgentLink(link.getSourceElement(), link.getTargetElement(), isCondition, isEvent));
     } else if (linkName.includes('Instrument')) {
-      newLink = new InstrumentLink(link.getSourceElement(), link.getTargetElement(), isCondition, isEvent);
+      newLink.push(new InstrumentLink(link.getSourceElement(), link.getTargetElement(), isCondition, isEvent));
     } else if (linkName.includes('Invocation')) {
-      newLink = new InvocationLink(link.getSourceElement(), link.getTargetElement(), isCondition, isEvent);
+      newLink.push(new InvocationLink(link.getSourceElement(), link.getTargetElement(), isCondition, isEvent));
     } else if (linkName.includes('Result')) {
-      newLink = new ResultLink(link.getSourceElement(), link.getTargetElement(), isCondition, isEvent);
+      newLink.push(new ResultLink(link.getSourceElement(), link.getTargetElement(), isCondition, isEvent));
     } else if (linkName.includes('Consumption')) {
-      newLink = new ConsumptionLink(link.getSourceElement(), link.getTargetElement(), isCondition, isEvent);
+      newLink.push(new ConsumptionLink(link.getSourceElement(), link.getTargetElement(), isCondition, isEvent));
     } else if (linkName.includes('Effect')) {
-      newLink = new EffectLink(link.getSourceElement(), link.getTargetElement(), isCondition, isEvent);
+      newLink.push(new EffectLink(link.getSourceElement(), link.getTargetElement(), isCondition, isEvent));
     } else if (linkName.includes('Overtime_exception')) {
-      newLink = new OvertimeExceptionLink(link.getSourceElement(), link.getTargetElement(), isCondition, isEvent);
+      newLink.push(new OvertimeExceptionLink(link.getSourceElement(), link.getTargetElement(), isCondition, isEvent));
     } else if (linkName.includes('Undertime_exception')) {
-      newLink = new UndertimeExceptionLink(link.getSourceElement(), link.getTargetElement(), isCondition, isEvent);
+      newLink.push(new UndertimeExceptionLink(link.getSourceElement(), link.getTargetElement(), isCondition, isEvent));
     } else if (linkName.includes('Undertime_and_overtime_exception')) {
-      newLink = new OvertimeUndertimeExceptionLink(link.getSourceElement(), link.getTargetElement(), isCondition, isEvent);
+      newLink.push(new OvertimeUndertimeExceptionLink(link.getSourceElement(), link.getTargetElement(), isCondition, isEvent));
     } else if (linkName.includes('Unidirectional')) {
-      newLink = new UnidirectionalTaggedLink(link.getSourceElement(), link.getTargetElement());
+      newLink.push( new UnidirectionalTaggedLink(link.getSourceElement(), link.getTargetElement()));
     } else if (linkName.includes('Bidirectional')) {
-      newLink = new BiDirectionalTaggedLink(link.getSourceElement(), link.getTargetElement());
+      newLink.push(new BiDirectionalTaggedLink(link.getSourceElement(), link.getTargetElement()));
     } else if (linkName.includes('Aggregation')) {
-      newLink = new AggregationLink(link.getSourceElement(), link.getTargetElement(), graph);
+      newLink.push(new AggregationLink(link.getSourceElement(), link.getTargetElement(), graph));
     } else if (linkName.includes('Exhibition')) {
-      newLink = new ExhibitionLink(link.getSourceElement(), link.getTargetElement(), graph);
+      newLink.push(new ExhibitionLink(link.getSourceElement(), link.getTargetElement(), graph));
     }else if (linkName.includes('Generalization')) {
-      newLink = new GeneralizationLink(link.getSourceElement(), link.getTargetElement(), graph);
+      newLink.push( new GeneralizationLink(link.getSourceElement(), link.getTargetElement(), graph));
     }else if (linkName.includes('Instantiation')) {
-      newLink = new InstantiationLink(link.getSourceElement(), link.getTargetElement(), graph);
+      newLink.push( new InstantiationLink(link.getSourceElement(), link.getTargetElement(), graph));
+    }else if (linkName.includes('In/out_linkPair')) {
+      let parentID = link.getSourceElement().attributes.father;
+      if(graph.getCell(parentID).attributes.embeds[1]){
+        newLink.push(new ConsumptionLink(link.getSourceElement(), link.getTargetElement(), isCondition, isEvent));
+        newLink.push(new ResultLink(link.getTargetElement(),graph.getCell(graph.getCell(parentID).attributes.embeds[1]), isCondition, isEvent));
+      }
+
+
     }
-    newLink.set('previousTargetId', link.get('previousTargetId'));
-    newLink.set('previousSourceId', link.get('previousSourceId'));
-    newLink.set('name', link.get('name'));
-    graph.addCell(newLink);
+    newLink[0].set('previousTargetId', link.get('previousTargetId'));
+    newLink[0].set('previousSourceId', link.get('previousSourceId'));
+    newLink[0].set('name', link.get('name'));
+    graph.addCells(newLink);
     link.remove();
 /*
     if (ftag && btag) {

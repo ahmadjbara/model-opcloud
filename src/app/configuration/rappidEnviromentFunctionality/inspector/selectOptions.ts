@@ -49,5 +49,19 @@ export const selectOptions = {
     {content: 'None', value: 'None'},
     {content: 'Number', value: 'Number'},
     {content: 'String', value: 'String'}
-  ]
+  ],
+  LinkRouter:[
+    {value : 'normal' , content:'normal'},
+    {value : 'manhattan' , content:'manhattan'},
+    {value : 'oneSide' , content:'oneSide'},
+    {value : 'metro' , content:'metro'},
+    {value : 'orthogonal' , content:'orthogonal'}
+  ],
+
+  LinkConnector:[
+    {value : 'normal' , content:'normal'},
+    {value : 'smooth' , content:'smooth'},
+    {value : 'rounded' , content:'rounded'},
+    {value : 'jumpover' , content:'jumpover'}
+  ],
 };

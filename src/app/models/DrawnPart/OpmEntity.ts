@@ -27,7 +27,7 @@ const entityDefinition = {
 export class OpmEntity extends joint.dia.Element.extend(entityDefinition) {
   entityShape() {
     return {
-      fill: '#DCDCDC',
+      fill: '',
       magnet: true,
       'stroke-width': 2,
     };
