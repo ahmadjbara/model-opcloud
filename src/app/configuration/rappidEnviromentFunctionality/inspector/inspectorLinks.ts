@@ -1,6 +1,5 @@
 import { selectOptions } from './selectOptions';
-import {createSelection} from '../shared';
-import {createGroup} from './inspector.config';
+import {createSelection, createGroup} from '../shared';
 
 export const inspectorLinks = {
   // From this point defined  the groups that all the inspector parameters are grouped by.

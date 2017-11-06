@@ -34,7 +34,7 @@ export class RappidOplComponent implements OnInit {
     this.HoverOnCells;
   }
 
-  GenerateOPL(){
+  GenerateOPL() {
       this.graph.on('add', (cell) => {
 
         if (cell.attributes.type === 'opm.Object') {

@@ -1,19 +1,20 @@
 import {OpmEntity} from './OpmEntity';
+import {arrangeEmbedded} from '../../configuration/elementsFunctionality/arrangeStates';
 import {joint, _, paddingObject} from '../../configuration/rappidEnviromentFunctionality/shared';
 const $ = require('jquery');
+
 export  class OpmState extends OpmEntity {
-
-  initialize() {
-    super.initialize();
+  constructor(stateName = 'State') {
+    super();
     this.set(this.stateAttributes());
-    this.attr(this.stateAttrs());
-
+    this.attr(this.stateAttrs(stateName));
   }
   stateAttributes() {
     return {
       markup: '<image/><g class="rotatable"><g class="scalable"><rect class="outer"/><rect class="inner"/></g><text/></g>',
       type: 'opm.State',
       size: {width: 60, height: 30},
+      minSize: {width: 60, height: 30},
       'father': null,
     };
   }
@@ -31,7 +32,6 @@ export  class OpmState extends OpmEntity {
       'y-alignment' :  'middle',
 
     };
-
   }
   createOuter(strokeW){
     return{
@@ -45,20 +45,12 @@ export  class OpmState extends OpmEntity {
       ry:5,
     };
   }
-  stateAttrs() {
+  stateAttrs(stateName) {
     return {
-
+      rect: {...this.entityShape(), ...{width: 50, height: 25, stroke: '#808000', rx: 6, ry: 6, cx: null, cy: null}},
       '.outer':this.createOuter(2),
       '.inner': this.createInner(0),
-      'text' : {text: 'state',
-        'font-weight': 300,
-        'font-size':12,
-        'ref-x': .5,
-        'ref-y': .5,
-        'x-alignment': 'middle',
-        'y-alignment': 'middle',
-        'font-family': 'Arial, helvetica, sans-serif',
-      },
+      'text' : {text: stateName, 'font-weight': 300},
       'image': {'xlink:href' : '../../../assets/icons/OPM_Links/DefaultState.png',display:'none', 'ref-x': 1, 'ref-y':1,  x: -18, y: -18,ref: 'rect', width: 25, height: 25 }
     };
   }
@@ -91,11 +83,19 @@ export  class OpmState extends OpmEntity {
     if (fatherObject.get('embeds').length === 0) {
       fatherObject.arrangeEmbededParams(0.5, 0.5, 'middle', 'middle', 'bottom', 0, 0);
       fatherObject.updateTextAndSize();
+      // if the state was a value of the object then delete the value from the object
+      if (fatherObject.attr('value/value')) {
+        fatherObject.attr({value: {value: 'None'}});
+        fatherObject.set('previousValue', null);
+      }
+    } else {
+      arrangeEmbedded(fatherObject, fatherObject.attr('statesArrange'));
     }
   }
-
+  haloConfiguration(halo, options) {
+    halo.addHandle(this.addHandleGenerator('toggleSuppression', 'ne', 'Click to supress state', 'left'));
+  }
   checktype(){
-
     if(this.attr('.inner/stroke-width') === 0 &&
       this.attr('.outer/stroke-width') === 2 &&
       this.attr('image/display') ==='none'){

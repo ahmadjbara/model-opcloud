@@ -111,7 +111,9 @@ export class OpmEntity extends joint.dia.Element.extend(entityDefinition) {
       }
       this.attributes.attrs.wrappingResized = false;
     }
+    this.updatecomputationalPart();
   }
+  updatecomputationalPart() {}
   changeSizeHandle() {
     if (this.attributes.attrs.text && !this.attributes.attrs.wrappingResized) { // resized manually
       textWrapping.wrapTextAfterSizeChange(this);

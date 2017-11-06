@@ -29,7 +29,8 @@ const commandGroups = [
       { name: 'zoomout', tooltip: 'zoom out', icon: 'zoom_out' },
       { name: 'zoomtofit', tooltip: 'zoom to fit', icon: 'zoom_out_map' },
       { name: 'zoomtodefault', tooltip: 'default zoom', icon: 'youtube_searched_for' },
-      { name: 'about', tooltip: 'About', icon: 'info' }
+      { name: 'about', tooltip: 'About', icon: 'info' },
+      { name: 'execute', tooltip: 'execute', icon: 'send' }
     ]
   }
 ];
@@ -139,5 +140,8 @@ export class RappidToolbarComponent implements OnInit {
 
       }
     });
+  }
+  execute() {
+    this.graphService.execute(this.initRappidService);
   }
 }

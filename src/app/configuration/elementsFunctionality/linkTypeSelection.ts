@@ -14,10 +14,10 @@ export const linkTypeSelection = {
       let srcType;
       let desType;
 
-
       srcType = source.attributes.type;
       desType = target.attributes.type;
-
+      if ((srcType === 'opm.TriangleAgg') || (desType === 'opm.TriangleAgg'))
+        return null;
       srcName = source.attributes.attrs.text.text;
       desName = target.attributes.attrs.text.text;
 

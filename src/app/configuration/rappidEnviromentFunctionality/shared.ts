@@ -1,8 +1,9 @@
 import {opmStyle} from './inspector/opmStyle';
-export const jquery = require('jQuery');
+export const jquery = require('jquery');
 export const _ = require('lodash');
 export const paddingObject = 10;
 export const joint = require('rappid');
+export const vectorizer = require('rappid');
 export const width = require('text-width');
 export const height = require('text-height');
 
@@ -60,5 +61,13 @@ export function createTextContentObject(textLabel, textGroup, textIndex){
     label: textLabel,
     group: textGroup,
     index: textIndex,
+  };
+}
+// Function createGroup. Get the name of the group, its index and if it should be collapsed and generates a group object
+export function createGroup(labelName, indexNumber, isClosed = false) {
+  return {
+    label: labelName,
+    index: indexNumber,
+    closed: isClosed
   };
 }
