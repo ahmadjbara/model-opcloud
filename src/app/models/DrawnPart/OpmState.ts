@@ -18,7 +18,7 @@ export  class OpmState extends OpmEntity {
       'father': null,
     };
   }
-  createInner(strokeW){
+  createInner(strokeW) {
     return {
       fill: '',
       stroke : '#808000',
@@ -48,7 +48,7 @@ export  class OpmState extends OpmEntity {
   stateAttrs(stateName) {
     return {
       rect: {...this.entityShape(), ...{width: 50, height: 25, stroke: '#808000', rx: 6, ry: 6, cx: null, cy: null}},
-      '.outer':this.createOuter(2),
+      '.outer': this.createOuter(2),
       '.inner': this.createInner(0),
       'text' : {text: stateName, 'font-weight': 300},
       'image': {'xlink:href' : '../../../assets/icons/OPM_Links/DefaultState.png',display:'none', 'ref-x': 1, 'ref-y':1,  x: -18, y: -18,ref: 'rect', width: 25, height: 25 }
@@ -92,10 +92,7 @@ export  class OpmState extends OpmEntity {
       arrangeEmbedded(fatherObject, fatherObject.attr('statesArrange'));
     }
   }
-  haloConfiguration(halo, options) {
-    halo.addHandle(this.addHandleGenerator('toggleSuppression', 'ne', 'Click to supress state', 'left'));
-  }
-  checktype(){
+  checktype() {
     if(this.attr('.inner/stroke-width') === 0 &&
       this.attr('.outer/stroke-width') === 2 &&
       this.attr('image/display') ==='none'){
