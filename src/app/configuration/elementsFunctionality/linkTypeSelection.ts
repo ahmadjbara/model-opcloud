@@ -114,7 +114,7 @@ export const linkTypeSelection = {
       else if (linkName == 'Undertime_exception') {
         return `${desName} occurs if ${srcName} falls short of mintime units.`;
       }
-      else if (linkName == 'Undertime_Overtime_exception'){
+      else if (linkName == 'UndertimeOvertimeException'){
         return `${desName} occurs if ${srcName} falls short of mintime units or lasts more than mintime units.`;
       }
       else if (linkName == 'Condition_Consumption') {

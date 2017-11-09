@@ -39,7 +39,7 @@ export const linkDrawing = {
       newLink.push(new OvertimeExceptionLink(link.getSourceElement(), link.getTargetElement(), isCondition, isEvent));
     } else if (linkName.includes('Undertime_exception')) {
       newLink.push(new UndertimeExceptionLink(link.getSourceElement(), link.getTargetElement(), isCondition, isEvent));
-    } else if (linkName.includes('Undertime_and_overtime_exception')) {
+    } else if (linkName.includes('UndertimeOvertimeException')) {
       newLink.push(new OvertimeUndertimeExceptionLink(link.getSourceElement(), link.getTargetElement(), isCondition, isEvent));
     } else if (linkName.includes('Unidirectional')) {
       newLink.push( new UnidirectionalTaggedLink(link.getSourceElement(), link.getTargetElement()));
