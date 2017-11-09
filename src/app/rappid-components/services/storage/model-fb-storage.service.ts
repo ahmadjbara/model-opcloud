@@ -5,6 +5,10 @@ import { FirebaseObjectObservable, AngularFireDatabase } from 'angularfire2/data
 import {OpmObject} from "../../../models/DrawnPart/OpmObject";
 import {OpmProcess} from "../../../models/DrawnPart/OpmProcess";
 import {OpmState} from "../../../models/DrawnPart/OpmState";
+import {AgentLink} from "../../../models/DrawnPart/Links/AgentLink";
+import {OpmDefaultLink} from "../../../models/DrawnPart/Links/OpmDefaultLink";
+import {linkDrawing} from "../../../configuration/elementsFunctionality/linkDrawing";
+import {TriangleClass} from "../../../models/DrawnPart/Links/OpmFundamentalLink";
 const firebaseKeyEncode = require('firebase-key-encode');
 
 @Injectable()
@@ -54,6 +58,7 @@ export class ModelFbStorageService extends ModelStorageInterface {
         graphElements.push(newCell);
       }
       graph.addCells(graphElements);
+      this.updateLinkElements(graph);
     }
   }
   createNewGraphElement(jsonCell) {
@@ -63,6 +68,36 @@ export class ModelFbStorageService extends ModelStorageInterface {
       return new OpmProcess();
     } else if (jsonCell.type === 'opm.State') {
       return new OpmState();
+    } else if (jsonCell.type === 'opm.Link') {
+      return new OpmDefaultLink();
+    } else if (jsonCell.type === 'opm.TriangleAgg') {
+      return new TriangleClass();
+    }
+  }
+  updateLinkElements(graph) {
+    const graphElements = graph.get('cells').models;
+    const elementsNumber = graphElements.length;
+    let triangle = null;
+    // go over the element that were added to the graph
+    for (let i = 0; i < elementsNumber; i++) {
+      // update only the link elements that suppose to be different form DefaultLink type
+      if ((graphElements[i] instanceof OpmDefaultLink)  &&
+        (graphElements[i].get('name') !== 'defaultLink')) {
+        // if the link is one of the fundamental links then the drawing is different
+        if (['Aggregation-Participation', 'Exhibition-Characterization', 'Generalization-Specialization', 'Classification-Instantiation'].indexOf(graphElements[i].get('name')) >= 0) {
+          triangle = graphElements.filter(element => (element.id === graphElements[i].get('source').id))[0];
+          // the handle of the fork
+          const mainUpperLink = graphElements.filter(element => ((element.get('target')) && (element.get('target').id === triangle.id)))[0];
+          // the real source object
+          const sourceElementId = mainUpperLink.get('source').id;
+          // source element is changed from triangle to the source object.
+          // needed for the drawLink function.
+          graphElements[i].set({source: {id: sourceElementId}});
+          // reduce the number of target from the triangle because now the source of the link was changed
+          triangle.set('numberOfTargets', (triangle.get('numberOfTargets') - 1));
+        }
+        linkDrawing.drawLink(graphElements[i], graphElements[i].get('name'));
+      }
     }
   }
 

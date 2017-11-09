@@ -10,7 +10,7 @@ import {OpmLinkRappid} from "./OpmLinkRappid";
 const linkDefinition = {
   defaults: _.defaultsDeep({
     type: 'opm.Link',
-    connector:{
+    connector: {
       name : 'jumpover'
     },
     attrs: {'.connection': { 'stroke-width': 2, 'stroke-dasharray': '8 5', 'stroke': 'black'}},
@@ -32,6 +32,7 @@ export class OpmDefaultLink extends OpmLinkRappid {
   linkAttributes() {
     return {
       type: 'opm.Link',
+      name: 'defaultLink',
       connector: {
         name : 'jumpover'
       },
@@ -45,7 +46,7 @@ export class OpmDefaultLink extends OpmLinkRappid {
   }
   linkAttrs() {
     return {
-      '.connection': { 'stroke-width': 2, 'stroke-dasharray': '8 5', 'stroke': 'black'}
+      '.connection': { 'stroke-width': '2', 'stroke-dasharray': '8 5', 'stroke': 'black'}
     };
   }
   getDefaultLinkParams() {

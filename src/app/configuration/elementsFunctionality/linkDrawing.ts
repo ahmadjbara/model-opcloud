@@ -59,8 +59,6 @@ export const linkDrawing = {
         newLink.push(new ConsumptionLink(link.getSourceElement(), link.getTargetElement(), isCondition, isEvent));
         newLink.push(new ResultLink(link.getTargetElement(), graph.getCell(graph.getCell(parentID).attributes.embeds[1]), isCondition, isEvent));
       }
-
-
     }
     newLink[0].set('previousTargetId', link.get('previousTargetId'));
     newLink[0].set('previousSourceId', link.get('previousSourceId'));
