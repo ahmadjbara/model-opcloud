@@ -54,10 +54,10 @@ export const linkDrawing = {
     }else if (linkName.includes('Instantiation')) {
       newLink.push( new InstantiationLink(link.getSourceElement(), link.getTargetElement(), graph));
     }else if (linkName.includes('In/out_linkPair')) {
-      let parentID = link.getSourceElement().attributes.father;
-      if(graph.getCell(parentID).attributes.embeds[1]){
+      const parentID = link.getSourceElement().attributes.father;
+      if (newLink.length > 1) {
         newLink.push(new ConsumptionLink(link.getSourceElement(), link.getTargetElement(), isCondition, isEvent));
-        newLink.push(new ResultLink(link.getTargetElement(),graph.getCell(graph.getCell(parentID).attributes.embeds[1]), isCondition, isEvent));
+        newLink.push(new ResultLink(link.getTargetElement(), graph.getCell(graph.getCell(parentID).attributes.embeds[1]), isCondition, isEvent));
       }
 
 

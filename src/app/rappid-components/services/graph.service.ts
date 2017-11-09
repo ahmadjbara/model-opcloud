@@ -67,10 +67,11 @@ export class GraphService {
   loadGraph(name) {
     this.modelStorage.get(name).then((res) => {
       this.modelObject = res;
-      firebaseKeyEncode.deepDecode(this.modelObject.modelData)
-      this.graph.fromJSON(this.modelObject.modelData);
+      firebaseKeyEncode.deepDecode(this.modelObject.modelData);
+      this.modelStorage.fromJson(this.graph, this.modelObject.modelData);
+      this.modelStorage.listen(name, this.graph);
+      //    this.graph.fromJSON(this.modelObject.modelData);
     });
-    this.modelStorage.listen(name, this.graph);
   }
 
   updateJSON() {

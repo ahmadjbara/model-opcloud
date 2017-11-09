@@ -154,7 +154,7 @@ export class RappidOplComponent implements OnInit {
   }
   unhighlightObject(cell){
     var cellView = this.paper.findViewByModel(cell);
-    cellView.model.attr('rect/fill','')
+    cellView.model.attr('rect/fill','white')
 
   }
 
@@ -165,7 +165,7 @@ export class RappidOplComponent implements OnInit {
 
   unhighlightProcess(cell){
     var cellView = this.paper.findViewByModel(cell);
-    cellView.model.attr('ellipse/fill','')
+    cellView.model.attr('ellipse/fill','white')
   }
 
   highlightLink(cell){

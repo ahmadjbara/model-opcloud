@@ -161,6 +161,9 @@ export class OpmProcess extends OpmThing {
       if (newText.lastIndexOf('()') === -1) {
         this.attr({text: {text: (newText + ' ()')}});
       }
+      if (this.attr('ellipse/filter/args/dx') !== 0) {
+        this.attr('ellipse/filter/args', {dx: 0, dy: 0, blur: 0, color: 'grey'});
+      }
     }
   }
 }
