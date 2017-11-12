@@ -2,6 +2,7 @@ import {textWrapping} from '../../configuration/elementsFunctionality/textWrappi
 import {OpmProceduralLink} from './Links/OpmProceduralLink';
 import {haloConfig} from '../../configuration/rappidEnviromentFunctionality/halo.config';
 import {joint, _} from '../../configuration/rappidEnviromentFunctionality/shared';
+import {OpmEntityRappid} from './OpmEntityRappid';
 
 const entityText = {
   fill: 'black',
@@ -13,25 +14,31 @@ const entityText = {
   'font-family': 'Arial, helvetica, sans-serif',
 };
 
-const entityDefinition = {
-  defaults: _.defaultsDeep({
-    size: {width: 90, height: 50},
-    attrs: {
-      'text': entityText,
-      'wrappingResized' : false,
-      'manuallyResized' : false,
-    }
-  }, joint.shapes.basic.Generic.prototype.defaults),
-};
-
-export class OpmEntity extends joint.dia.Element.extend(entityDefinition) {
-  entityShape() {
+export class OpmEntity extends OpmEntityRappid {
+  constructor() {
+    super();
+    this.set(this.entityAttributes());
+    this.attr(this.enitiyAttrs());
+  }
+  entityAttributes() {
     return {
-      fill: '#DCDCDC',
-      magnet: true,
-      'stroke-width': 2,
+      size: {width: 90, height: 50}
     };
   }
+  enitiyAttrs() {
+    return {
+      'text': entityText,
+      'wrappingResized' : false,
+      'manuallyResized' : false
+    };
+  }
+  entityShape() {
+  return {
+    fill: 'white',
+    magnet: true,
+    'stroke-width': 2,
+  };
+}
   getEntityParams() {
     return {
       xPos: this.get('position').x,
@@ -111,7 +118,9 @@ export class OpmEntity extends joint.dia.Element.extend(entityDefinition) {
       }
       this.attributes.attrs.wrappingResized = false;
     }
+    this.updatecomputationalPart();
   }
+  updatecomputationalPart() {}
   changeSizeHandle() {
     if (this.attributes.attrs.text && !this.attributes.attrs.wrappingResized) { // resized manually
       textWrapping.wrapTextAfterSizeChange(this);

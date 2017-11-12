@@ -1,10 +1,10 @@
 /* You can add global styles to this file, and also import other style files */
-@import 'assets/css/rappid.css';
 @import 'assets/css/style.css';
 @import 'assets/css/theme-picker.css';
 @import 'assets/css/halo.css';
 @import 'assets/css/OPCloud.css';
 @import 'assets/css/material-theme';
+@import '~rappid/build/rappid.css';
 
 html, body {
   position: relative;

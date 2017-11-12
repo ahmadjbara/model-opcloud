@@ -8,7 +8,7 @@ export const wrapAndSize = {
 
 export const textWrapping = {
 
-  updateCell(cell, x, y, cornerX, cornerY){
+  updateCell(cell, x, y, cornerX, cornerY) {
     cell.set({
       position: {x: x, y: y},
       size: {width: cornerX - x, height: cornerY - y}

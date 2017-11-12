@@ -8,17 +8,29 @@ import { Tab } from './tab';
   selector: 'tabs',
   styles: [`
 
+    .tabmenu {
+      float: right;
+      margin-right: 2px;
+      color: #3a3c62;
+      font-size: small;
+      font-weight: bold;
+      cursor: pointer;
+      padding: 3px;
+    }
+
+    .tabmenu:hover {
+      background-color: lightgrey;
+    }
+    
+
   `],
-  template:`
- 
-<md-menu #appMenu="mdMenu" >
-  <button  *ngFor="let tab of tabs" (click)="selectTab(tab)" [class.active]="tab.active" md-menu-item>{{tab.title}}</button>
-</md-menu>
-<button  style=" background: white ;float: right;margin-right: 2px" md-tab-nav-bar [mdMenuTriggerFor]="appMenu">
-   <label>{{title}}</label>
-</button>
-<br>
-<div ><ng-content></ng-content></div> 
+  template:`    
+    <md-menu #menu="mdMenu" >
+      <button  *ngFor="let tab of tabs" (click)="selectTab(tab)" [class.active]="tab.active" md-menu-item>{{tab.title}}</button>
+    </md-menu>
+    <div class="tabmenu" [mdMenuTriggerFor]="menu">{{title}}</div>
+    <br>
+    <div ><ng-content></ng-content></div>
   `
 })
 export class Tabs implements AfterContentInit {

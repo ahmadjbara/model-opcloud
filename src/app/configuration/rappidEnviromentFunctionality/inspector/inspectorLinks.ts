@@ -1,17 +1,22 @@
 import { selectOptions } from './selectOptions';
-import {createSelection} from '../shared';
-import {createGroup} from './inspector.config';
+import {createSelection, createGroup} from '../shared';
 
 export const inspectorLinks = {
   // From this point defined  the groups that all the inspector parameters are grouped by.
   groupsDefinition: {
-    marker: createGroup('Marker', 1),
+    marker: createGroup('Style', 1),
     labels: createGroup('Labels', 2)
   },
 
   linkDefinition: {
-    '.marker-source': createSelection('select-box', selectOptions.SourceLinkType, 'source link type', 'Marker', 1),
-    '.marker-target': createSelection('select-box', selectOptions.DestLinkType, 'destination link type', 'Marker', 2),
+  },
+  LinkRouter: {
+    name: createSelection('select-box', selectOptions.LinkRouter, 'Router', 'Style', 1),
+  },
+
+  LinkConnector: {
+    name: createSelection('select-box', selectOptions.LinkConnector, 'Connector', 'Style', 1),
+
   },
 
   labelDefinition: [{

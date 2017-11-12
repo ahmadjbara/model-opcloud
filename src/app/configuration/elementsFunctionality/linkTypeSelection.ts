@@ -6,17 +6,18 @@ export const linkTypeSelection = {
   //This function aims to generate single OPL sentence with given linkName and source and target object
   generateOPL(source, target, linkName){
     if (linkName) {
-      var srcName;
-      var desName;
-      var srcStateObject;
-      var desStateObject;
-      var srcType;
-      var desType;
-
+      let srcName;
+      let desName;
+      let stateName;
+      let srcStateObject;
+      let desStateObject;
+      let srcType;
+      let desType;
 
       srcType = source.attributes.type;
       desType = target.attributes.type;
-
+      if ((srcType === 'opm.TriangleAgg') || (desType === 'opm.TriangleAgg'))
+        return null;
       srcName = source.attributes.attrs.text.text;
       desName = target.attributes.attrs.text.text;
 
@@ -25,6 +26,9 @@ export const linkTypeSelection = {
           srcName = `<b class="object">${srcName}</b>`;
         case 'opm.Process':
           srcName = `<b class="process">${srcName}</b>`;
+        case 'opm.State':
+          stateName=source.attributes.attrs.text.text;
+        //  srcName=`<b class="state">${stateName} ${parentName}</b>`;
         // case 'opm.State':
         //   var parentName=graph.getCell(source.attributes.parent).attributes.attrs.text.text;
         // var stateName=source.attributes.attrs.text.text;
@@ -47,47 +51,49 @@ export const linkTypeSelection = {
        if(target.attributes.type == "State"){
        desStateObject=
        }*/
-
-      if (linkName == "Unidirectional_Relation") {
+      if(linkName=="In/out_linkPair"){
+        return `${desName} changes object from ${stateName} to ${stateName}`;//<P> changes <O> from <s1> to <s2>
+      }
+      if (linkName == 'Unidirectional_Relation') {
         return `${srcName} relates to ${desName}.`;
       }
-      else if (linkName == "Bidirectional_Relation") {
+      else if (linkName == 'Bidirectional_Relation') {
         return `${srcName} and ${desName} are equivalent.`;
       }
-      else if (linkName == "Aggregation-Participation") {
+      else if (linkName == 'Aggregation-Participation') {
         return `${srcName} consists of ${desName}.`;
       }
-      else if (linkName == "Generalization-Specialization") {
+      else if (linkName == 'Generalization-Specialization') {
         return `${desName} is a ${srcName}.`;
       }
-      else if (linkName == "Exhibition-Characterization") {
+      else if (linkName == 'Exhibition-Characterization') {
         return `${srcName} exhibits ${desName}.`;
       }
-      else if (linkName == "Classification-Instantiation") {
+      else if (linkName == 'Classification-Instantiation') {
         return `${desName} is an instance of ${srcName}.`;
       }
-      else if (linkName == "Result") {
+      else if (linkName == 'Result') {
         return `${srcName} yields ${desName}.`;
       }
-      else if (linkName == "Consumption") {
+      else if (linkName == 'Consumption') {
         return `${desName} consumes ${srcName}.`;
       }
-      else if (linkName == "Effect") {
+      else if (linkName == 'Effect') {
         return `${srcName} affects ${desName}.`;
       }
-      else if (linkName == "Agent") {
+      else if (linkName == 'Agent') {
         return `${srcName} handles ${desName}.`;
       }
-      else if (linkName == "Instrument") {
+      else if (linkName == 'Instrument') {
         return `${desName} requires ${srcName}.`;
       }
-      else if (linkName == "In-out_Link_Pair") {
-        return ``;//<P> changes <O> from <s1> to <s2>
+      else if (linkName == 'In-out_Link_Pair') {
+        return ``; //<P> changes <O> from <s1> to <s2>
       }
-      else if (linkName == "Agent") {
+      else if (linkName == 'Agent') {
         return `${srcName} handles ${desName}.`;
       }
-      else if (linkName == "Invocation") {
+      else if (linkName == 'Invocation') {
         return `${srcName} invokes ${desName}.`;
       }
       // cant read link name format
@@ -102,40 +108,43 @@ export const linkTypeSelection = {
       //<mintime> and <unit> can be typed after the popup menu,
       //bur need these parameters to generate OPL in the opl widget
       // }
-      else if (linkName == "Overtime_exception") {
+      else if (linkName == 'Overtime_exception') {
         return `${desName} occurs if ${srcName} lasts more than maxtime units.`;
       }
-      else if (linkName == "Undertime_exception") {
+      else if (linkName == 'Undertime_exception') {
         return `${desName} occurs if ${srcName} falls short of mintime units.`;
       }
-      else if (linkName == "Condition_Consumption") {
+      else if (linkName == 'UndertimeOvertimeException'){
+        return `${desName} occurs if ${srcName} falls short of mintime units or lasts more than mintime units.`;
+      }
+      else if (linkName == 'Condition_Consumption') {
         return `${desName} occurs if ${srcName} exists, in which case ${desName} consumes ${srcName}, otherwise ${desName} is skipped.`;
       }
-      else if (linkName == "Condition_Effect") {
+      else if (linkName == 'Condition_Effect') {
         return `${desName} occurs if ${srcName} exists, in which case ${desName} affects ${srcName}, otherwise ${desName} is skipped.`;
       }
-      else if (linkName == "Condition_Input") {
+      else if (linkName == 'Condition_Input') {
         return `${desName} occurs if ${srcStateObject} is at state ${srcName}.`;
       }
-      else if (linkName == "Condition_Instrument") {
+      else if (linkName == 'Condition_Instrument') {
         return `${desName} occurs if ${srcName} exists, otherwise ${desName} is skipped.`;
       }
-      else if (linkName == "Condition_Agent") {
+      else if (linkName == 'Condition_Agent') {
         return `${desName} occurs if ${srcName} exists, otherwise ${desName} is skipped.`;
       }
-      else if (linkName == "Event_Consumption") {
+      else if (linkName == 'Event_Consumption') {
         return `${srcName} initiates ${desName}, which consumes ${srcName}.`;
       }
-      else if (linkName == "Event_Effect") {
+      else if (linkName == 'Event_Effect') {
         return `${srcName} initiates ${desName}, which affects ${srcName}.`;
       }
-      else if (linkName == "Event_Input") {
+      else if (linkName == 'Event_Input') {
         return ``;
       }
-      else if (linkName == "Event_Instrument") {
+      else if (linkName == 'Event_Instrument') {
         return `${srcName} initiates ${desName}, which requires ${srcName}.`;
       }
-      else if (linkName == "Event_Agent") {
+      else if (linkName == 'Event_Agent') {
         return `${srcName} initiates and handles ${desName}.`;
       }
     }
@@ -143,11 +152,11 @@ export const linkTypeSelection = {
 
 //This function finds all available links with given array of all link names
   availableOPL(linkObject, availableLinks){
-    var source = linkObject.getSourceElement();
-    var target = linkObject.getTargetElement();
-    var linksNamesWithOpl: Array<any> = [];
+    const source = linkObject.getSourceElement();
+    const target = linkObject.getTargetElement();
+    const linksNamesWithOpl: Array<any> = [];
 
-    for(var i=0; i<availableLinks.length; i++){
+    for (let i = 0; i < availableLinks.length; i++){
       linksNamesWithOpl.push({name: availableLinks[i].name, opl: this.generateOPL(source, target, availableLinks[i].name)});
     }
 
@@ -159,34 +168,34 @@ export const linkTypeSelection = {
   findSuitableLinks(link){
     //substring because we want to remove the prefix 'opm.'
     //toLowerCase because we need the type to match the format in database.
-    var source: string = link.getSourceElement().attributes.type.substring(4).toLowerCase();
-    var target:string = link.getTargetElement().attributes.type.substring(4).toLowerCase();
-    var result: Array<any> = [];
-    var linksDataArray: dataBase = new dataBase();
+    const source: string = link.getSourceElement().attributes.type.substring(4).toLowerCase();
+    const target: string = link.getTargetElement().attributes.type.substring(4).toLowerCase();
+    const result: Array<any> = [];
+    const linksDataArray: dataBase = new dataBase();
 
     //Go over the database
-    for (let linkData of linksDataArray.linksArray){
+    for (const linkData of linksDataArray.linksArray){
       //If the link name is already in the final array so no need to check it, as every link name will appear only once
-      if(result.indexOf(linkData.linkName)>-1){
+      if (result.indexOf(linkData.linkName) > -1){
         continue;
       }
-      var isSourceMatch = false, isTargetMatch = false;
-      if(source == 'state'){
+      let isSourceMatch = false, isTargetMatch = false;
+      if (source == 'state'){
         isSourceMatch = (linkData.sourceType.indexOf(source) > -1);
       }
       else {
-        isSourceMatch = ((linkData.sourceType.indexOf(source) > -1) && (linkData.sourceType.indexOf("state") == -1));
+        isSourceMatch = ((linkData.sourceType.indexOf(source) > -1) && (linkData.sourceType.indexOf('state') == -1));
       }
-      if(target == 'state'){
+      if (target == 'state'){
         isTargetMatch = (linkData.targetType1.indexOf(target) > -1) || (linkData.targetType2.indexOf(target) > -1);
       }
       else {
-        isTargetMatch = (((linkData.targetType1.indexOf(target) > -1) && (linkData.targetType1.indexOf("state") == -1)) ||
-          ((linkData.targetType2.indexOf(target) > -1) && (linkData.targetType2.indexOf("state") == -1)));
+        isTargetMatch = (((linkData.targetType1.indexOf(target) > -1) && (linkData.targetType1.indexOf('state') == -1)) ||
+          ((linkData.targetType2.indexOf(target) > -1) && (linkData.targetType2.indexOf('state') == -1)));
       }
 
-      if(isSourceMatch && isTargetMatch){
-        result.push({name: linkData.linkName, opl: "gggggg"});
+      if (isSourceMatch && isTargetMatch){
+        result.push({name: linkData.linkName, opl: 'gggggg'});
       }
     }
 
@@ -194,8 +203,8 @@ export const linkTypeSelection = {
   },
 
   generateLinkWithOpl(link){
-    var linkNames = this.findSuitableLinks(link);
+    const linkNames = this.findSuitableLinks(link);
     return this.availableOPL(link, linkNames);
   }
 
-}
+};

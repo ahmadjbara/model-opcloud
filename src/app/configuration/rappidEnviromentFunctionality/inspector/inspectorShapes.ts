@@ -1,7 +1,5 @@
 import { selectOptions } from './selectOptions';
-import {createGroup} from './inspector.config';
-import {createColorsObject, createRangeObject, createSelection, createTextContentObject}
-        from '../shared';
+import {createColorsObject, createRangeObject, createSelection, createTextContentObject, createGroup} from '../shared';
 
 export const inspectorShapes = {
 
@@ -17,8 +15,8 @@ export const inspectorShapes = {
    stroke-width: The width of the element's stroke. Picked from a range bar (0-30). Appears in styling group.Ordered eighth.
    */
   shapeDefinition: {
-    'filter': createSelection('select', selectOptions.shadowStyle, 'Essence', 'presentation', 2),
-    'stroke-dasharray': createSelection('select', selectOptions.strokeStyle, 'Affiliation', 'presentation', 2),
+    filter: createSelection('select-box', selectOptions.shadowStyle, 'Essence', 'presentation', 2),
+    'stroke-dasharray': createSelection('select-box', selectOptions.strokeStyle, 'Affiliation', 'presentation', 2),
     fill: createColorsObject('Shape fill', 6),
     stroke: createColorsObject('Outline', 7),
     'stroke-width': createRangeObject(0, 30, 'Outline thickness', 8)

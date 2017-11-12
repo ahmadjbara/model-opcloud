@@ -13,6 +13,7 @@ export  class OpmThing extends OpmEntity {
   thingShape() {
     return {
       filter: {name: 'dropShadow', args: {dx: 3, dy: 3, blur: 0, color: 'grey'}},
+      'stroke-dasharray': '0',
       width: 90,
       height: 50,
     };

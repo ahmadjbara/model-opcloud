@@ -6,15 +6,16 @@ import {linkDrawing} from '../../configuration/elementsFunctionality/linkDrawing
 import {OpmProcess} from '../../models/DrawnPart/OpmProcess';
 import {OpmDefaultLink} from '../../models/DrawnPart/Links/OpmDefaultLink';
 import {ResultLink} from '../../models/DrawnPart/Links/ResultLink';
-import {OpmObject} from "../../models/DrawnPart/OpmObject";
-import {OpmVisualObject} from "../../models/VisualPart/OpmVisualObject";
-import {OpmState} from "../../models/DrawnPart/OpmState";
+import {OpmObject} from '../../models/DrawnPart/OpmObject';
+import {OpmVisualObject} from '../../models/VisualPart/OpmVisualObject';
+import {OpmState} from '../../models/DrawnPart/OpmState';
+import {joint, _, vectorizer} from '../../configuration/rappidEnviromentFunctionality/shared';
+import {InstrumentLink} from "../../models/DrawnPart/Links/InstrumentLink";
+import {ConsumptionLink} from "../../models/DrawnPart/Links/ConsumptionLink";
+import {compute} from "../../configuration/elementsFunctionality/computationalPart";
 
-const joint = require('rappid');
-const rootId='SD';
+const rootId = 'SD';
 const firebaseKeyEncode = require('firebase-key-encode');
-
-
 
 @Injectable()
 export class GraphService {
@@ -66,10 +67,11 @@ export class GraphService {
   loadGraph(name) {
     this.modelStorage.get(name).then((res) => {
       this.modelObject = res;
-      firebaseKeyEncode.deepDecode(this.modelObject.modelData)
-      this.graph.fromJSON(this.modelObject.modelData);
+      firebaseKeyEncode.deepDecode(this.modelObject.modelData);
+      this.modelStorage.fromJson(this.graph, this.modelObject.modelData);
+      this.modelStorage.listen(name, this.graph);
+      //    this.graph.fromJSON(this.modelObject.modelData);
     });
-    this.modelStorage.listen(name, this.graph);
   }
 
   updateJSON() {
@@ -227,5 +229,19 @@ export class GraphService {
     this.currentGraphId = elementId;
     this.type = type;
   }
+  execute(initRappid) {
+    // get all processes in the graph
+    let graphProcesses = this.graph.get('cells').models.filter(element => element.get('type') === 'opm.Process')
+    // sort processes from top to bottom
+    graphProcesses = graphProcesses.sort((p1, p2) => p1.get('position').y - p2.get('position').y);
+    // go over all processes
+    for (let i = 0; i < graphProcesses.length; i++) {
+      // get the inbound links
+      let inbound = this.graph.getConnectedLinks(graphProcesses[i], {inbound: true});
+      // get the outbound links
+      let outbound = this.graph.getConnectedLinks(graphProcesses[i], {outbound: true});
+      const functionValue = graphProcesses[i].attr('value/value');
+      compute(inbound, outbound, initRappid.paper, functionValue);
+    }
+  }
 }
-

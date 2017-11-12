@@ -4,10 +4,15 @@ import {OpmState} from '../OpmState';
 import {validationAlert} from '../../../configuration/rappidEnviromentFunctionality/shared';
 import {createDialog} from '../../../configuration/elementsFunctionality/linkDialog';
 import {joint, _} from '../../../configuration/rappidEnviromentFunctionality/shared';
+import {OpmLinkRappid} from "./OpmLinkRappid";
+
 
 const linkDefinition = {
   defaults: _.defaultsDeep({
     type: 'opm.Link',
+    connector: {
+      name : 'jumpover'
+    },
     attrs: {'.connection': { 'stroke-width': 2, 'stroke-dasharray': '8 5', 'stroke': 'black'}},
     labels: [{ position: 0.5, attrs: { text: {
       text: '',
@@ -18,7 +23,32 @@ const linkDefinition = {
   }, joint.shapes.devs.Link.prototype.defaults)
 };
 
-export class OpmDefaultLink extends joint.shapes.devs.Link.extend(linkDefinition) {
+export class OpmDefaultLink extends OpmLinkRappid {
+  constructor() {
+    super();
+    this.set(this.linkAttributes());
+    this.attr(this.linkAttrs());
+  }
+  linkAttributes() {
+    return {
+      type: 'opm.Link',
+      name: 'defaultLink',
+      connector: {
+        name : 'jumpover'
+      },
+      labels: [{ position: 0.5, attrs: { text: {
+        text: '',
+        'font-family': 'Arial, helvetica, sans-serif',
+        'font-size': 10,
+        fill: 'red',
+        'font-weight': 200} } }]
+    };
+  }
+  linkAttrs() {
+    return {
+      '.connection': { 'stroke-width': '2', 'stroke-dasharray': '8 5', 'stroke': 'black'}
+    };
+  }
   getDefaultLinkParams() {
     return {
       sourceElementId: this.getSourceElement().get('id'),
@@ -84,7 +114,7 @@ export class OpmDefaultLink extends joint.shapes.devs.Link.extend(linkDefinition
               this.set('previousTargetId', this.attributes.target.id);
               this.set('previousSourceId', this.attributes.source.id);
               if (!b.cameFromInZooming) {
-                createDialog(options, this);
+                createDialog(options, this );
               }
             }
         }

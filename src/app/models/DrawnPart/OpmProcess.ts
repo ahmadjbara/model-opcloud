@@ -227,4 +227,22 @@ export class OpmProcess extends OpmThing {
       position: { x: leftSideX, y: topSideY },
       size: { width: rightSideX - leftSideX, height: bottomSideY - topSideY }}, {skipExtraCall: true});
   }
+  updatecomputationalPart() {
+    // value is the chosen function
+    const value = this.attr('value/value');
+    let newText = this.attr('text/text');
+    if (value === 'None') {
+      if (newText.lastIndexOf('()') !== -1) {
+        newText = newText.replace('()', '');
+        this.attr({text: {text: (newText.trim())}});
+      }
+    } else {
+      if (newText.lastIndexOf('()') === -1) {
+        this.attr({text: {text: (newText + ' ()')}});
+      }
+      if (this.attr('ellipse/filter/args/dx') !== 0) {
+        this.attr('ellipse/filter/args', {dx: 0, dy: 0, blur: 0, color: 'grey'});
+      }
+    }
+  }
 }

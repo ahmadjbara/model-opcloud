@@ -8,7 +8,7 @@ export  class ResultLink extends OpmProceduralLink {
     this.attr({'.marker-target' : {fill: 'white', d: 'M 20,33 L 0,25 L 20,17 L 12,25 Z M12,25 L20,25'}});
   }
   getParams() {
-    const params = { linkType: linkType.Result };
+      const params = { linkType: linkType.Result };
     return {...super.getProceduralLinkParams(), ...params};
   }
   clone(){

@@ -26,6 +26,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { Tab } from '../dialogs/choose-link-dialog/tab';
 import { Tabs } from '../dialogs/choose-link-dialog/tabs';
 import { DialogComponent } from '../dialogs/choose-link-dialog/Dialog.component';
+import {AboutDialogComponent} from '../dialogs/About/about';
 import { OplDialogComponent } from '../dialogs/opl-dialog/opl-dialog.component';
 
 @NgModule({
@@ -34,6 +35,7 @@ import { OplDialogComponent } from '../dialogs/opl-dialog/opl-dialog.component';
     SaveModelDialogComponent,
     LoadModelDialogComponent,
     DialogComponent,
+    AboutDialogComponent,
     OplDialogComponent,
     Tabs,
     Tab
@@ -61,7 +63,8 @@ import { OplDialogComponent } from '../dialogs/opl-dialog/opl-dialog.component';
     SaveModelDialogComponent,
     LoadModelDialogComponent,
     DialogComponent,
-    OplDialogComponent
+    OplDialogComponent,
+    AboutDialogComponent
   ],
   bootstrap: [AppComponent]
 })

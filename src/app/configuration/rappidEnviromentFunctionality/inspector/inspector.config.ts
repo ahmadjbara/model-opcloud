@@ -15,17 +15,11 @@ export const inspectorConfig = {
   'opm.Link': {
     inputs: {
       attrs: inspectorLinks.linkDefinition,
+      router : inspectorLinks.LinkRouter,
+      connector : inspectorLinks.LinkConnector,
       labels: inspectorLinks.labelDefinition
     },
     groups: inspectorLinks.groupsDefinition
   }
 };
-// Function createGroup. Get the name of the group, its index and if it should be collapsed and generates a group object
-// Function createGroup. Get the name of the group, its index and if it should be collapsed and generates a group object
-export function createGroup(labelName, indexNumber, isClosed = false) {
-  return {
-    label: labelName,
-    index: indexNumber,
-    closed: isClosed
-  };
-}
+
