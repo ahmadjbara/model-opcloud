@@ -1,6 +1,7 @@
 import {OpmEntity} from './OpmEntity';
 import {arrangeEmbedded} from '../../configuration/elementsFunctionality/arrangeStates';
 import {joint, _, paddingObject} from '../../configuration/rappidEnviromentFunctionality/shared';
+import {min} from "rxjs/operator/min";
 const $ = require('jquery');
 
 export  class OpmState extends OpmEntity {
@@ -18,38 +19,34 @@ export  class OpmState extends OpmEntity {
       'father': null,
     };
   }
-  createInner(strokeW) {
+  innerOuter() {
+    const param = {
+      stroke: '#808000',
+      rx: 5,
+      ry: 5,
+    };
+    return {...this.entityShape(), ...param};
+  }
+  createInner() {
     return {
-      fill: 'white',
-      stroke : '#808000',
-      'stroke-width': strokeW ,
+      'stroke-width': 0 ,
       width: 60,
       height: 30,
-      rx: 5 ,
-      ry: 5 ,
       'ref-x': .5, 'ref-y': .5,
       'x-alignment' : 'middle' ,
       'y-alignment' :  'middle',
-
     };
   }
-  createOuter(strokeW){
+  createOuter() {
     return{
       width: 70,
       height: 40,
-      fill: 'white',
-      stroke: '#808000',
-      'stroke-width': strokeW,
-      magnet : true,
-      rx:5,
-      ry:5,
     };
   }
   stateAttrs(stateName) {
     return {
-  //    rect: {...this.entityShape(), ...{width: 50, height: 25, stroke: '#808000', rx: 6, ry: 6, cx: null, cy: null}},
-      '.outer': this.createOuter(2),
-      '.inner': this.createInner(0),
+      '.outer': {...this.innerOuter(), ...this.createOuter()},
+      '.inner': {...this.innerOuter(), ...this.createInner()},
       'text' : {text: stateName, 'font-weight': 300},
       'image': {'xlink:href' : '../../../assets/icons/OPM_Links/DefaultState.png',display:'none', 'ref-x': 1, 'ref-y':1,  x: -18, y: -18,ref: 'rect', width: 25, height: 25 }
     };
@@ -71,8 +68,11 @@ export  class OpmState extends OpmEntity {
     const parent = this.graph.getCell(parentId);
     parent.updateSizeToFitEmbeded();
     // update inner and outer frames size
+    const width = this.get('size').width;
+    const height = this.get('size').height;
+    const diff = Math.max(0.15 * width, 0.15 * height);
     this.attr('.inner', {width: this.get('size').width, height: this.get('size').height});
-    this.attr('.outer', {width: (this.get('size').width + 10), height: (this.get('size').height + 10)});
+    this.attr('.outer', {width: (this.get('size').width + diff), height: (this.get('size').height + diff)});
   }
   changePositionHandle() {
     super.changePositionHandle();
