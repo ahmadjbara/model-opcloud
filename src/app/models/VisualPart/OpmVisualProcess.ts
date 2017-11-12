@@ -6,6 +6,7 @@
     refineable : OpmVisualElement;
     refineeInzooming : OpmVisualElement;
     refineeUnfolding: OpmVisualElement;
+
     constructor(params, logicalElement) {
       super(params, logicalElement);
       this.parentheses = params.parentheses;

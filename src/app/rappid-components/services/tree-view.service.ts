@@ -58,6 +58,7 @@ export class TreeViewService {
     let clonedProcess = this.graphService.graphSetUpdate(element_id, newNode, this, type, initRappid);
 
     parentNode.addChildren(newNode);
+    console.log(parentNode);
     this.nodesSubject.next(this.nodes);
     return clonedProcess;
   }

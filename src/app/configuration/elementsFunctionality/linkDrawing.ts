@@ -18,7 +18,6 @@ const joint = require('rappid');
 
 export const linkDrawing = {
   drawLink(link, linkName) {
-    console.log('in drawlink');
     const graph = link.graph;
     const isCondition = linkName.includes('Condition');
     const isEvent = linkName.includes('Event');
@@ -54,6 +53,7 @@ export const linkDrawing = {
     }else if (linkName.includes('Instantiation')) {
       newLink = new InstantiationLink(link.getSourceElement(), link.getTargetElement(), graph);
     }
+
     newLink.set('previousTargetId', link.get('previousTargetId'));
     newLink.set('previousSourceId', link.get('previousSourceId'));
     graph.addCell(newLink);
@@ -68,5 +68,42 @@ export const linkDrawing = {
       link.set('labels', [ {  position: 0.75, attrs: { text: {text: ftag+'\n'}, rect: {fill: 'transparent'} } } ]);
     }
 */
+  },
+  drawLinkSilent(graph, linkName, source, target) {
+    const isCondition = linkName.includes('Condition');
+    const isEvent = linkName.includes('Event');
+    let newLink;
+    if (linkName.includes('Agent')) {
+      newLink = new AgentLink(source, target, isCondition, isEvent);
+    } else if (linkName.includes('Instrument')) {
+      newLink = new InstrumentLink(source, target, isCondition, isEvent);
+    } else if (linkName.includes('Invocation')) {
+      newLink = new InvocationLink(source, target, isCondition, isEvent);
+    } else if (linkName.includes('Result')) {
+      newLink = new ResultLink(source, target, isCondition, isEvent);
+    } else if (linkName.includes('Consumption')) {
+      newLink = new ConsumptionLink(source, target, isCondition, isEvent);
+    } else if (linkName.includes('Effect')) {
+      newLink = new EffectLink(source, target, isCondition, isEvent);
+    } else if (linkName.includes('Overtime_exception')) {
+      newLink = new OvertimeExceptionLink(source, target, isCondition, isEvent);
+    } else if (linkName.includes('Undertime_exception')) {
+      newLink = new UndertimeExceptionLink(source, target, isCondition, isEvent);
+    } else if (linkName.includes('Undertime_and_overtime_exception')) {
+      newLink = new OvertimeUndertimeExceptionLink(source, target, isCondition, isEvent);
+    } else if (linkName.includes('Unidirectional')) {
+      newLink = new UnidirectionalTaggedLink(source, target);
+    } else if (linkName.includes('Bidirectional')) {
+      newLink = new BiDirectionalTaggedLink(source, target);
+    } else if (linkName.includes('Aggregation')) {
+      newLink = new AggregationLink(source, target, graph);
+    } else if (linkName.includes('Exhibition')) {
+      newLink = new ExhibitionLink(source, target, graph);
+    }else if (linkName.includes('Generalization')) {
+      newLink = new GeneralizationLink(source, target, graph);
+    }else if (linkName.includes('Instantiation')) {
+      newLink = new InstantiationLink(source, target, graph);
+    }
+    graph.addCell(newLink);
   }
 };
