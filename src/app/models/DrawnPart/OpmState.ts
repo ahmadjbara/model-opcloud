@@ -20,7 +20,7 @@ export  class OpmState extends OpmEntity {
   }
   createInner(strokeW) {
     return {
-      fill: '',
+      fill: 'white',
       stroke : '#808000',
       'stroke-width': strokeW ,
       width: 60,
@@ -37,7 +37,7 @@ export  class OpmState extends OpmEntity {
     return{
       width: 70,
       height: 40,
-      fill: '',
+      fill: 'white',
       stroke: '#808000',
       'stroke-width': strokeW,
       magnet : true,
@@ -47,7 +47,7 @@ export  class OpmState extends OpmEntity {
   }
   stateAttrs(stateName) {
     return {
-      rect: {...this.entityShape(), ...{width: 50, height: 25, stroke: '#808000', rx: 6, ry: 6, cx: null, cy: null}},
+  //    rect: {...this.entityShape(), ...{width: 50, height: 25, stroke: '#808000', rx: 6, ry: 6, cx: null, cy: null}},
       '.outer': this.createOuter(2),
       '.inner': this.createInner(0),
       'text' : {text: stateName, 'font-weight': 300},
@@ -70,6 +70,9 @@ export  class OpmState extends OpmEntity {
     const parentId = this.get('parent');
     const parent = this.graph.getCell(parentId);
     parent.updateSizeToFitEmbeded();
+    // update inner and outer frames size
+    this.attr('.inner', {width: this.get('size').width, height: this.get('size').height});
+    this.attr('.outer', {width: (this.get('size').width + 10), height: (this.get('size').height + 10)});
   }
   changePositionHandle() {
     super.changePositionHandle();
