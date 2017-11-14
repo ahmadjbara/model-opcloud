@@ -14,15 +14,15 @@ export class OpmObject extends OpmThing {
     return {
       markup: `<g class='rotatable'><g class='scalable'><rect/></g><text/></g>`,
       type: 'opm.Object',
-      padding: 10,
-      value: {value: 'None', valueType: 'None', units: ''}
+      padding: 10
     };
   }
   objectAttrs() {
     return {
       rect: {...this.entityShape(), ...this.thingShape(), ...{stroke: '#00AA00'}},
       'statesArrange' : 'bottom',
-      'text' : {text: 'Object'}
+      'text' : {text: 'Object'},
+      value: {value: 'None', valueType: 'None', units: ''}
     };
   }
   getParams() {

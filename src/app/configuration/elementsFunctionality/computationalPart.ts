@@ -36,7 +36,7 @@ export function compute(inbound, outbound, paper, functionValue) {
       const token = vectorizer.V('circle', {r: 5, fill: 'green', stroke: 'red'});
       outbound[j].findView(paper).sendToken(token.node, 1000);
       const targetElement = outbound[j].getTargetElement();
-      targetElement.attr({value: {value: resultValue.toString()}});
+      targetElement.attr({value: {value: resultValue.toString(), valueType: 'Number'}});
     }
   }
 }
