@@ -241,7 +241,9 @@ export class GraphService {
       // get the outbound links
       let outbound = this.graph.getConnectedLinks(graphProcesses[i], {outbound: true});
       const functionValue = graphProcesses[i].attr('value/value');
-      compute(inbound, outbound, initRappid.paper, functionValue);
+      if (functionValue !== 'None') {
+        compute(inbound, outbound, initRappid.paper, functionValue);
+      }
     }
   }
 }

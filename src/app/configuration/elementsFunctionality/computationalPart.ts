@@ -15,10 +15,13 @@ export function compute(inbound, outbound, paper, functionValue) {
   for (let i = 0; i < inbound.length; i++) {
     const token = vectorizer.V('circle', {r: 5, fill: 'green', stroke: 'red'});
     const sourceElement = inbound[i].getSourceElement();
-    if ((sourceElement.attr('value/valueType') !== 'None') &&
-      (sourceElement.attr('value/value') !== 'None')) {
-      inbound[i].findView(paper).sendToken(token.node, 1000);
-      valuesArray.push(sourceElement.attr('value/value'));
+    if (sourceElement.get('logicalValue') !== null) {
+    //if ((sourceElement.attr('value/valueType') !== 'None') &&
+    //  (sourceElement.attr('value/value') !== 'None')) {
+      inbound[i].findView(paper).sendToken(token.node, 1000, function() {
+        console.log('cb');
+      });
+      valuesArray.push(sourceElement.get('logicalValue'));
     }
   }
   let resultValue;
@@ -34,9 +37,11 @@ export function compute(inbound, outbound, paper, functionValue) {
   if (resultValue) {
     for (let j = 0; j < outbound.length; j++) {
       const token = vectorizer.V('circle', {r: 5, fill: 'green', stroke: 'red'});
-      outbound[j].findView(paper).sendToken(token.node, 1000);
       const targetElement = outbound[j].getTargetElement();
-      targetElement.attr({value: {value: resultValue.toString(), valueType: 'Number'}});
+      targetElement.set('logicalValue', resultValue.toString());
+      outbound[j].findView(paper).sendToken(token.node, 1000, function() {
+        targetElement.attr({value: {value: resultValue.toString(), valueType: 'Number'}});
+      });
     }
   }
 }

@@ -14,7 +14,8 @@ export class OpmObject extends OpmThing {
     return {
       markup: `<g class='rotatable'><g class='scalable'><rect/></g><text/></g>`,
       type: 'opm.Object',
-      padding: 10
+      padding: 10,
+      logicalValue: null
     };
   }
   objectAttrs() {
@@ -122,8 +123,11 @@ export class OpmObject extends OpmThing {
     if ((valueType !== 'None') && (this.attr('rect/filter/args/dx') !== 0)) {
       this.attr('rect/filter/args', {dx: 0, dy: 0, blur: 0, color: 'grey'});
     }
+    // the value is saved twice: once in the attr, for visual representation inside
+    // a state and once in 'logicalValue' field for background execution use.
     if ((!this.get('previousValue') || (value !== this.get('previousValue'))) && (value !== 'None')) {
       this.updateState(value);
+      this.set('logicalValue', value);
     }
     if ((!this.get('previousUnits') || (units !== this.get('previousUnits'))) && (units !== '')) {
       this.updateUnits(units);
