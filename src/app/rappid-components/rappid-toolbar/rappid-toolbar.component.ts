@@ -144,6 +144,11 @@ export class RappidToolbarComponent implements OnInit {
   execute() {
     // start execute from SD graph
     this.initRappidService.changeGraphToSD();
-    this.graphService.execute(this.initRappidService);
+    // array that contains all the link views needed to be visualized by a token
+    const linkViewsArray = [];
+    this.graphService.execute(this.initRappidService, linkViewsArray);
+    // start show results from SD graph
+    this.initRappidService.changeGraphToSD();
+    this.graphService.showExecution(this.initRappidService, linkViewsArray, 0);
   }
 }

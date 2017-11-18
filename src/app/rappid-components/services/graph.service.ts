@@ -229,7 +229,7 @@ export class GraphService {
     this.currentGraphId = elementId;
     this.type = type;
   }
-  execute(initRappid) {
+  execute(initRappid, linkViewsArray) {
     // get all processes in the graph
     let graphProcesses = this.graph.get('cells').models.filter(element => element.get('type') === 'opm.Process');
     // sort processes from top to bottom
@@ -242,7 +242,7 @@ export class GraphService {
         // change view to the in-zzomed graph
         this.changeGraphModel(inzoomedProcessId, initRappid.treeViewService, 'inzoom');
         // recursive execution. now the in-zoomed graph will be executed
-        this.execute(initRappid);
+        this.execute(initRappid, linkViewsArray);
         // change the view back to out-zoomed graph
         this.changeGraphModel(graphProcesses[i].id, initRappid.treeViewService, 'inzoom');
       } else {
@@ -252,9 +252,24 @@ export class GraphService {
           let inbound = this.graph.getConnectedLinks(graphProcesses[i], {inbound: true});
           // get the outbound links
           let outbound = this.graph.getConnectedLinks(graphProcesses[i], {outbound: true});
-          compute(inbound, outbound, initRappid.paper, functionValue);
+          compute(inbound, outbound, initRappid.paper, functionValue, linkViewsArray);
         }
       }
     }
+  }
+  showExecution(initRappid, linkViewsArray, linkIndex) {
+    if (linkIndex >= linkViewsArray.length) return;
+    const token = vectorizer.V('circle', {r: 5, fill: 'green', stroke: 'red'});
+    const thisGraph = this;
+    linkViewsArray[linkIndex].sendToken(token.node, 1000, function() {
+      const targetElement = linkViewsArray[linkIndex].model.getTargetElement();
+      if (targetElement instanceof OpmObject) {
+        const value = targetElement.get('logicalValue');
+        if (value !== targetElement.attr('value/value')) {
+          targetElement.attr({value: {value: value, valueType: 'Number'}});
+        }
+      }
+      thisGraph.showExecution(initRappid, linkViewsArray, ++linkIndex);
+    });
   }
 }

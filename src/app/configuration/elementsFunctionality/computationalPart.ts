@@ -3,7 +3,7 @@ import {InstrumentLink} from '../../models/DrawnPart/Links/InstrumentLink';
 import {ResultLink} from '../../models/DrawnPart/Links/ResultLink';
 import {vectorizer} from '../rappidEnviromentFunctionality/shared';
 
-export function compute(inbound, outbound, paper, functionValue) {
+export function compute(inbound, outbound, paper, functionValue, linkViewsArray) {
   // filter inbound links to include only consumption and instrument links
   inbound = inbound.filter(link => ((link instanceof InstrumentLink) ||
     (link instanceof ConsumptionLink)));
@@ -13,14 +13,15 @@ export function compute(inbound, outbound, paper, functionValue) {
   inbound = inbound.sort((l1, l2) => l1.getSourceElement().get('position').x - l2.getSourceElement().get('position').x);
   const valuesArray = new Array();
   for (let i = 0; i < inbound.length; i++) {
-    const token = vectorizer.V('circle', {r: 5, fill: 'green', stroke: 'red'});
+ //   const token = vectorizer.V('circle', {r: 5, fill: 'green', stroke: 'red'});
     const sourceElement = inbound[i].getSourceElement();
     if (sourceElement.get('logicalValue') !== null) {
     //if ((sourceElement.attr('value/valueType') !== 'None') &&
     //  (sourceElement.attr('value/value') !== 'None')) {
-      inbound[i].findView(paper).sendToken(token.node, 1000, function() {
-        console.log('cb');
-      });
+  //    inbound[i].findView(paper).sendToken(token.node, 1000, function() {
+  //      console.log('cb');
+  //    });
+      linkViewsArray.push(inbound[i].findView(paper));
       valuesArray.push(sourceElement.get('logicalValue'));
     }
   }
@@ -36,12 +37,13 @@ export function compute(inbound, outbound, paper, functionValue) {
   }
   if (resultValue) {
     for (let j = 0; j < outbound.length; j++) {
-      const token = vectorizer.V('circle', {r: 5, fill: 'green', stroke: 'red'});
+  //    const token = vectorizer.V('circle', {r: 5, fill: 'green', stroke: 'red'});
       const targetElement = outbound[j].getTargetElement();
       targetElement.set('logicalValue', resultValue.toString());
-      outbound[j].findView(paper).sendToken(token.node, 1000, function() {
-        targetElement.attr({value: {value: resultValue.toString(), valueType: 'Number'}});
-      });
+ //     outbound[j].findView(paper).sendToken(token.node, 1000, function() {
+ //     });
+      linkViewsArray.push(outbound[j].findView(paper));
+   //   targetElement.attr({value: {value: resultValue.toString(), valueType: 'Number'}});
     }
   }
 }
