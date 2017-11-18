@@ -231,18 +231,29 @@ export class GraphService {
   }
   execute(initRappid) {
     // get all processes in the graph
-    let graphProcesses = this.graph.get('cells').models.filter(element => element.get('type') === 'opm.Process')
+    let graphProcesses = this.graph.get('cells').models.filter(element => element.get('type') === 'opm.Process');
     // sort processes from top to bottom
     graphProcesses = graphProcesses.sort((p1, p2) => p1.get('position').y - p2.get('position').y);
     // go over all processes
     for (let i = 0; i < graphProcesses.length; i++) {
-      // get the inbound links
-      let inbound = this.graph.getConnectedLinks(graphProcesses[i], {inbound: true});
-      // get the outbound links
-      let outbound = this.graph.getConnectedLinks(graphProcesses[i], {outbound: true});
-      const functionValue = graphProcesses[i].attr('value/value');
-      if (functionValue !== 'None') {
-        compute(inbound, outbound, initRappid.paper, functionValue);
+      // if it is zn in-zoomed process then need to go to the in-zoomed graph and execute it first
+      if (graphProcesses[i].attributes.attrs.ellipse['stroke-width'] === 4) {
+        const inzoomedProcessId = initRappid.opmModel.getVisualElementById(graphProcesses[i].id).refineeInzooming.id;
+        // change view to the in-zzomed graph
+        this.changeGraphModel(inzoomedProcessId, initRappid.treeViewService, 'inzoom');
+        // recursive execution. now the in-zoomed graph will be executed
+        this.execute(initRappid);
+        // change the view back to out-zoomed graph
+        this.changeGraphModel(graphProcesses[i].id, initRappid.treeViewService, 'inzoom');
+      } else {
+        const functionValue = graphProcesses[i].attr('value/value');
+        if (functionValue !== 'None') {
+          // get the inbound links
+          let inbound = this.graph.getConnectedLinks(graphProcesses[i], {inbound: true});
+          // get the outbound links
+          let outbound = this.graph.getConnectedLinks(graphProcesses[i], {outbound: true});
+          compute(inbound, outbound, initRappid.paper, functionValue);
+        }
       }
     }
   }

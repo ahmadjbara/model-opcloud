@@ -142,6 +142,8 @@ export class RappidToolbarComponent implements OnInit {
     });
   }
   execute() {
+    // start execute from SD graph
+    this.initRappidService.changeGraphToSD();
     this.graphService.execute(this.initRappidService);
   }
 }

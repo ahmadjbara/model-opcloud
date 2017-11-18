@@ -69,3 +69,12 @@ function divide(valuesArray) {
   // divide the left value of the array by the right value
   return numbersArray.reduce((a, b) => a / b);
 }
+function wait(ms) {
+  console.log('start wait');
+  const start = new Date().getTime();
+  let end = start;
+  while (end < start + ms) {
+    end = new Date().getTime();
+  }
+  console.log('end wait');
+}
