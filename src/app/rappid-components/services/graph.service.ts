@@ -244,14 +244,14 @@ export class GraphService {
         // recursive execution. now the in-zoomed graph will be executed
         this.execute(initRappid, linkViewsArray);
         // change the view back to out-zoomed graph
-        this.changeGraphModel(graphProcesses[i].id, initRappid.treeViewService, 'inzoom');
+        initRappid.changeGraphToParent(graphProcesses[0].id);
       } else {
         const functionValue = graphProcesses[i].attr('value/value');
         if (functionValue !== 'None') {
           // get the inbound links
-          let inbound = this.graph.getConnectedLinks(graphProcesses[i], {inbound: true});
+          const inbound = this.graph.getConnectedLinks(graphProcesses[i], {inbound: true});
           // get the outbound links
-          let outbound = this.graph.getConnectedLinks(graphProcesses[i], {outbound: true});
+          const outbound = this.graph.getConnectedLinks(graphProcesses[i], {outbound: true});
           compute(inbound, outbound, initRappid.paper, functionValue, linkViewsArray);
         }
       }
@@ -269,6 +269,7 @@ export class GraphService {
           targetElement.attr({value: {value: value, valueType: 'Number'}});
         }
       }
+      // run the token on the next link
       thisGraph.showExecution(initRappid, linkViewsArray, ++linkIndex);
     });
   }
