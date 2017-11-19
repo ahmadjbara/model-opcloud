@@ -3,14 +3,18 @@ import {InstrumentLink} from '../../models/DrawnPart/Links/InstrumentLink';
 import {ResultLink} from '../../models/DrawnPart/Links/ResultLink';
 import {vectorizer} from '../rappidEnviromentFunctionality/shared';
 
-export function compute(inbound, outbound, paper, functionValue, linkViewsArray) {
+export function compute(process, paper, linkViewsArray, treeNodeId) {
+  // get the inbound links
+  let inbound = paper.model.get('cells').graph.getConnectedLinks(process, {inbound: true});
   // filter inbound links to include only consumption and instrument links
   inbound = inbound.filter(link => ((link instanceof InstrumentLink) ||
     (link instanceof ConsumptionLink)));
-  // filter outbound links to include only the result links
-  outbound = outbound.filter(link => (link instanceof ResultLink));
   // sort all input links to have all connected objects ordered from left to right
   inbound = inbound.sort((l1, l2) => l1.getSourceElement().get('position').x - l2.getSourceElement().get('position').x);
+  // get the outbound links
+  let outbound = paper.model.get('cells').graph.getConnectedLinks(process, {outbound: true});
+  // filter outbound links to include only the result links
+  outbound = outbound.filter(link => (link instanceof ResultLink));
   const valuesArray = new Array();
   for (let i = 0; i < inbound.length; i++) {
  //   const token = vectorizer.V('circle', {r: 5, fill: 'green', stroke: 'red'});
@@ -21,11 +25,13 @@ export function compute(inbound, outbound, paper, functionValue, linkViewsArray)
   //    inbound[i].findView(paper).sendToken(token.node, 1000, function() {
   //      console.log('cb');
   //    });
-      linkViewsArray.push(inbound[i].findView(paper));
+      const linkView = inbound[i].findView(paper);
+      linkViewsArray.push({linkView, treeNodeId});
       valuesArray.push(sourceElement.get('logicalValue'));
     }
   }
   let resultValue;
+  const functionValue = process.attr('value/value');
   if (functionValue === 'Add') {
     resultValue = add(valuesArray);
   } else if (functionValue === 'Subtract') {
@@ -42,7 +48,8 @@ export function compute(inbound, outbound, paper, functionValue, linkViewsArray)
       targetElement.set('logicalValue', resultValue.toString());
  //     outbound[j].findView(paper).sendToken(token.node, 1000, function() {
  //     });
-      linkViewsArray.push(outbound[j].findView(paper));
+      const linkView = outbound[j].findView(paper);
+      linkViewsArray.push({linkView, treeNodeId});
    //   targetElement.attr({value: {value: resultValue.toString(), valueType: 'Number'}});
     }
   }

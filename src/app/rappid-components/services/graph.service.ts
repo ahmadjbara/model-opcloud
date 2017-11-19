@@ -246,13 +246,8 @@ export class GraphService {
         // change the view back to out-zoomed graph
         initRappid.changeGraphToParent(graphProcesses[0].id);
       } else {
-        const functionValue = graphProcesses[i].attr('value/value');
-        if (functionValue !== 'None') {
-          // get the inbound links
-          const inbound = this.graph.getConnectedLinks(graphProcesses[i], {inbound: true});
-          // get the outbound links
-          const outbound = this.graph.getConnectedLinks(graphProcesses[i], {outbound: true});
-          compute(inbound, outbound, initRappid.paper, functionValue, linkViewsArray);
+        if (graphProcesses[i].attr('value/value') !== 'None') {
+          compute(graphProcesses[i], initRappid.paper, linkViewsArray, graphProcesses[0].id);
         }
       }
     }
@@ -260,9 +255,11 @@ export class GraphService {
   showExecution(initRappid, linkViewsArray, linkIndex) {
     if (linkIndex >= linkViewsArray.length) return;
     const token = vectorizer.V('circle', {r: 5, fill: 'green', stroke: 'red'});
+    initRappid.changeGraphToParent(linkViewsArray[linkIndex].treeNodeId);
     const thisGraph = this;
-    linkViewsArray[linkIndex].sendToken(token.node, 1000, function() {
-      const targetElement = linkViewsArray[linkIndex].model.getTargetElement();
+    const currentLinkView = linkViewsArray[linkIndex].linkView;
+    currentLinkView.sendToken(token.node, 1000, function() {
+      const targetElement = linkViewsArray[linkIndex].linkView.model.getTargetElement();
       if (targetElement instanceof OpmObject) {
         const value = targetElement.get('logicalValue');
         if (value !== targetElement.attr('value/value')) {
