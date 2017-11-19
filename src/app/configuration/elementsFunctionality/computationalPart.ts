@@ -3,7 +3,7 @@ import {InstrumentLink} from '../../models/DrawnPart/Links/InstrumentLink';
 import {ResultLink} from '../../models/DrawnPart/Links/ResultLink';
 import {vectorizer} from '../rappidEnviromentFunctionality/shared';
 
-export function compute(process, paper, linkViewsArray, treeNodeId) {
+export function compute(process, paper, linksArray, treeNodeId) {
   // get the inbound links
   let inbound = paper.model.get('cells').graph.getConnectedLinks(process, {inbound: true});
   // filter inbound links to include only consumption and instrument links
@@ -25,8 +25,8 @@ export function compute(process, paper, linkViewsArray, treeNodeId) {
   //    inbound[i].findView(paper).sendToken(token.node, 1000, function() {
   //      console.log('cb');
   //    });
-      const linkView = inbound[i].findView(paper);
-      linkViewsArray.push({linkView, treeNodeId});
+      const link = inbound[i];
+      linksArray.push({link, treeNodeId});
       valuesArray.push(sourceElement.get('logicalValue'));
     }
   }
@@ -48,8 +48,8 @@ export function compute(process, paper, linkViewsArray, treeNodeId) {
       targetElement.set('logicalValue', resultValue.toString());
  //     outbound[j].findView(paper).sendToken(token.node, 1000, function() {
  //     });
-      const linkView = outbound[j].findView(paper);
-      linkViewsArray.push({linkView, treeNodeId});
+      const link = outbound[j];
+      linksArray.push({link, treeNodeId});
    //   targetElement.attr({value: {value: resultValue.toString(), valueType: 'Number'}});
     }
   }

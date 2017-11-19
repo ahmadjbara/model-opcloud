@@ -229,7 +229,7 @@ export class GraphService {
     this.currentGraphId = elementId;
     this.type = type;
   }
-  execute(initRappid, linkViewsArray) {
+  execute(initRappid, linksArray) {
     // get all processes in the graph
     let graphProcesses = this.graph.get('cells').models.filter(element => element.get('type') === 'opm.Process');
     // sort processes from top to bottom
@@ -242,24 +242,24 @@ export class GraphService {
         // change view to the in-zzomed graph
         this.changeGraphModel(inzoomedProcessId, initRappid.treeViewService, 'inzoom');
         // recursive execution. now the in-zoomed graph will be executed
-        this.execute(initRappid, linkViewsArray);
+        this.execute(initRappid, linksArray);
         // change the view back to out-zoomed graph
         initRappid.changeGraphToParent(graphProcesses[0].id);
       } else {
         if (graphProcesses[i].attr('value/value') !== 'None') {
-          compute(graphProcesses[i], initRappid.paper, linkViewsArray, graphProcesses[0].id);
+          compute(graphProcesses[i], initRappid.paper, linksArray, graphProcesses[0].id);
         }
       }
     }
   }
-  showExecution(initRappid, linkViewsArray, linkIndex) {
-    if (linkIndex >= linkViewsArray.length) return;
+  showExecution(initRappid, linksArray, linkIndex) {
+    if (linkIndex >= linksArray.length) return;
     const token = vectorizer.V('circle', {r: 5, fill: 'green', stroke: 'red'});
-    initRappid.changeGraphToParent(linkViewsArray[linkIndex].treeNodeId);
+    initRappid.changeGraphToParent(linksArray[linkIndex].treeNodeId);
     const thisGraph = this;
-    const currentLinkView = linkViewsArray[linkIndex].linkView;
+    const currentLinkView = linksArray[linkIndex].link.findView(initRappid.paper);
     currentLinkView.sendToken(token.node, 1000, function() {
-      const targetElement = linkViewsArray[linkIndex].linkView.model.getTargetElement();
+      const targetElement = linksArray[linkIndex].link.getTargetElement();
       if (targetElement instanceof OpmObject) {
         const value = targetElement.get('logicalValue');
         if (value !== targetElement.attr('value/value')) {
@@ -267,7 +267,7 @@ export class GraphService {
         }
       }
       // run the token on the next link
-      thisGraph.showExecution(initRappid, linkViewsArray, ++linkIndex);
+      thisGraph.showExecution(initRappid, linksArray, ++linkIndex);
     });
   }
 }
