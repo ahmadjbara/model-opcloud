@@ -17,14 +17,8 @@ export function compute(process, paper, linksArray, treeNodeId) {
   outbound = outbound.filter(link => (link instanceof ResultLink));
   const valuesArray = new Array();
   for (let i = 0; i < inbound.length; i++) {
- //   const token = vectorizer.V('circle', {r: 5, fill: 'green', stroke: 'red'});
     const sourceElement = inbound[i].getSourceElement();
     if (sourceElement.get('logicalValue') !== null) {
-    //if ((sourceElement.attr('value/valueType') !== 'None') &&
-    //  (sourceElement.attr('value/value') !== 'None')) {
-  //    inbound[i].findView(paper).sendToken(token.node, 1000, function() {
-  //      console.log('cb');
-  //    });
       const link = inbound[i];
       linksArray.push({link, treeNodeId});
       valuesArray.push(sourceElement.get('logicalValue'));
@@ -43,14 +37,10 @@ export function compute(process, paper, linksArray, treeNodeId) {
   }
   if (resultValue) {
     for (let j = 0; j < outbound.length; j++) {
-  //    const token = vectorizer.V('circle', {r: 5, fill: 'green', stroke: 'red'});
       const targetElement = outbound[j].getTargetElement();
       targetElement.set('logicalValue', resultValue.toString());
- //     outbound[j].findView(paper).sendToken(token.node, 1000, function() {
- //     });
       const link = outbound[j];
       linksArray.push({link, treeNodeId});
-   //   targetElement.attr({value: {value: resultValue.toString(), valueType: 'Number'}});
     }
   }
 }
@@ -77,13 +67,4 @@ function divide(valuesArray) {
   const numbersArray = valuesArray.map(item => +item);
   // divide the left value of the array by the right value
   return numbersArray.reduce((a, b) => a / b);
-}
-function wait(ms) {
-  console.log('start wait');
-  const start = new Date().getTime();
-  let end = start;
-  while (end < start + ms) {
-    end = new Date().getTime();
-  }
-  console.log('end wait');
 }
