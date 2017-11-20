@@ -65,6 +65,7 @@ export class OpmProcess extends OpmThing {
           clonedProcess = options.treeViewService.insertNode(cellModel, 'inzoom', options);
           clonedProcess.set('position', {x: 350, y: 100});
           const elementlinks = options.graphService.graphLinks;
+          let r;
           processInzooming(evt, 350, 100, haloThis.options, clonedProcess, elementlinks);
           let visualElement = new OpmVisualProcess(clonedProcess.getParams(), null);
           options.opmModel.getLogicalElementByVisualId(cellModel.id).add(visualElement);
@@ -99,27 +100,16 @@ export class OpmProcess extends OpmThing {
   }
   createContextToolbarForUnfolding(halo, options, ctxThis) {
     let thisProcess = this;
-    let context =  new joint.ui.ContextToolbar({
-      theme: 'modern',
-      tools: [
-        { action: 'parts',           content: this.createContentForUnfoldingOptions("StructuralAgg.png",     "Parts")  },
-        { action: 'attributes',      content: this.createContentForUnfoldingOptions("StructuralExhibit.png", "Attributes")},
-        { action: 'operations',      content: this.createContentForUnfoldingOptions("StructuralExhibit.png", "Operations")},
-        { action: 'specializations', content: this.createContentForUnfoldingOptions("StructuralGeneral.png", "Specializations")},
-        { action: 'instances',       content: this.createContentForUnfoldingOptions("StructuralSpecify.png", "Instances")}
-      ],
-      target: halo.el,
-      autoClose: true,
-      padding: 30
-    });
-
-
-
+    const cellModel = halo.options.cellView.model;
+    if (cellModel.attributes.attrs.ellipse['stroke'] === '#0096FF') {
+      ctxThis.remove();
+      thisProcess.startProcessUnfolding(halo, options, null);
+      return;
+    }
     var popup = new joint.ui.Popup({
       events: {
         'click .btn-unfold': function() {
           popup.remove();
-          console.log(this.$('.btn-c1')[0].checked);
           let unfoldingOptions = {'Aggregation-Participation':this.$('.btn-c1')[0].checked,
                                   'Exhibition-Characterization-Attributes':this.$('.btn-c2')[0].checked,
                                   'Exhibition-Characterization-Operations':this.$('.btn-c3')[0].checked,
@@ -132,11 +122,11 @@ export class OpmProcess extends OpmThing {
       },
       content: [
         '<div>',
-        '<input type="checkbox" name="vehicle" value="Bike" class="btn-c1">' + this.createContentForUnfoldingOptions("StructuralAgg.png",     "Parts") + '<br>',
-        '<input type="checkbox" name="vehicle" value="Bike" class="btn-c2">' + this.createContentForUnfoldingOptions("StructuralExhibit.png",     "Attributes") + '<br>',
-        '<input type="checkbox" name="vehicle" value="Bike" class="btn-c3">' + this.createContentForUnfoldingOptions("StructuralExhibit.png",     "Operations") + '<br>',
-        '<input type="checkbox" name="vehicle" value="Bike" class="btn-c4">' + this.createContentForUnfoldingOptions("StructuralGeneral.png",     "Specializations") + '<br>',
-        '<input type="checkbox" name="vehicle" value="Bike" class="btn-c5">' + this.createContentForUnfoldingOptions("StructuralSpecify.png",     "Instances") + '<br>',
+        '<input type="checkbox" name="structural"  class="btn-c1">' + this.createContentForUnfoldingOptions("StructuralAgg.png",     "Parts")           + '<br>',
+        '<input type="checkbox" name="structural"  class="btn-c2">' + this.createContentForUnfoldingOptions("StructuralExhibit.png", "Attributes")      + '<br>',
+        '<input type="checkbox" name="structural"  class="btn-c3">' + this.createContentForUnfoldingOptions("StructuralExhibit.png", "Operations")      + '<br>',
+        '<input type="checkbox" name="structural"  class="btn-c4">' + this.createContentForUnfoldingOptions("StructuralGeneral.png", "Specializations") + '<br>',
+        '<input type="checkbox" name="structural"  class="btn-c5">' + this.createContentForUnfoldingOptions("StructuralSpecify.png", "Instances")       + '<br>',
         '<center><button class="btn-unfold" style="text-align:center">Unfold</button></center>',
         '</div>'
       ].join(''),
@@ -145,36 +135,12 @@ export class OpmProcess extends OpmThing {
     });
     ctxThis.remove();
     popup.render();
-
-    context.on('action:parts', function(a){
-      this.remove();
-   //   thisProcess.startProcessUnfolding(halo, options, 'Aggregation-Participation','OpmProcess');
-    });
-    context.on('action:attributes', function(){
-      this.remove();
-    //  thisProcess.startProcessUnfolding(halo, options, 'Exhibition-Characterization','OpmObject');
-    });
-    context.on('action:operations', function(){
-      this.remove();
-     // thisProcess.startProcessUnfolding(halo, options, 'Exhibition-Characterization','OpmProcess');
-    });
-
-    context.on('action:specializations', function(){
-      this.remove();
-     // thisProcess.startProcessUnfolding(halo, options, 'Generalization-Specialization','OpmProcess');
-    });
-
-    context.on('action:instances', function(){
-      this.remove();
-     // thisProcess.startProcessUnfolding(halo, options, 'Classification-Instantiation','OpmProcess');
-    });
-
-    return context;
   }
   startProcessUnfolding(halo, options, unfoldingOptions) {
     let clonedProcess;
 
     const cellModel = halo.options.cellView.model;
+    console.log(cellModel.attributes.attrs.ellipse['stroke']);
     if (cellModel.attributes.attrs.ellipse['stroke'] === '#0096FF') {
       clonedProcess = options.opmModel.getVisualElementById(cellModel.id).refineeUnfolding;
       let pid = clonedProcess.id;
@@ -182,8 +148,8 @@ export class OpmProcess extends OpmThing {
     } else {
       let opd = new OpmOpd('');
       options.opmModel.addOpd(opd);
-      // cellModel.attributes.attrs.ellipse['stroke'] = '#0096FF';
-      clonedProcess = options.treeViewService.insertNode(cellModel, 'unfold', options);
+      cellModel.attributes.attrs.ellipse['stroke'] = '#0096FF';
+      clonedProcess = options.treeViewService.insertNode(cellModel, 'unfold', options, unfoldingOptions );
       const elementlinks = options.graphService.graphLinks;
       processUnfolding(options, clonedProcess, unfoldingOptions);
       let visualElement = new OpmVisualProcess(clonedProcess.getParams(), null);

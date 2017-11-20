@@ -13,7 +13,7 @@ import {linkType} from "../../models/ConfigurationOptions";
 import {TriangleClass} from "../../models/DrawnPart/Links/OpmFundamentalLink";
 
 const joint = require('rappid');
-const initial_subprocess = 3;
+const initial_subprocess_inzooming = 3;
 const Facotr = 0.8;
 const inzoomed_height = 200;
 const inzoomed_width = 300;
@@ -62,7 +62,7 @@ export function processInzooming (evt, x, y, options, cellRef, links) {
   // create the initial subprcoess
   let dy = y_margin;
 
-  for (let i = 0; i < initial_subprocess; i++) {
+  for (let i = 0; i < initial_subprocess_inzooming; i++) {
     const yp = y + dy + 50;
     const xp = x + childMargin;
     // let defaultProcess = new joint.shapes.opm.Process(basicDefinitions.defineShape('ellipse'));
@@ -82,7 +82,7 @@ export function processInzooming (evt, x, y, options, cellRef, links) {
   // parentObject.embeds
   const EmbeddedCells = parentObject.getEmbeddedCells();
   const first_process_id = EmbeddedCells[0].id;
-  const last_process_id = EmbeddedCells[(initial_subprocess - 1)].id;
+  const last_process_id = EmbeddedCells[(initial_subprocess_inzooming - 1)].id;
 
 
   options.graph.getConnectedLinks(parentObject, { inbound: true }).forEach(function(link) {
@@ -137,8 +137,8 @@ export function processInzooming (evt, x, y, options, cellRef, links) {
 
 export function processUnfolding (options, cellRef, unfoldingOptions) {
 
-  let dy = y_margin;
   let x = cellRef.get('position').x;
+  x = getRightmostXCoord(cellRef, options.graph) + 20;
   let y = cellRef.get('position').y + 160;
 
   for (var prop in unfoldingOptions) {
@@ -160,8 +160,7 @@ export function processUnfolding (options, cellRef, unfoldingOptions) {
       let link;
       linkDrawing.drawLinkSilent(options.graph, prop, cellRef, defaultProcess);
 
-      dy += x_margin;
-      x = x + childMargin + 50;
+      x = x + defaultProcess.get('size').width + 20;
 
     }
   }
@@ -169,9 +168,12 @@ export function processUnfolding (options, cellRef, unfoldingOptions) {
 function linkAlreadyExist(cellRef, prop, options){
   let links = options.graph.getConnectedLinks(cellRef);
   for (let k=0; k<links.length; k++) {
-    if (links[k].attributes.OpmLinkType==="ExhibitionLink" && prop.includes('Attribues') && linkHasAttribute(links[k]))
+    console.log(links[k].attributes.OpmLinkType==="ExhibitionLink");
+    console.log(prop.includes('Attribues'));
+    console.log(linkHasAttribute(links[k], options.graph));
+    if (links[k].attributes.OpmLinkType==="ExhibitionLink" && prop.includes('Attributes') && linkHasAttribute(links[k], options.graph))
       return true;
-    else if (links[k].attributes.OpmLinkType==="ExhibitionLink" && prop.includes('Operations') && linkHasOperation(links[k]))
+    else if (links[k].attributes.OpmLinkType==="ExhibitionLink" && prop.includes('Operations') && linkHasOperation(links[k], options.graph))
       return true;
     else if (links[k].attributes.OpmLinkType==="GeneralizationLink" && prop.includes('Generalization'))
       return true;
@@ -182,21 +184,44 @@ function linkAlreadyExist(cellRef, prop, options){
   }
   return false;
 }
-function linkHasAttribute(link){
+function linkHasAttribute(link, graph){
   if (link.getTargetElement() instanceof  TriangleClass){
-    let links = link.getTargetElement().getConnectedLinks();
+    let links = graph.getConnectedLinks(link.getTargetElement());
     for (let k=0; k<links.length; k++)
       if (links[k].getTargetElement() instanceof OpmObject)
         return true;
   }
   return false;
 }
-function linkHasOperation(link){
+function linkHasOperation(link, graph){
   if (link.getTargetElement() instanceof  TriangleClass){
-    let links = link.getTargetElement().getConnectedLinks();
+    let links = graph.getConnectedLinks(link.getTargetElement());
     for (let k=0; k<links.length; k++)
       if (links[k].getTargetElement() instanceof OpmProcess)
         return true;
   }
   return false;
+}
+export function getRightmostXCoord(cellRef, graph){
+  let x = 0;
+  let links = graph.getConnectedLinks(cellRef);
+  if (typeof links === "undefined")
+    return 0;
+  for (let k=0; k< links.length; k++)
+    if (links[k].getTargetElement() instanceof TriangleClass){
+    let lowerLinks = graph.getConnectedLinks(links[k].getTargetElement());
+    if (typeof links === "undefined")
+        return 0;
+    for (let i=0; i<lowerLinks.length; i++)
+      if (lowerLinks[i].getTargetElement().getBBox().corner().x > x){
+      x = lowerLinks[i].getTargetElement().getBBox().corner().x;
+      }
+    }
+    else {
+      if (links[k].getTargetElement().getBBox().corner().x > x) {
+        x = links[k].getTargetElement().getBBox().corner().x;
+      }
+    }
+    console.log(x);
+    return x;
 }

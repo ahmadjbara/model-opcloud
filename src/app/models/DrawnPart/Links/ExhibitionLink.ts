@@ -11,4 +11,8 @@ export  class ExhibitionLink extends OpmFundamentalLink {
     const params = { linkType: linkType.Exhibition };
     return {...super.getFundamentalLinkParams(), ...params};
   }
+  clone() {
+    console.log("here");
+    return new ExhibitionLink(this.sourceElement, this.targetElement, this.graph);
+  }
 }

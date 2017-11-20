@@ -2,6 +2,7 @@ import {OpmDefaultLink} from './OpmDefaultLink';
 import {OpmEntity} from '../OpmEntity';
 import {OpmStructuralLink} from './OpmStructuralLink';
 import {joint, _} from '../../../configuration/rappidEnviromentFunctionality/shared';
+import {dia} from "jointjs";
 
 
 export  class OpmFundamentalLink extends OpmStructuralLink {
@@ -9,6 +10,7 @@ export  class OpmFundamentalLink extends OpmStructuralLink {
   targetElement: OpmEntity;
   triangle: any;
   mainUpperLink: OpmDefaultLink;
+  graph: dia.Graph;
   constructor(sourceElement, targetElement, graph) {
     super();
     this.sourceElement = sourceElement;

@@ -8,7 +8,10 @@ export  class OpmState extends OpmEntity {
   constructor(stateName = 'State') {
     super();
     this.set(this.stateAttributes());
-    this.attr(this.stateAttrs(stateName));
+    if (typeof stateName === 'string')
+      this.attr(this.stateAttrs(stateName));
+    else
+      this.attr(this.stateAttrs(stateName['attrs'].text.text));
   }
   stateAttributes() {
     return {
