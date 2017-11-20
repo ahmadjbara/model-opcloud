@@ -44,7 +44,7 @@ export class OpmObject extends OpmThing {
     this.createNewState((stateName ? stateName : ('state' + (statesNumber + 1))));
     // For the first time of clicking on general addState should be added 3 states
     if (!stateName && (statesNumber === 0)) {
-      for (let i = 2; i <= 3; i++) {
+      for (let i = 2; i <= 2; i++) {
         this.createNewState(('state' + (statesNumber + i)));
       }
     }
@@ -66,6 +66,7 @@ export class OpmObject extends OpmThing {
     defaultState.set({position: {x: xNewState, y: yNewState}});
   }
   haloConfiguration(halo, options) {
+    super.haloConfiguration(halo, options);
     const thisObject = this;
     let hasStates = this.getEmbeddedCells().length;
     halo.addHandle(this.addHandleGenerator('add_state', 'sw', 'Click to add state to the object', 'right'));
@@ -97,55 +98,29 @@ export class OpmObject extends OpmThing {
     halo.$handles.children('.arrange_down').toggleClass('hidden', !hasStates);
     halo.$handles.children('.arrange_left').toggleClass('hidden', !hasStates);
     halo.$handles.children('.arrange_right').toggleClass('hidden', !hasStates);
-    halo.addHandle(this.addHandleGenerator('valueConfig', 'se', 'Click to configure value', 'right'));
-    halo.on('action:valueConfig:pointerup', function () {
-      const computationContextToolbar = thisObject.createContextToolbar(halo).render();
-      computationContextToolbar.on('action:value', function() {
-        this.remove();
-        const popup = new joint.ui.Popup({
-          events: {
-            'click .btnUpdate': function() {
-              const value = this.$('.value').val();
-              const units = this.$('.units').val();
-              const type = this.$('.type').val();
-              thisObject.attr({value: {value: value, units: units, valueType: type}});
-              this.remove();
-            }
-          },
-          content: ['<input class="value" value="insert value" size="7"><br>',
-            '<input class="units" value="insert units" size="7"><br>',
-            '<select class="type">' +
-            '<option value="None">None</option>' +
-            '<option value="Number">Number</option>' +
-            '<option value="String">String</option>' +
-            '</select><br>',
-            '<button class="btnUpdate">Update</button>'],
-          target: halo.el
-        }).render();
-      });
-    });
   }
-  createContextToolbar(halo) {
-    return new joint.ui.ContextToolbar({
-      theme: 'modern',
-      tools: [
-        { action: 'value', content: 'value' }
-        ],
-      target: halo.el,
-      padding: 30
-    });
-  }
-  createContextToolbarValueType(halo) {
-    return new joint.ui.ContextToolbar({
-      theme: 'modern',
-      tools: [
-        { action: 'None', content: 'None' },
-        { action: 'Number', content: 'Number' },
-        { action: 'String', content: 'String' }
-      ],
-      target: halo.el,
-      padding: 30
-    });
+  valuePopup(halo) {
+    const objectThis = this;
+    const popup = new joint.ui.Popup({
+      events: {
+        'click .btnUpdate': function() {
+          const value = this.$('.value').val();
+          const units = this.$('.units').val();
+          const type = this.$('.type').val();
+          objectThis.attr({value: {value: value, units: units, valueType: type}});
+          this.remove();
+        }
+      },
+      content: ['<input class="value" value="insert value" size="7"><br>',
+        '<input class="units" value="insert units" size="7"><br>',
+        '<select class="type">' +
+        '<option value="None">None</option>' +
+        '<option value="Number">Number</option>' +
+        '<option value="String">String</option>' +
+        '</select><br>',
+        '<button class="btnUpdate">Update</button>'],
+      target: halo.el
+    }).render();
   }
   changeSizeHandle() {
     super.changeSizeHandle();
@@ -208,5 +183,8 @@ export class OpmObject extends OpmThing {
       newText = newText + '\n[' + units + ']';
     }
     this.attr({text: {text: newText}});
+  }
+  updateFilter(newValue) {
+    this.attr('rect', newValue);
   }
 }

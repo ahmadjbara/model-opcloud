@@ -89,4 +89,58 @@ export  class OpmThing extends OpmEntity {
     }
     }
   }
+  haloConfiguration(halo, options) {
+    const thisThing = this;
+    halo.addHandle(this.addHandleGenerator('valueConfig', 'se', 'Click to configure value', 'right'));
+    halo.on('action:valueConfig:pointerup', function () {
+      const contextToolbar = thisThing.configurationToolbar(halo).render();
+      contextToolbar.on('action:value', function() {
+        this.remove();
+        thisThing.valuePopup(halo, thisThing);
+      });
+      contextToolbar.on('action:essence', function() {
+        this.remove();
+        const essenceToolbar = thisThing.essenceAffiliationToolbar(halo, 'Physical', 'Informatical').render();
+        essenceToolbar.on('action:Physical', function () {
+          thisThing.updateFilter({filter: {args: {dx: 3, dy: 3, blur: 0, color: 'grey'}}});
+        });
+        essenceToolbar.on('action:Informatical', function () {
+          thisThing.updateFilter({filter: {args: {dx: 0, dy: 0, blur: 0, color: 'grey'}}});
+        });
+      });
+      contextToolbar.on('action:affiliation', function() {
+        this.remove();
+        const affiliationToolbar = thisThing.essenceAffiliationToolbar(halo, 'Systemic', 'Environmental').render();
+        affiliationToolbar.on('action:Systemic', function () {
+          thisThing.updateFilter({'stroke-dasharray': '0'});
+        });
+        affiliationToolbar.on('action:Environmental', function () {
+          thisThing.updateFilter({'stroke-dasharray': '10,5'});
+        });
+      });
+    });
+  }
+  configurationToolbar(halo) {
+    return new joint.ui.ContextToolbar({
+      theme: 'modern',
+      tools: [
+        { action: 'value', content: 'Value' },
+        { action: 'essence', content: 'Essence' },
+        { action: 'affiliation', content: 'Affiliation' }
+      ],
+      target: halo.el,
+      padding: 30
+    });
+  }
+  essenceAffiliationToolbar(halo, firstData, secondData) {
+    return new joint.ui.ContextToolbar({
+      theme: 'modern',
+      tools: [
+        { action: firstData, content: firstData},
+        { action: secondData, content: secondData},
+      ],
+      target: halo.el,
+      padding: 30
+    });
+  }
 }

@@ -43,9 +43,8 @@ export class OpmProcess extends OpmThing {
   }
   // options = init-rappid service
   haloConfiguration(halo, options) {
-    console.log(halo);
-    console.log(options);
-    let thisProcess=this;
+    super.haloConfiguration(halo, options);
+    const thisProcess = this;
     halo.addHandle(this.addHandleGenerator('manage_complexity', 'sw', 'Click to manage complexity', 'left'));
     halo.on('action:manage_complexity:pointerdown', function (evt, x, y) {
       const contextToolbar = thisProcess.createContextToolbar(halo);
@@ -81,6 +80,26 @@ export class OpmProcess extends OpmThing {
       });
       contextToolbar.render();
     });
+  }
+  valuePopup(halo) {
+    const processThis = this;
+    const popup = new joint.ui.Popup({
+      events: {
+        'click .btnUpdate': function() {
+          const valueFunction = this.$('.value').val();
+          processThis.attr({value: {value: valueFunction}});
+          this.remove();
+        }
+      },
+      content: ['<select class="value">' +
+        '<option value="Add">Add</option>' +
+        '<option value="Subtract">Subtract</option>' +
+        '<option value="Multiply">Multiply</option>' +
+        '<option value="Divide">Divide</option>' +
+        '</select><br>',
+        '<button class="btnUpdate">Update</button>'],
+      target: halo.el
+    }).render();
   }
   createContextToolbar(halo) {
     return new joint.ui.ContextToolbar({
@@ -244,5 +263,8 @@ export class OpmProcess extends OpmThing {
         this.attr('ellipse/filter/args', {dx: 0, dy: 0, blur: 0, color: 'grey'});
       }
     }
+  }
+  updateFilter(newValue) {
+    this.attr('ellipse', newValue);
   }
 }

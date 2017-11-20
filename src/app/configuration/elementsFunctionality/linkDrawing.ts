@@ -22,7 +22,7 @@ export const linkDrawing = {
     const graph = link.graph;
     const isCondition = linkName.includes('Condition');
     const isEvent = linkName.includes('Event');
-    let newLink = [];
+    const newLink = [];
     if (linkName.includes('Agent')) {
       newLink.push(new AgentLink(link.getSourceElement(), link.getTargetElement(), isCondition, isEvent));
     } else if (linkName.includes('Instrument')) {
@@ -55,16 +55,19 @@ export const linkDrawing = {
       newLink.push( new InstantiationLink(link.getSourceElement(), link.getTargetElement(), graph));
     }else if (linkName.includes('In/out_linkPair')) {
       const parentID = link.getSourceElement().attributes.father;
-      if (newLink.length > 1) {
+      if (graph.getCell(parentID).attributes.embeds.length % 2 === 0) {
+        this.index  = graph.getCell(parentID).attributes.embeds.length - 1;
         newLink.push(new ConsumptionLink(link.getSourceElement(), link.getTargetElement(), isCondition, isEvent));
-        newLink.push(new ResultLink(link.getTargetElement(), graph.getCell(graph.getCell(parentID).attributes.embeds[1]), isCondition, isEvent));
+        newLink.push(new ResultLink(link.getTargetElement(),graph.getCell(graph.getCell(parentID).attributes.embeds[this.index]), isCondition, isEvent));
+      } else {
+        newLink.push(new ConsumptionLink(link.getSourceElement(), link.getTargetElement(), isCondition, isEvent));
       }
     }
     newLink[0].set('previousTargetId', link.get('previousTargetId'));
     newLink[0].set('previousSourceId', link.get('previousSourceId'));
     newLink[0].set('name', link.get('name'));
-    graph.addCells(newLink);
     link.remove();
+    graph.addCells(newLink);
 /*
     if (ftag && btag) {
       link.set('labels', [ { position: 0.75, attrs: { text: {text: ftag+'\n'}, rect: {fill: 'transparent'} } },

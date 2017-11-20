@@ -65,7 +65,7 @@ export class OpmEntity extends OpmEntityRappid {
       }
     };
   }
-  haloConfiguration(halo, haloConfiguration) {}
+  haloConfiguration(halo, options) {}
   doubleClickHandle(cellView, evt, paper) {
     joint.ui.TextEditor.edit(evt.target, {
       cellView: cellView,
