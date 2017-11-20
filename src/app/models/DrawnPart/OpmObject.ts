@@ -105,14 +105,14 @@ export class OpmObject extends OpmThing {
       events: {
         'click .btnUpdate': function() {
           const value = this.$('.value').val();
-          const units = this.$('.units').val();
+          const units = (this.$('.units').val() !== 'units') ? this.$('.units').val() : '';
           const type = this.$('.type').val();
           objectThis.attr({value: {value: value, units: units, valueType: type}});
           this.remove();
         }
       },
-      content: ['<input class="value" value="insert value" size="7"><br>',
-        '<input class="units" value="insert units" size="7"><br>',
+      content: ['<input class="value" value="value" size="7"><br>',
+        '<input class="units" value="units" size="7"><br>',
         '<select class="type">' +
         '<option value="None">None</option>' +
         '<option value="Number">Number</option>' +
