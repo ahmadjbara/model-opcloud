@@ -79,6 +79,19 @@ export class InitRappidService {
       padding: 10
     });
   }
+  changeGraphToSD() {
+    const sdNodeId = this.treeViewService.nodes[0].id;
+    const sdNodeType = this.treeViewService.nodes[0].type;
+    this.graphService.changeGraphModel(sdNodeId, this.treeViewService, sdNodeType);
+  }
+  changeGraphToParent(parentId) {
+    const parentNode = this.treeViewService.getNodeById(parentId);
+    if (!parentNode) {
+      this.changeGraphToSD();
+    } else {
+      this.graphService.changeGraphModel(parentNode.id, this.treeViewService, parentNode.type);
+    }
+  }
   initializeEvents() {
     const _this = this;
     this.paper.on('cell:pointerdblclick', function (cellView, evt) {

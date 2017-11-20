@@ -97,16 +97,16 @@ export class RappidToolbarComponent implements OnInit {
     // debugger;
     // let dialogRef = this._dialog.open(SaveModelDialogComponent);
     // dialogRef.afterClosed().subscribe(result => {
-    let result = prompt("Save Model As:", "Enter a Model Name");
-    if (result === "Enter a Model Name" || result === null) {
-      console.log("Model not saved");
+    const result = prompt('Save Model As:', 'Enter a Model Name');
+    if (result === 'Enter a Model Name' || result === null) {
+      console.log('Model not saved');
       return;
     }
     this.graphService.saveGraph(result, true);
   }
 
   loadModel() {
-    let dialogRef = this._dialog.open(LoadModelDialogComponent);
+    const dialogRef = this._dialog.open(LoadModelDialogComponent);
 
     dialogRef.afterClosed().subscribe(result => {
       if (!!result) {
@@ -142,6 +142,11 @@ export class RappidToolbarComponent implements OnInit {
     });
   }
   execute() {
-    this.graphService.execute(this.initRappidService);
+    // start execute from SD graph
+    this.initRappidService.changeGraphToSD();
+    // array that contains all the link views needed to be visualized by a token
+    const linksArray = [];
+    this.graphService.execute(this.initRappidService, linksArray);
+    this.graphService.showExecution(this.initRappidService, linksArray, 0);
   }
 }

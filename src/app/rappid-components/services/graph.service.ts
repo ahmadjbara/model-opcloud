@@ -333,19 +333,45 @@ export class GraphService {
     this.currentGraphId = elementId;
     this.type = type;
   }
-  execute(initRappid) {
+  execute(initRappid, linksArray) {
     // get all processes in the graph
-    let graphProcesses = this.graph.get('cells').models.filter(element => element.get('type') === 'opm.Process')
+    let graphProcesses = this.graph.get('cells').models.filter(element => element.get('type') === 'opm.Process');
     // sort processes from top to bottom
     graphProcesses = graphProcesses.sort((p1, p2) => p1.get('position').y - p2.get('position').y);
     // go over all processes
     for (let i = 0; i < graphProcesses.length; i++) {
-      // get the inbound links
-      let inbound = this.graph.getConnectedLinks(graphProcesses[i], {inbound: true});
-      // get the outbound links
-      let outbound = this.graph.getConnectedLinks(graphProcesses[i], {outbound: true});
-      const functionValue = graphProcesses[i].attr('value/value');
-      compute(inbound, outbound, initRappid.paper, functionValue);
+      // if it is zn in-zoomed process then need to go to the in-zoomed graph and execute it first
+      if (graphProcesses[i].attributes.attrs.ellipse['stroke-width'] === 4) {
+        const inzoomedProcessId = initRappid.opmModel.getVisualElementById(graphProcesses[i].id).refineeInzooming.id;
+        // change view to the in-zzomed graph
+        this.changeGraphModel(inzoomedProcessId, initRappid.treeViewService, 'inzoom');
+        // recursive execution. now the in-zoomed graph will be executed
+        this.execute(initRappid, linksArray);
+        // change the view back to out-zoomed graph
+        initRappid.changeGraphToParent(graphProcesses[0].id);
+      } else {
+        if (graphProcesses[i].attr('value/value') !== 'None') {
+          compute(graphProcesses[i], initRappid.paper, linksArray, graphProcesses[0].id);
+        }
+      }
     }
+  }
+  showExecution(initRappid, linksArray, linkIndex) {
+    if (linkIndex >= linksArray.length) return;
+    const token = vectorizer.V('circle', {r: 5, fill: 'green', stroke: 'red'});
+    initRappid.changeGraphToParent(linksArray[linkIndex].treeNodeId);
+    const thisGraph = this;
+    const currentLinkView = linksArray[linkIndex].link.findView(initRappid.paper);
+    currentLinkView.sendToken(token.node, 1000, function() {
+      const targetElement = linksArray[linkIndex].link.getTargetElement();
+      if (targetElement instanceof OpmObject) {
+        const value = targetElement.get('logicalValue');
+        if (value !== targetElement.attr('value/value')) {
+          targetElement.attr({value: {value: value, valueType: 'Number'}});
+        }
+      }
+      // run the token on the next link
+      thisGraph.showExecution(initRappid, linksArray, ++linkIndex);
+    });
   }
 }

@@ -15,14 +15,15 @@ export class OpmObject extends OpmThing {
       markup: `<g class='rotatable'><g class='scalable'><rect/></g><text/></g>`,
       type: 'opm.Object',
       padding: 10,
-      value: {value: 'None', valueType: 'None', units: ''}
+      logicalValue: null
     };
   }
   objectAttrs() {
     return {
       rect: {...this.entityShape(), ...this.thingShape(), ...{stroke: '#00AA00'}},
       'statesArrange' : 'bottom',
-      'text' : {text: 'Object'}
+      'text' : {text: 'Object'},
+      value: {value: 'None', valueType: 'None', units: ''}
     };
   }
   getParams() {
@@ -43,7 +44,7 @@ export class OpmObject extends OpmThing {
     this.createNewState((stateName ? stateName : ('state' + (statesNumber + 1))));
     // For the first time of clicking on general addState should be added 3 states
     if (!stateName && (statesNumber === 0)) {
-      for (let i = 2; i <= 3; i++) {
+      for (let i = 2; i <= 2; i++) {
         this.createNewState(('state' + (statesNumber + i)));
       }
     }
@@ -65,6 +66,8 @@ export class OpmObject extends OpmThing {
     defaultState.set({position: {x: xNewState, y: yNewState}});
   }
   haloConfiguration(halo, options) {
+    super.haloConfiguration(halo, options);
+    const thisObject = this;
     let hasStates = this.getEmbeddedCells().length;
     halo.addHandle(this.addHandleGenerator('add_state', 'sw', 'Click to add state to the object', 'right'));
     halo.on('action:add_state:pointerup', function () {
@@ -96,6 +99,29 @@ export class OpmObject extends OpmThing {
     halo.$handles.children('.arrange_left').toggleClass('hidden', !hasStates);
     halo.$handles.children('.arrange_right').toggleClass('hidden', !hasStates);
   }
+  valuePopup(halo) {
+    const objectThis = this;
+    const popup = new joint.ui.Popup({
+      events: {
+        'click .btnUpdate': function() {
+          const value = this.$('.value').val();
+          const units = this.$('.units').val();
+          const type = this.$('.type').val();
+          objectThis.attr({value: {value: value, units: units, valueType: type}});
+          this.remove();
+        }
+      },
+      content: ['<input class="value" value="insert value" size="7"><br>',
+        '<input class="units" value="insert units" size="7"><br>',
+        '<select class="type">' +
+        '<option value="None">None</option>' +
+        '<option value="Number">Number</option>' +
+        '<option value="String">String</option>' +
+        '</select><br>',
+        '<button class="btnUpdate">Update</button>'],
+      target: halo.el
+    }).render();
+  }
   changeSizeHandle() {
     super.changeSizeHandle();
     // In case object has states, need to update the size so that the states will not
@@ -122,8 +148,11 @@ export class OpmObject extends OpmThing {
     if ((valueType !== 'None') && (this.attr('rect/filter/args/dx') !== 0)) {
       this.attr('rect/filter/args', {dx: 0, dy: 0, blur: 0, color: 'grey'});
     }
+    // the value is saved twice: once in the attr, for visual representation inside
+    // a state and once in 'logicalValue' field for background execution use.
     if ((!this.get('previousValue') || (value !== this.get('previousValue'))) && (value !== 'None')) {
       this.updateState(value);
+      this.set('logicalValue', value);
     }
     if ((!this.get('previousUnits') || (units !== this.get('previousUnits'))) && (units !== '')) {
       this.updateUnits(units);
@@ -154,5 +183,8 @@ export class OpmObject extends OpmThing {
       newText = newText + '\n[' + units + ']';
     }
     this.attr({text: {text: newText}});
+  }
+  updateFilter(newValue) {
+    this.attr('rect', newValue);
   }
 }

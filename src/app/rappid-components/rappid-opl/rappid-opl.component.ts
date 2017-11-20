@@ -194,7 +194,7 @@ export class RappidOplComponent implements OnInit {
   }
 
 
-  highlightCell(cell){
+  highlightCell(cell) {
     switch(cell.attributes.type) {
       case 'opm.Object':
         this.highlightObject(cell);

@@ -93,6 +93,7 @@ export  class OpmState extends OpmEntity {
       if (fatherObject.attr('value/value')) {
         fatherObject.attr({value: {value: 'None'}});
         fatherObject.set('previousValue', null);
+        fatherObject.set('logicalValue', null);
       }
     } else {
       arrangeEmbedded(fatherObject, fatherObject.attr('statesArrange'));
