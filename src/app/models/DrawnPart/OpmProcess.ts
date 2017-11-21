@@ -233,4 +233,10 @@ export class OpmProcess extends OpmThing {
   updateFilter(newValue) {
     this.attr('ellipse', newValue);
   }
+  getShapeFillColor() {
+    return this.attr('ellipse/fill');
+  }
+  getShapeOutline() {
+    return this.attr('ellipse/stroke');
+  }
 }

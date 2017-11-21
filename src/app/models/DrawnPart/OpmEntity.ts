@@ -5,7 +5,7 @@ import {joint, _} from '../../configuration/rappidEnviromentFunctionality/shared
 import {OpmEntityRappid} from './OpmEntityRappid';
 
 const entityText = {
-  fill: 'black',
+  fill: '#000000',
   'font-size': 14,
   'ref-x': .5,
   'ref-y': .5,
@@ -34,7 +34,7 @@ export class OpmEntity extends OpmEntityRappid {
   }
   entityShape() {
   return {
-    fill: 'white',
+    fill: '#ffffff',
     magnet: true,
     'stroke-width': 2,
   };
@@ -65,7 +65,9 @@ export class OpmEntity extends OpmEntityRappid {
       }
     };
   }
-  haloConfiguration(halo, options) {}
+  haloConfiguration(halo, options) {
+    
+  }
   doubleClickHandle(cellView, evt, paper) {
     joint.ui.TextEditor.edit(evt.target, {
       cellView: cellView,

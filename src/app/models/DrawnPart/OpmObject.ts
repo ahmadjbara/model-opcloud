@@ -187,4 +187,11 @@ export class OpmObject extends OpmThing {
   updateFilter(newValue) {
     this.attr('rect', newValue);
   }
+  getShapeFillColor() {
+    return this.attr('rect/fill');
+  }
+  getShapeOutline() {
+    return this.attr('rect/stroke');
+  }
 }
+
