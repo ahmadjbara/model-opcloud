@@ -144,6 +144,7 @@ export  class OpmState extends OpmEntity {
   }
 
   haloConfiguration(halo, options) {
+    super.haloConfiguration(halo, options);
     halo.addHandle(this.addHandleGenerator('add_state', 'sw', 'Click to define state type', 'right'));
     var Dcheckbox = '$(\'#Default\').prop(\'checked\',false)';
     var Icheckbox = '$(\'#Initial\').prop(\'checked\',false)';
@@ -262,6 +263,15 @@ export  class OpmState extends OpmEntity {
         autoClose: true,
       })).render();
     });
-
+  }
+  updateFilter(newValue) {
+    this.attr('.inner', newValue);
+    this.attr('.outer', newValue);
+  }
+  getShapeFillColor() {
+    return this.attr('.inner/fill');
+  }
+  getShapeOutline() {
+    return this.attr('.inner/stroke');
   }
 }

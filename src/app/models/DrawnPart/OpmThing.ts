@@ -89,7 +89,9 @@ export  class OpmThing extends OpmEntity {
     }
     }
   }
+  /*
   haloConfiguration(halo, options) {
+    super.haloConfiguration(halo, options);
     const thisThing = this;
     halo.addHandle(this.addHandleGenerator('configuration', 'se', 'Click to configure value', 'right'));
     halo.on('action:configuration:pointerup', function () {
@@ -118,23 +120,44 @@ export  class OpmThing extends OpmEntity {
           thisThing.updateFilter({'stroke-dasharray': '10,5'});
         });
       });
-      contextToolbar.on('action:styling', function() {
-        this.remove();
-        thisThing.stylePopup(halo);
-      });
     });
   }
-  configurationToolbar(halo) {
-    return new joint.ui.ContextToolbar({
-      theme: 'modern',
-      tools: [
-        { action: 'value', content: 'Computation' },
-        { action: 'essence', content: 'Essence' },
-        { action: 'affiliation', content: 'Affiliation' },
-        { action: 'styling',  content: 'Styling'}
-      ],
-      target: halo.el,
-      padding: 30
+  }
+  */
+  getConfigurationTools() {
+    const toolsArray = super.getConfigurationTools();
+    const thingToolsArray = [{ action: 'value', content: 'Computation' },
+      { action: 'essence', content: 'Essence' },
+      { action: 'affiliation', content: 'Affiliation' }];
+    toolsArray.concat(thingToolsArray);
+    return toolsArray.concat(thingToolsArray);
+  }
+  configurationContextToolbarEvents(halo, contextToolbar) {
+    super.configurationContextToolbarEvents(halo, contextToolbar);
+    const thisThing = this;
+    contextToolbar.on('action:value', function() {
+      this.remove();
+      thisThing.valuePopup(halo);
+    });
+    contextToolbar.on('action:essence', function() {
+      this.remove();
+      const essenceToolbar = thisThing.essenceAffiliationToolbar(halo, 'Physical', 'Informatical').render();
+      essenceToolbar.on('action:Physical', function () {
+        thisThing.updateFilter({filter: {args: {dx: 3, dy: 3, blur: 0, color: 'grey'}}});
+      });
+      essenceToolbar.on('action:Informatical', function () {
+        thisThing.updateFilter({filter: {args: {dx: 0, dy: 0, blur: 0, color: 'grey'}}});
+      });
+    });
+    contextToolbar.on('action:affiliation', function() {
+      this.remove();
+      const affiliationToolbar = thisThing.essenceAffiliationToolbar(halo, 'Systemic', 'Environmental').render();
+      affiliationToolbar.on('action:Systemic', function () {
+        thisThing.updateFilter({'stroke-dasharray': '0'});
+      });
+      affiliationToolbar.on('action:Environmental', function () {
+        thisThing.updateFilter({'stroke-dasharray': '10,5'});
+      });
     });
   }
   essenceAffiliationToolbar(halo, firstData, secondData) {
@@ -147,25 +170,5 @@ export  class OpmThing extends OpmEntity {
       target: halo.el,
       padding: 30
     });
-  }
-  stylePopup(halo) {
-    const thingThis = this;
-    const popup = new joint.ui.Popup({
-      events: {
-        'click .btnUpdate': function() {
-          thingThis.attr({text: {fill: this.$('.textColor').val()}});
-          thingThis.attr({text: {'font-size': this.$('.textFontSize').val()}});
-          thingThis.updateFilter({fill: this.$('.shapeColor').val()});
-          thingThis.updateFilter({'stroke': this.$('.shapeOutline').val()});
-          this.remove();
-        }
-      },
-      content: ['Text color: <input type="color" class="textColor" value=' + thingThis.attr('text/fill') + '><br>',
-        'Shape fill: <input type="color" class="shapeColor" value=' + thingThis.getShapeFillColor() + '><br>',
-        'Shape outline: <input type="color" class="shapeOutline" value=' + thingThis.getShapeOutline() + '><br>',
-        'Text font size: <input size="2" type="text" class="textFontSize" value=' + thingThis.attr('text/font-size') + '><br>',
-        '<button class="btnUpdate">Update</button>'],
-      target: halo.el
-    }).render();
   }
 }

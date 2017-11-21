@@ -66,7 +66,51 @@ export class OpmEntity extends OpmEntityRappid {
     };
   }
   haloConfiguration(halo, options) {
-    
+    const thisEntity = this;
+    halo.addHandle(this.addHandleGenerator('configuration', 'se', 'Click to configure value', 'right'));
+    halo.on('action:configuration:pointerup', function () {
+      const contextToolbar = thisEntity.configurationToolbar(halo).render();
+      thisEntity.configurationContextToolbarEvents(halo, contextToolbar);
+    });
+  }
+  configurationToolbar(halo) {
+    return new joint.ui.ContextToolbar({
+      theme: 'modern',
+      tools: this.getConfigurationTools(),
+      target: halo.el,
+      padding: 30
+    });
+  }
+  getConfigurationTools() {
+    const toolsArray = [{ action: 'styling',  content: 'Styling'}];
+    return toolsArray;
+  }
+  stylePopup(halo) {
+    const thingThis = this;
+    const popup = new joint.ui.Popup({
+      events: {
+        'click .btnUpdate': function() {
+          thingThis.attr({text: {fill: this.$('.textColor').val()}});
+          thingThis.attr({text: {'font-size': this.$('.textFontSize').val()}});
+          thingThis.updateFilter({fill: this.$('.shapeColor').val()});
+          thingThis.updateFilter({'stroke': this.$('.shapeOutline').val()});
+          this.remove();
+        }
+      },
+      content: ['Text color: <input type="color" class="textColor" value=' + thingThis.attr('text/fill') + '><br>',
+        'Shape fill: <input type="color" class="shapeColor" value=' + thingThis.getShapeFillColor() + '><br>',
+        'Shape outline: <input type="color" class="shapeOutline" value=' + thingThis.getShapeOutline() + '><br>',
+        'Text font size: <input size="2" type="text" class="textFontSize" value=' + thingThis.attr('text/font-size') + '><br>',
+        '<button class="btnUpdate">Update</button>'],
+      target: halo.el
+    }).render();
+  }
+  configurationContextToolbarEvents(halo, contextToolbar) {
+    const thisEntity = this;
+    contextToolbar.on('action:styling', function() {
+      this.remove();
+      thisEntity.stylePopup(halo);
+    });
   }
   doubleClickHandle(cellView, evt, paper) {
     joint.ui.TextEditor.edit(evt.target, {
