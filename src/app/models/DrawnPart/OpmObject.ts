@@ -114,9 +114,9 @@ export class OpmObject extends OpmThing {
       content: ['<input class="value" value="value" size="7"><br>',
         '<input class="units" value="units" size="7"><br>',
         '<select class="type">' +
-        '<option value="None">None</option>' +
         '<option value="Number">Number</option>' +
         '<option value="String">String</option>' +
+        '<option value="None">None</option>' +
         '</select><br>',
         '<button class="btnUpdate">Update</button>'],
       target: halo.el

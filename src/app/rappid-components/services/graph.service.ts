@@ -358,10 +358,18 @@ export class GraphService {
   }
   showExecution(initRappid, linksArray, linkIndex) {
     if (linkIndex >= linksArray.length) return;
-    const token = vectorizer.V('circle', {r: 5, fill: 'green', stroke: 'red'});
     initRappid.changeGraphToParent(linksArray[linkIndex].treeNodeId);
     const thisGraph = this;
-    const currentLinkView = linksArray[linkIndex].link.findView(initRappid.paper);
+    let currentLinkView;
+    while (((linkIndex + 1) < linksArray.length) &&
+          (linksArray[linkIndex].link.getTargetElement() === linksArray[linkIndex + 1].link.getTargetElement())) {
+      const token2 = vectorizer.V('circle', {r: 5, fill: 'green', stroke: 'red'});
+      currentLinkView = linksArray[linkIndex].link.findView(initRappid.paper);
+      currentLinkView.sendToken(token2.node, 1000);
+      linkIndex ++;
+    }
+    const token = vectorizer.V('circle', {r: 5, fill: 'green', stroke: 'red'});
+    currentLinkView = linksArray[linkIndex].link.findView(initRappid.paper);
     currentLinkView.sendToken(token.node, 1000, function() {
       const targetElement = linksArray[linkIndex].link.getTargetElement();
       if (targetElement instanceof OpmObject) {
