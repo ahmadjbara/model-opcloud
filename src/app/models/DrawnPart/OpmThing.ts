@@ -89,41 +89,6 @@ export  class OpmThing extends OpmEntity {
     }
     }
   }
-  /*
-  haloConfiguration(halo, options) {
-    super.haloConfiguration(halo, options);
-    const thisThing = this;
-    halo.addHandle(this.addHandleGenerator('configuration', 'se', 'Click to configure value', 'right'));
-    halo.on('action:configuration:pointerup', function () {
-      const contextToolbar = thisThing.configurationToolbar(halo).render();
-      contextToolbar.on('action:value', function() {
-        this.remove();
-        thisThing.valuePopup(halo);
-      });
-      contextToolbar.on('action:essence', function() {
-        this.remove();
-        const essenceToolbar = thisThing.essenceAffiliationToolbar(halo, 'Physical', 'Informatical').render();
-        essenceToolbar.on('action:Physical', function () {
-          thisThing.updateFilter({filter: {args: {dx: 3, dy: 3, blur: 0, color: 'grey'}}});
-        });
-        essenceToolbar.on('action:Informatical', function () {
-          thisThing.updateFilter({filter: {args: {dx: 0, dy: 0, blur: 0, color: 'grey'}}});
-        });
-      });
-      contextToolbar.on('action:affiliation', function() {
-        this.remove();
-        const affiliationToolbar = thisThing.essenceAffiliationToolbar(halo, 'Systemic', 'Environmental').render();
-        affiliationToolbar.on('action:Systemic', function () {
-          thisThing.updateFilter({'stroke-dasharray': '0'});
-        });
-        affiliationToolbar.on('action:Environmental', function () {
-          thisThing.updateFilter({'stroke-dasharray': '10,5'});
-        });
-      });
-    });
-  }
-  }
-  */
   getConfigurationTools() {
     const toolsArray = super.getConfigurationTools();
     const thingToolsArray = [{ action: 'value', content: 'Computation' },
@@ -137,7 +102,7 @@ export  class OpmThing extends OpmEntity {
     const thisThing = this;
     contextToolbar.on('action:value', function() {
       this.remove();
-      thisThing.valuePopup(halo);
+      thisThing.computation(halo);
     });
     contextToolbar.on('action:essence', function() {
       this.remove();

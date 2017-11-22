@@ -39,10 +39,10 @@ export const selectOptions = {
 
   predefinedFunctions: [
     {content: 'None', value: 'None'},
-    {content: 'Add', value: 'Add'},
-    {content: 'Subtract', value: 'Subtract'},
-    {content: 'Multiply', value: 'Multiply'},
-    {content: 'Divide', value: 'Divide'}
+    {content: 'Adding', value: 'Adding'},
+    {content: 'Subtracting', value: 'Subtracting'},
+    {content: 'Multiplying', value: 'Multiplying'},
+    {content: 'Dividing', value: 'Dividing'}
   ],
 
   valueTypes: [

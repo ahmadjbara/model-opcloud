@@ -99,7 +99,7 @@ export class OpmObject extends OpmThing {
     halo.$handles.children('.arrange_left').toggleClass('hidden', !hasStates);
     halo.$handles.children('.arrange_right').toggleClass('hidden', !hasStates);
   }
-  valuePopup(halo) {
+  computation(halo) {
     const objectThis = this;
     const popup = new joint.ui.Popup({
       events: {

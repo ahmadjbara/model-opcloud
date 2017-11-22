@@ -100,7 +100,7 @@ export class OpmEntity extends OpmEntityRappid {
       content: ['Text color: <input type="color" class="textColor" value=' + thingThis.attr('text/fill') + '><br>',
         'Shape fill: <input type="color" class="shapeColor" value=' + thingThis.getShapeFillColor() + '><br>',
         'Shape outline: <input type="color" class="shapeOutline" value=' + thingThis.getShapeOutline() + '><br>',
-        'Text font size: <input size="2" type="text" class="textFontSize" value=' + thingThis.attr('text/font-size') + '><br>',
+        'Text font size: <input size="2" class="textFontSize" value=' + thingThis.attr('text/font-size') + '><br>',
         '<button class="btnUpdate">Update</button>'],
       target: halo.el
     }).render();

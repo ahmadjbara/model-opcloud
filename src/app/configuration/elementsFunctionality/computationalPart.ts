@@ -26,14 +26,16 @@ export function compute(process, paper, linksArray, treeNodeId) {
   }
   let resultValue;
   const functionValue = process.attr('value/value');
-  if (functionValue === 'Add') {
+  if (functionValue === 'Adding') {
     resultValue = add(valuesArray);
-  } else if (functionValue === 'Subtract') {
+  } else if (functionValue === 'Subtracting') {
     resultValue = subtract(valuesArray);
-  } else if (functionValue === 'Multiply') {
+  } else if (functionValue === 'Multiplying') {
     resultValue = multiply(valuesArray);
-  } else if (functionValue === 'Divide') {
+  } else if (functionValue === 'Dividing') {
     resultValue = divide(valuesArray);
+  } else if (functionValue === 'userDefined') {
+    resultValue = runUserDefinedFunction(valuesArray, process);
   }
   if (resultValue) {
     for (let j = 0; j < outbound.length; j++) {
@@ -67,4 +69,11 @@ function divide(valuesArray) {
   const numbersArray = valuesArray.map(item => +item);
   // divide the left value of the array by the right value
   return numbersArray.reduce((a, b) => a / b);
+}
+function runUserDefinedFunction(valuesArray, process) {
+  const numbersArray = valuesArray.map(item => +item);
+  const parameters = process.get('userDefinedFunction').parameters;
+  const functionInput = process.get('userDefinedFunction').functionInput;
+  const runFunction = Function(parameters, functionInput);
+  runFunction(valuesArray[0], valuesArray[1]);
 }

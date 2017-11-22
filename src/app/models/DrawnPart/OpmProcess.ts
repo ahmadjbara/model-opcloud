@@ -8,7 +8,7 @@ export class OpmProcess extends OpmThing {
   constructor() {
     super();
     this.set(this.processAttributes());
-    this.attr({text: {text: 'Process'}});
+    this.attr({text: {text: 'Processing'}});
     this.attr({ellipse: {stroke: '#0000FF', rx: 40, ry: 40, cx: 40, cy: 40}});
     this.attr({ellipse: this.entityShape()});
     this.attr({ellipse: this.thingShape()});
@@ -82,22 +82,59 @@ export class OpmProcess extends OpmThing {
       contextToolbar.render();
     });
   }
-  valuePopup(halo) {
+  computation(halo) {
+    const processThis = this;
+    const contextToolbar = new joint.ui.ContextToolbar({
+      theme: 'modern',
+      tools: [{ action: 'predefined',  content: 'predefined'},
+        { action: 'userDefined',  content: 'user defined'},
+        { action: 'imported',  content: 'imported'}],
+      target: halo.el,
+      padding: 30
+    }).render();
+    contextToolbar.on('action:predefined', function() {
+      this.remove();
+      processThis.predefinedFunctions(halo);
+    });
+    contextToolbar.on('action:userDefined', function() {
+      this.remove();
+      processThis.userDefinedFunction(halo);
+    });
+  }
+  userDefinedFunction (halo) {
+    const processThis = this;
+    const popup = new joint.ui.Popup({
+      events: {
+        'click .btnUpdate': function() {
+          const parameters = this.$('.parameters').val();
+          const functionInput = this.$('.functionInput').val();
+          processThis.attr({value: {value: 'userDefined'}});
+          processThis.set('userDefinedFunction', {parameters: parameters, functionInput: functionInput});
+          this.remove();
+        }
+      },
+      content: ['Arguments: <input class="parameters" value="a,b" size="7"><br>',
+        'Function:<br><textarea class="functionInput" rows="7" cols="30">return a+b;</textarea><br>',
+        '<button class="btnUpdate">Update</button>'],
+      target: halo.el
+    }).render();
+  }
+  predefinedFunctions (halo) {
     const processThis = this;
     const popup = new joint.ui.Popup({
       events: {
         'click .btnUpdate': function() {
           const valueFunction = this.$('.value').val();
-          processThis.attr({value: {value: valueFunction}});
+          processThis.attr({value: {value: valueFunction}, text: {text: valueFunction}});
           this.remove();
         }
       },
       content: ['<select class="value">' +
-        '<option value="Add">Add</option>' +
-        '<option value="Subtract">Subtract</option>' +
-        '<option value="Multiply">Multiply</option>' +
-        '<option value="Divide">Divide</option>' +
-        '</select><br>',
+      '<option value="Adding">Adding</option>' +
+      '<option value="Subtracting">Subtracting</option>' +
+      '<option value="Multiplying">Multiplying</option>' +
+      '<option value="Dividing">Dividing</option>' +
+      '</select><br>',
         '<button class="btnUpdate">Update</button>'],
       target: halo.el
     }).render();

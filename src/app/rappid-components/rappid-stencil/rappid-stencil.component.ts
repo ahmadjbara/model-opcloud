@@ -39,7 +39,7 @@ export class RappidStencilComponent implements OnInit, AfterViewInit {
       paper: this.paperScroller,
       snaplines: new joint.ui.Snaplines({ paper: this.paper }),
       scaleClones: true,
-      width: 240,
+      width: 300,
       height: 100,
       dropAnimation: true,
       // Use default Grid Layout
