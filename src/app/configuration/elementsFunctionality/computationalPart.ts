@@ -1,7 +1,7 @@
 import {ConsumptionLink} from '../../models/DrawnPart/Links/ConsumptionLink';
 import {InstrumentLink} from '../../models/DrawnPart/Links/InstrumentLink';
 import {ResultLink} from '../../models/DrawnPart/Links/ResultLink';
-import {vectorizer} from '../rappidEnviromentFunctionality/shared';
+import {validationAlert, vectorizer} from '../rappidEnviromentFunctionality/shared';
 
 export function compute(process, paper, linksArray, treeNodeId) {
   // get the inbound links
@@ -71,9 +71,16 @@ function divide(valuesArray) {
   return numbersArray.reduce((a, b) => a / b);
 }
 function runUserDefinedFunction(valuesArray, process) {
-  const numbersArray = valuesArray.map(item => +item);
-  const parameters = process.get('userDefinedFunction').parameters;
-  const functionInput = process.get('userDefinedFunction').functionInput;
-  const runFunction = Function(parameters, functionInput);
-  runFunction(valuesArray[0], valuesArray[1]);
+  const parametersArray = process.get('userDefinedFunction').parameters.split(',');
+  if (parametersArray.length !== valuesArray.length) {
+    validationAlert('Required ' + parametersArray.length + ' parameters but connected ' +
+      valuesArray.length + ' valuable objects');
+    return;
+  }
+  let functionParametersDecleration = '';
+  for (let i = 0; i < valuesArray.length; i++) {
+    functionParametersDecleration += 'let ' + parametersArray[i] + '=' + valuesArray[i] + ';';
+  }
+  const functionInput = functionParametersDecleration + '\n' + process.get('userDefinedFunction').functionInput;
+  return Function(functionInput)();
 }

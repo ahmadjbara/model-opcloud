@@ -103,6 +103,8 @@ export class OpmProcess extends OpmThing {
   }
   userDefinedFunction (halo) {
     const processThis = this;
+    const currentFunction = processThis.get('userDefinedFunction') ? processThis.get('userDefinedFunction').functionInput : 'return a+b;';
+    const currentParameters = processThis.get('userDefinedFunction') ? processThis.get('userDefinedFunction').parameters : 'a, b';
     const popup = new joint.ui.Popup({
       events: {
         'click .btnUpdate': function() {
@@ -113,8 +115,8 @@ export class OpmProcess extends OpmThing {
           this.remove();
         }
       },
-      content: ['Arguments: <input class="parameters" value="a,b" size="7"><br>',
-        'Function:<br><textarea class="functionInput" rows="7" cols="30">return a+b;</textarea><br>',
+      content: ['Arguments: <input class="parameters" value="' + currentParameters + '" size="7"><br>',
+        'Function:<br><textarea class="functionInput" rows="7" cols="30">' + currentFunction + '</textarea><br>',
         '<button class="btnUpdate">Update</button>'],
       target: halo.el
     }).render();
@@ -125,8 +127,9 @@ export class OpmProcess extends OpmThing {
       events: {
         'click .btnUpdate': function() {
           const valueFunction = this.$('.value').val();
-          processThis.attr({value: {value: valueFunction}, text: {text: valueFunction}});
+          processThis.attr({value: {value: valueFunction}});
           this.remove();
+          alert('check consistence of process name and its functionality');
         }
       },
       content: ['<select class="value">' +
