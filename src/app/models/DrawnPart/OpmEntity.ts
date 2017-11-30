@@ -69,47 +69,44 @@ export class OpmEntity extends OpmEntityRappid {
     const thisEntity = this;
     halo.addHandle(this.addHandleGenerator('configuration', 'se', 'Click to configure value', 'right'));
     halo.on('action:configuration:pointerup', function () {
-      const contextToolbar = thisEntity.configurationToolbar(halo).render();
-      thisEntity.configurationContextToolbarEvents(halo, contextToolbar);
+      const contextToolbar = thisEntity.contexToolbarGenerator(halo.el, thisEntity.getConfigurationTools()).render();
+      thisEntity.configurationContextToolbarEvents(halo.el, contextToolbar);
     });
   }
-  configurationToolbar(halo) {
+  contexToolbarGenerator(target, tools) {
     return new joint.ui.ContextToolbar({
       theme: 'modern',
-      tools: this.getConfigurationTools(),
-      target: halo.el,
+      tools: tools,
+      target: target,
       padding: 30
     });
   }
+  popupGenerator(target, content, events) {
+    return new joint.ui.Popup({
+      events: events,
+      content: content,
+      target: target
+    });
+  }
   getConfigurationTools() {
-    const toolsArray = [{ action: 'styling',  content: 'Styling'}];
-    return toolsArray;
+    return [{ action: 'styling',  content: 'Styling'}];
   }
-  stylePopup(halo) {
-    const thingThis = this;
-    const popup = new joint.ui.Popup({
-      events: {
-        'click .btnUpdate': function() {
-          thingThis.attr({text: {fill: this.$('.textColor').val()}});
-          thingThis.attr({text: {'font-size': this.$('.textFontSize').val()}});
-          thingThis.updateFilter({fill: this.$('.shapeColor').val()});
-          thingThis.updateFilter({'stroke': this.$('.shapeOutline').val()});
-          this.remove();
-        }
-      },
-      content: ['Text color: <input type="color" class="textColor" value=' + thingThis.attr('text/fill') + '><br>',
-        'Shape fill: <input type="color" class="shapeColor" value=' + thingThis.getShapeFillColor() + '><br>',
-        'Shape outline: <input type="color" class="shapeOutline" value=' + thingThis.getShapeOutline() + '><br>',
-        'Text font size: <input size="2" class="textFontSize" value=' + thingThis.attr('text/font-size') + '><br>',
-        '<button class="btnUpdate">Update</button>'],
-      target: halo.el
-    }).render();
-  }
-  configurationContextToolbarEvents(halo, contextToolbar) {
+  configurationContextToolbarEvents(target, contextToolbar) {
     const thisEntity = this;
     contextToolbar.on('action:styling', function() {
       this.remove();
-      thisEntity.stylePopup(halo);
+      const stylePopupContent = ['Text color: <input type="color" class="textColor" value=' + thisEntity.attr('text/fill') + '><br>',
+        'Shape fill: <input type="color" class="shapeColor" value=' + thisEntity.getShapeFillColor() + '><br>',
+        'Shape outline: <input type="color" class="shapeOutline" value=' + thisEntity.getShapeOutline() + '><br>',
+        'Text font size: <input size="2" class="textFontSize" value=' + thisEntity.attr('text/font-size') + '><br>',
+        '<button class="btnUpdate">Update</button>'];
+      const stylePopupEvents = { 'click .btnUpdate': function() {
+          thisEntity.attr({text: {fill: this.$('.textColor').val()}});
+          thisEntity.attr({text: {'font-size': this.$('.textFontSize').val()}});
+          thisEntity.updateFilter({fill: this.$('.shapeColor').val()});
+          thisEntity.updateFilter({'stroke': this.$('.shapeOutline').val()});
+          this.remove(); }};
+      thisEntity.popupGenerator(target, stylePopupContent, stylePopupEvents).render();
     });
   }
   doubleClickHandle(cellView, evt, paper) {
