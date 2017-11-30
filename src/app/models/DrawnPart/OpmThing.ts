@@ -90,50 +90,33 @@ export  class OpmThing extends OpmEntity {
     }
   }
   getConfigurationTools() {
-    const toolsArray = super.getConfigurationTools();
     const thingToolsArray = [{ action: 'value', content: 'Computation' },
-      { action: 'essence', content: 'Essence' },
-      { action: 'affiliation', content: 'Affiliation' }];
-    toolsArray.concat(thingToolsArray);
-    return toolsArray.concat(thingToolsArray);
+      { action: 'essenceAffiliation', content: '<img src=' + this.getImageEssenceAffiliation() + ' width="60" height="25">' }];
+    return super.getConfigurationTools().concat(thingToolsArray);
   }
-  configurationContextToolbarEvents(halo, contextToolbar) {
-    super.configurationContextToolbarEvents(halo, contextToolbar);
+  configurationContextToolbarEvents(target, contextToolbar) {
+    super.configurationContextToolbarEvents(target, contextToolbar);
     const thisThing = this;
     contextToolbar.on('action:value', function() {
       this.remove();
-      thisThing.computation(halo);
+      thisThing.computation(target);
     });
-    contextToolbar.on('action:essence', function() {
+    contextToolbar.on('action:essenceAffiliation', function() {
       this.remove();
-      const essenceToolbar = thisThing.essenceAffiliationToolbar(halo, 'Physical', 'Informatical').render();
-      essenceToolbar.on('action:Physical', function () {
-        thisThing.updateFilter({filter: {args: {dx: 3, dy: 3, blur: 0, color: 'grey'}}});
+      const imgPath = '../../../assets/icons/essenceAffil/';
+      const essenceImg = imgPath + ((thisThing.getShapeAttr().filter.args.dx === 0) ? 'EssPhys.JPG' : 'EssInfo.JPG');
+      const affiliationImg = imgPath + ((thisThing.getShapeAttr()['stroke-dasharray'] === '0') ? 'AffEnv.JPG' : 'AffSys.JPG');
+      const tools = [{action: 'essenceChange', content: '<img src=' + essenceImg + ' width="80" height="35">'},
+        {action: 'affiliationChange', content: '<img src=' + affiliationImg + ' width="80" height="35">'}];
+      const essenceAffiliationToolbar = thisThing.contexToolbarGenerator(target, tools).render();
+      essenceAffiliationToolbar.on('action:essenceChange', function () {
+        thisThing.changeEssence();
+        this.remove();
       });
-      essenceToolbar.on('action:Informatical', function () {
-        thisThing.updateFilter({filter: {args: {dx: 0, dy: 0, blur: 0, color: 'grey'}}});
+      essenceAffiliationToolbar.on('action:affiliationChange', function () {
+        thisThing.changeAffiliation();
+        this.remove();
       });
-    });
-    contextToolbar.on('action:affiliation', function() {
-      this.remove();
-      const affiliationToolbar = thisThing.essenceAffiliationToolbar(halo, 'Systemic', 'Environmental').render();
-      affiliationToolbar.on('action:Systemic', function () {
-        thisThing.updateFilter({'stroke-dasharray': '0'});
-      });
-      affiliationToolbar.on('action:Environmental', function () {
-        thisThing.updateFilter({'stroke-dasharray': '10,5'});
-      });
-    });
-  }
-  essenceAffiliationToolbar(halo, firstData, secondData) {
-    return new joint.ui.ContextToolbar({
-      theme: 'modern',
-      tools: [
-        { action: firstData, content: firstData},
-        { action: secondData, content: secondData},
-      ],
-      target: halo.el,
-      padding: 30
     });
   }
 }

@@ -82,26 +82,26 @@ export class OpmProcess extends OpmThing {
       contextToolbar.render();
     });
   }
-  computation(halo) {
+  computation(target) {
     const processThis = this;
     const contextToolbar = new joint.ui.ContextToolbar({
       theme: 'modern',
       tools: [{ action: 'predefined',  content: 'predefined'},
         { action: 'userDefined',  content: 'user defined'},
         { action: 'imported',  content: 'imported'}],
-      target: halo.el,
+      target: target,
       padding: 30
     }).render();
     contextToolbar.on('action:predefined', function() {
       this.remove();
-      processThis.predefinedFunctions(halo);
+      processThis.predefinedFunctions(target);
     });
     contextToolbar.on('action:userDefined', function() {
       this.remove();
-      processThis.userDefinedFunction(halo);
+      processThis.userDefinedFunction(target);
     });
   }
-  userDefinedFunction (halo) {
+  userDefinedFunction (target) {
     const processThis = this;
     const currentFunction = processThis.get('userDefinedFunction') ? processThis.get('userDefinedFunction').functionInput : 'return a+b;';
     const currentParameters = processThis.get('userDefinedFunction') ? processThis.get('userDefinedFunction').parameters : 'a, b';
@@ -118,10 +118,10 @@ export class OpmProcess extends OpmThing {
       content: ['Arguments: <input class="parameters" value="' + currentParameters + '" size="7"><br>',
         'Function:<br><textarea class="functionInput" rows="7" cols="30">' + currentFunction + '</textarea><br>',
         '<button class="btnUpdate">Update</button>'],
-      target: halo.el
+      target: target
     }).render();
   }
-  predefinedFunctions (halo) {
+  predefinedFunctions (target) {
     const processThis = this;
     const popup = new joint.ui.Popup({
       events: {
@@ -139,7 +139,7 @@ export class OpmProcess extends OpmThing {
       '<option value="Dividing">Dividing</option>' +
       '</select><br>',
         '<button class="btnUpdate">Update</button>'],
-      target: halo.el
+      target: target
     }).render();
   }
   createContextToolbar(halo) {
@@ -270,13 +270,27 @@ export class OpmProcess extends OpmThing {
       }
     }
   }
-  updateFilter(newValue) {
+  updateShapeAttr(newValue) {
     this.attr('ellipse', newValue);
+  }
+  changeEssence() {
+    (this.attr('ellipse').filter.args.dx === 0) ? this.attr('ellipse/filter/args', {dx: 3, dy: 3}) :
+      this.attr('ellipse/filter/args', {dx: 0, dy: 0});
+  }
+  changeAffiliation() {
+    (this.attr('ellipse')['stroke-dasharray'] === '0') ? this.attr('ellipse', {'stroke-dasharray':
+      '10,5'}) : this.attr('ellipse', {'stroke-dasharray': '0'});
+  }
+  getShapeAttr() {
+    return this.attr('ellipse');
   }
   getShapeFillColor() {
     return this.attr('ellipse/fill');
   }
   getShapeOutline() {
     return this.attr('ellipse/stroke');
+  }
+  getImageEssenceAffiliation() {
+    return '../../../assets/icons/essenceAffil/EssenceAffilProcess.JPG';
   }
 }

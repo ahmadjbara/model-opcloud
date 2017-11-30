@@ -103,8 +103,8 @@ export class OpmEntity extends OpmEntityRappid {
       const stylePopupEvents = { 'click .btnUpdate': function() {
           thisEntity.attr({text: {fill: this.$('.textColor').val()}});
           thisEntity.attr({text: {'font-size': this.$('.textFontSize').val()}});
-          thisEntity.updateFilter({fill: this.$('.shapeColor').val()});
-          thisEntity.updateFilter({'stroke': this.$('.shapeOutline').val()});
+          thisEntity.updateShapeAttr({fill: this.$('.shapeColor').val()});
+          thisEntity.updateShapeAttr({'stroke': this.$('.shapeOutline').val()});
           this.remove(); }};
       thisEntity.popupGenerator(target, stylePopupContent, stylePopupEvents).render();
     });

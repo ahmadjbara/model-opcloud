@@ -99,63 +99,33 @@ export  class OpmState extends OpmEntity {
       arrangeEmbedded(fatherObject, fatherObject.attr('statesArrange'));
     }
   }
-  checktype() {
-    if(this.attr('.inner/stroke-width') === 0 &&
-      this.attr('.outer/stroke-width') === 2 &&
-      this.attr('image/display') ==='none'){
-      return 'none';
-    }
-    if(this.attr('.inner/stroke-width') === 0 &&
-      this.attr('.outer/stroke-width') === 2 &&
-      this.attr('image/display') ==='flex'){
-      return 'Default';
-    }
-    if(this.attr('.inner/stroke-width') === 0 &&
-      this.attr('.outer/stroke-width') === 3 &&
-      this.attr('image/display') ==='none'){
-      return 'Initial';
-    }
-    if(this.attr('.inner/stroke-width') === 2 &&
-      this.attr('.outer/stroke-width') === 2 &&
-      this.attr('image/display') ==='none'){
-      return 'Final';
-    }
-    if(this.attr('.inner/stroke-width') === 0 &&
-      this.attr('.outer/stroke-width') === 3 &&
-      this.attr('image/display') ==='flex'){
-      return 'DefInitial';
-    }
-    if(this.attr('.inner/stroke-width') === 2 &&
-      this.attr('.outer/stroke-width') === 2 &&
-      this.attr('image/display') ==='flex'){
-      return 'DefFinal';
-      }
-    if(this.attr('.inner/stroke-width') === 2 &&
-      this.attr('.outer/stroke-width') === 3 &&
-      this.attr('image/display') ==='none'){
-      return 'finInitial'
-    }
-    if(this.attr('.inner/stroke-width') === 2 &&
-      this.attr('.outer/stroke-width') === 3 &&
-      this.attr('image/display') ==='flex'){
-      return 'all';
-    }
-
+  checkType() {
+    let type = 'none';
+    if (this.attr('.inner/stroke-width') === 0) {
+      if (this.attr('image/display') === 'flex') {
+        if (this.attr('.outer/stroke-width') === 2) type = 'Default';
+        else type = 'DefInitial';
+      } else if (this.attr('.outer/stroke-width') === 3) type = 'Initial';
+    } else if (this.attr('.outer/stroke-width') === 3) {
+      if (this.attr('image/display') === 'flex') type = 'all';
+      else type = 'finInitial';
+    } else if (this.attr('image/display') === 'flex') {
+      type = 'DefFinal';
+    } else type = 'Final';
   }
-
   haloConfiguration(halo, options) {
     super.haloConfiguration(halo, options);
     halo.addHandle(this.addHandleGenerator('add_state', 'sw', 'Click to define state type', 'right'));
-    var Dcheckbox = '$(\'#Default\').prop(\'checked\',false)';
-    var Icheckbox = '$(\'#Initial\').prop(\'checked\',false)';
-    var Fcheckbox = '$(\'#Final\').prop(\'checked\',false)';
-    if(this.attr('image/display') ==='flex'){
+    let Dcheckbox = '$(\'#Default\').prop(\'checked\',false)';
+    let Icheckbox = '$(\'#Initial\').prop(\'checked\',false)';
+    let Fcheckbox = '$(\'#Final\').prop(\'checked\',false)';
+    if (this.attr('image/display') === 'flex') {
       Dcheckbox = '$(\'#Default\').prop(\'checked\',true)';
     }
-    if(this.attr('.outer/stroke-width') === 3){
+    if (this.attr('.outer/stroke-width') === 3) {
       Icheckbox = '$(\'#Initial\').prop(\'checked\',true)';
     }
-    if( this.attr('.inner/stroke-width') === 2){
+    if ( this.attr('.inner/stroke-width') === 2) {
       Fcheckbox = '$(\'#Final\').prop(\'checked\',true)';
     }
     halo.on('action:add_state:pointerup', function () {
@@ -264,7 +234,7 @@ export  class OpmState extends OpmEntity {
       })).render();
     });
   }
-  updateFilter(newValue) {
+  updateShapeAttr(newValue) {
     this.attr('.inner', newValue);
     this.attr('.outer', newValue);
   }

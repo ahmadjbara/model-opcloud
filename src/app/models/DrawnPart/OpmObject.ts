@@ -99,7 +99,7 @@ export class OpmObject extends OpmThing {
     halo.$handles.children('.arrange_left').toggleClass('hidden', !hasStates);
     halo.$handles.children('.arrange_right').toggleClass('hidden', !hasStates);
   }
-  computation(halo) {
+  computation(target) {
     const objectThis = this;
     const popup = new joint.ui.Popup({
       events: {
@@ -119,7 +119,7 @@ export class OpmObject extends OpmThing {
         '<option value="None">None</option>' +
         '</select><br>',
         '<button class="btnUpdate">Update</button>'],
-      target: halo.el
+      target: target
     }).render();
   }
   changeSizeHandle() {
@@ -184,14 +184,28 @@ export class OpmObject extends OpmThing {
     }
     this.attr({text: {text: newText}});
   }
-  updateFilter(newValue) {
+  updateShapeAttr(newValue) {
     this.attr('rect', newValue);
+  }
+  getShapeAttr() {
+    return this.attr('rect');
+  }
+  changeEssence() {
+    (this.attr('rect').filter.args.dx === 0) ? this.attr('rect/filter/args', {dx: 3, dy: 3}) :
+      this.attr('rect/filter/args', {dx: 0, dy: 0});
+  }
+  changeAffiliation() {
+    (this.attr('rect')['stroke-dasharray'] === '0') ? this.attr('rect', {'stroke-dasharray':
+      '10,5'}) : this.attr('rect', {'stroke-dasharray': '0'});
   }
   getShapeFillColor() {
     return this.attr('rect/fill');
   }
   getShapeOutline() {
     return this.attr('rect/stroke');
+  }
+  getImageEssenceAffiliation() {
+    return '../../../assets/icons/essenceAffil/EssenceAffilObject.JPG';
   }
 }
 
