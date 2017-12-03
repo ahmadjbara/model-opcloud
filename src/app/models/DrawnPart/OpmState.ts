@@ -99,139 +99,31 @@ export  class OpmState extends OpmEntity {
       arrangeEmbedded(fatherObject, fatherObject.attr('statesArrange'));
     }
   }
-  checkType() {
-    let type = 'none';
-    if (this.attr('.inner/stroke-width') === 0) {
-      if (this.attr('image/display') === 'flex') {
-        if (this.attr('.outer/stroke-width') === 2) type = 'Default';
-        else type = 'DefInitial';
-      } else if (this.attr('.outer/stroke-width') === 3) type = 'Initial';
-    } else if (this.attr('.outer/stroke-width') === 3) {
-      if (this.attr('image/display') === 'flex') type = 'all';
-      else type = 'finInitial';
-    } else if (this.attr('image/display') === 'flex') {
-      type = 'DefFinal';
-    } else type = 'Final';
-  }
   haloConfiguration(halo, options) {
     super.haloConfiguration(halo, options);
-    halo.addHandle(this.addHandleGenerator('add_state', 'sw', 'Click to define state type', 'right'));
-    let Dcheckbox = '$(\'#Default\').prop(\'checked\',false)';
-    let Icheckbox = '$(\'#Initial\').prop(\'checked\',false)';
-    let Fcheckbox = '$(\'#Final\').prop(\'checked\',false)';
-    if (this.attr('image/display') === 'flex') {
-      Dcheckbox = '$(\'#Default\').prop(\'checked\',true)';
-    }
-    if (this.attr('.outer/stroke-width') === 3) {
-      Icheckbox = '$(\'#Initial\').prop(\'checked\',true)';
-    }
-    if ( this.attr('.inner/stroke-width') === 2) {
-      Fcheckbox = '$(\'#Final\').prop(\'checked\',true)';
-    }
-    halo.on('action:add_state:pointerup', function () {
-      const haloThis = this;
-      const cellModel = haloThis.options.cellView.model;
-      function checker(Dchecked,Ichecked,Fchecked){
-        if(!Dchecked && !Ichecked && !Fchecked){
-          cellModel.attr('image/display','none');
-          cellModel.attr('.inner/stroke-width', 0);
-          cellModel.attr('.outer/stroke-width', 2);
-          return '000';
-        }
-        if(!Dchecked && !Ichecked && Fchecked){
-          cellModel.attr('image/display','none');
-          cellModel.attr('.inner/stroke-width', 2);
-          cellModel.attr('.outer/stroke-width', 2);
-          return '001';
-        }
-        if(!Dchecked && Ichecked && !Fchecked){
-          cellModel.attr('image/display','none');
-          cellModel.attr('.inner/stroke-width', 0);
-          cellModel.attr('.outer/stroke-width', 3);
-          return '010';
-        }
-        if(!Dchecked && Ichecked && Fchecked){
-          cellModel.attr('image/display','none');
-          cellModel.attr('.inner/stroke-width', 2);
-          cellModel.attr('.outer/stroke-width', 3);
-          return '011';
-        }
-        if (Dchecked && !Ichecked && !Fchecked) {
-          cellModel.attr('image/display','flex');
-          cellModel.attr('.inner/stroke-width', 0);
-          cellModel.attr('.outer/stroke-width', 2);
-          return '100';
-        }
-        if(Dchecked && !Ichecked && Fchecked){
-          cellModel.attr('image/display','flex');
-          cellModel.attr('.inner/stroke-width', 2);
-          cellModel.attr('.outer/stroke-width', 2);
-          return '101';
-        }
-
-        if(Dchecked && Ichecked && !Fchecked){
-          cellModel.attr('image/display','flex');
-          cellModel.attr('.inner/stroke-width', 0);
-          cellModel.attr('.outer/stroke-width', 3);
-          return '110';
-        }
-        if(Dchecked && Ichecked && Fchecked){
-          cellModel.attr('image/display','flex');
-          cellModel.attr('.inner/stroke-width', 2);
-          cellModel.attr('.outer/stroke-width', 3);
-          return '111';
-        }
-      }
-
-      (new joint.ui.Popup({
-        events: {
-          'click .Default': function toggleCheckboxD() {
-              // access properties using this keyword
-            var Dchecked = (<HTMLInputElement>document.getElementById("Default")).checked;
-            var Ichecked =  (<HTMLInputElement>document.getElementById("Initial")).checked;
-            var Fchecked =  (<HTMLInputElement>document.getElementById("Final")).checked;
-            checker(Dchecked,Ichecked,Fchecked);
-
-
-          },
-          'click .Initial': function toggleCheckboxI() {
-            // access properties using this keyword
-            var Dchecked = (<HTMLInputElement>document.getElementById("Default")).checked;
-            var Ichecked =  (<HTMLInputElement>document.getElementById("Initial")).checked;
-            var Fchecked =  (<HTMLInputElement>document.getElementById("Final")).checked;
-            checker(Dchecked,Ichecked,Fchecked);
-
-          },
-          'click .Final': function toggleCheckboxF() {
-            // access properties using this keyword
-            var Dchecked = (<HTMLInputElement>document.getElementById("Default")).checked;
-            var Ichecked =  (<HTMLInputElement>document.getElementById("Initial")).checked;
-            var Fchecked =  (<HTMLInputElement>document.getElementById("Final")).checked;
-            checker(Dchecked,Ichecked,Fchecked);
-
-          },
-        },
-
-        content: [
-          '<form>',
-          '<input id="Default" class="Default" name="Default" type="checkbox"> <label for="Default">Default</label>',
-          '<input  id="Initial" class="Initial" name="Initial" type="checkbox"> <label for="Initial">Initial</label>',
-          '<input id="Final" class="Final" name="Final" type="checkbox" > <label for="Final">Final</label>',
-          '</form>',
-          '<script>',
-          Dcheckbox,
-          '</script>',
-          '<script>',
-          Icheckbox,
-          '</script>',
-          '<script>',
-          Fcheckbox,
-          '</script>'
-        ].join(''),
-
-        target: halo.el,
-        autoClose: true,
-      })).render();
+    const Dcheckbox = '<input id="Default" class="Default" name="Default" type="checkbox"' +
+      ((this.attr('image/display') === 'flex') ? ' checked' : '') + '> <label for="Default">Default</label>';
+    const Icheckbox = '<input  id="Initial" class="Initial" name="Initial" type="checkbox" ' +
+      ((this.attr('.outer/stroke-width') === 3) ? ' checked' : '') + '> <label for="Initial">Initial</label>';
+    const Fcheckbox = '<input id="Final" class="Final" name="Final" type="checkbox" ' +
+      (this.attr('.inner/stroke-width') === 2 ? ' checked' : '') + '> <label for="Final">Final</label>';
+    halo.addHandle(this.addHandleGenerator('stateType', 'sw', 'Click to define state type', 'right'));
+    halo.on('action:stateType:pointerup', function () {
+      const cellModel = this.options.cellView.model;
+      // access properties using this keyword
+      const popupEvents = {
+        'click .Default': function toggleCheckboxD() {
+          const DcheckInput = (<HTMLInputElement>document.getElementById('Default')).checked ? 'flex' : 'none';
+          cellModel.attr('image/display', DcheckInput); },
+        'click .Initial': function toggleCheckboxI() {
+          const IcheckedInput =  (<HTMLInputElement>document.getElementById('Initial')).checked ? 3 : 2;
+          cellModel.attr('.outer/stroke-width', IcheckedInput); },
+        'click .Final': function toggleCheckboxF() {
+          const FcheckedInput =  (<HTMLInputElement>document.getElementById('Final')).checked ? 2 : 0;
+          cellModel.attr('.inner/stroke-width', FcheckedInput); },
+      };
+      const popupContent = ['<form>', Dcheckbox, Icheckbox, Fcheckbox, '</form>'].join('');
+      this.options.cellView.model.popupGenerator(this.el, popupContent, popupEvents).render();
     });
   }
   updateShapeAttr(newValue) {
