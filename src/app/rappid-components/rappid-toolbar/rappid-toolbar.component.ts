@@ -5,6 +5,7 @@ import { LoadModelDialogComponent } from '../../dialogs/load-model-dialog/load-m
 import { CommandManagerService } from '../services/command-manager.service';
 import { InitRappidService } from '../services/init-rappid.service';
 import {AboutDialogComponent} from '../../dialogs/About/about';
+import {OplDialogComponent} from "../../dialogs/opl-dialog/opl-dialog.component";
 
 
 const commandGroups = [
@@ -19,7 +20,8 @@ const commandGroups = [
     group: 'file',
     commands: [
       { name: 'saveModel', tooltip: 'save', icon: 'save' },
-      { name: 'loadModel', tooltip: 'load', icon: 'open_in_browser' }
+      { name: 'loadModel', tooltip: 'load', icon: 'open_in_browser' },
+      { name: 'oplTable', tooltip:'opl table', icon:'format_list_bulleted' }
     ]
   },
   {
@@ -113,6 +115,10 @@ export class RappidToolbarComponent implements OnInit {
         this.graphService.modelObject.name = result;
       }
     });
+  }
+
+  oplTable(){
+    let dialogRef = this._dialog.open(OplDialogComponent);
   }
 
   zoomin() {

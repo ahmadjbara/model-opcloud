@@ -1,0 +1,23 @@
+table {
+  border-collapse: collapse;
+}
+
+table, th, td, tr {
+  border: 1px solid black;
+}
+
+table {
+  width: 100%;
+}
+
+td.tdKey{
+  width: 350px;
+}
+
+input.tdValue{
+  width:600px
+}
+
+input:checked.tdValue{
+  background-color: #1de9b6;
+}
