@@ -1,32 +1,29 @@
 import {OpmThing} from './OpmThing';
-import {valueHandle} from '../../configuration/elementsFunctionality/valueHandle';
 import {arrangeEmbedded} from '../../configuration/elementsFunctionality/arrangeStates';
 import {OpmState} from './OpmState';
+import {joint, _} from '../../configuration/rappidEnviromentFunctionality/shared';
 
 export class OpmObject extends OpmThing {
   constructor() {
     super();
     this.set(this.objectAttributes());
-    //  this.attr(this.objectAttrs());
-    this.attr({text: {text: 'Object'}});
-    this.attr({rect: {stroke: '#00AA00'}});
-    this.attr({rect: this.entityShape()});
-    this.attr({rect: this.thingShape()});
-    this.attr({'statesArrange': 'bottom'});
+    this.attr(this.objectAttrs());
   }
 
   objectAttributes() {
     return {
       markup: `<g class='rotatable'><g class='scalable'><rect/></g><text/></g>`,
       type: 'opm.Object',
-      padding: 10
+      padding: 10,
+      logicalValue: null
     };
   }
   objectAttrs() {
     return {
       rect: {...this.entityShape(), ...this.thingShape(), ...{stroke: '#00AA00'}},
       'statesArrange' : 'bottom',
-      'text' : {text: 'Object'}
+      'text' : {text: 'Object'},
+      value: {value: 'None', valueType: 'None', units: ''}
     };
   }
   getParams() {
@@ -41,16 +38,16 @@ export class OpmObject extends OpmThing {
     };
     return {...super.getThingParams(), ...params};
   }
-  addState() {
+  addState(stateName = null) {
     this.objectChangedSize = false;
-    const defaultState = new OpmState();
-    this.embed(defaultState);     // makes the state stay in the bounds of the object
-    this.graph.addCells([this, defaultState]);
-    // Placing the new state. By default it is outside the object.
-    const xNewState = this.getBBox().center().x - defaultState.get('size').width / 2;
-    const yNewState = this.get('position').y + this.get('size').height - defaultState.get('size').height;
-    defaultState.set('father', defaultState.get('parent'));
-    defaultState.set({position: {x: xNewState, y: yNewState}});
+    const statesNumber = this.getEmbeddedCells().length;
+    this.createNewState((stateName ? stateName : ('state' + (statesNumber + 1))));
+    // For the first time of clicking on general addState should be added 3 states
+    if (!stateName && (statesNumber === 0)) {
+      for (let i = 2; i <= 2; i++) {
+        this.createNewState(('state' + (statesNumber + i)));
+      }
+    }
     // Add the new state using the current states arrangement
     if (this.get('embeds').length < 2) {
       arrangeEmbedded(this, 'bottom');
@@ -58,7 +55,19 @@ export class OpmObject extends OpmThing {
       arrangeEmbedded(this, this.attr('statesArrange'));
     }
   }
+  createNewState(stateName) {
+    const defaultState = new OpmState(stateName);
+    this.embed(defaultState);     // makes the state stay in the bounds of the object
+    this.graph.addCells([this, defaultState]);
+    // Placing the new state. By default it is outside the object.
+    const xNewState = this.getBBox().center().x - defaultState.get('size').width / 2;
+    const yNewState = this.get('position').y + this.get('size').height - defaultState.get('size').height;
+    defaultState.set('father', defaultState.get('parent'));
+    defaultState.set({position: {x: xNewState, y: yNewState}});
+  }
   haloConfiguration(halo, options) {
+    super.haloConfiguration(halo, options);
+    const thisObject = this;
     let hasStates = this.getEmbeddedCells().length;
     halo.addHandle(this.addHandleGenerator('add_state', 'sw', 'Click to add state to the object', 'right'));
     halo.on('action:add_state:pointerup', function () {
@@ -90,9 +99,28 @@ export class OpmObject extends OpmThing {
     halo.$handles.children('.arrange_left').toggleClass('hidden', !hasStates);
     halo.$handles.children('.arrange_right').toggleClass('hidden', !hasStates);
   }
-  changeAttributesHandle() {
-    super.changeAttributesHandle();
-    valueHandle.updateCell(this);
+  computation(target) {
+    const objectThis = this;
+    const popup = new joint.ui.Popup({
+      events: {
+        'click .btnUpdate': function() {
+          const value = this.$('.value').val();
+          const units = (this.$('.units').val() !== 'units') ? this.$('.units').val() : '';
+          const type = this.$('.type').val();
+          objectThis.attr({value: {value: value, units: units, valueType: type}});
+          this.remove();
+        }
+      },
+      content: ['<input class="value" value="value" size="7"><br>',
+        '<input class="units" value="units" size="7"><br>',
+        '<select class="type">' +
+        '<option value="Number">Number</option>' +
+        '<option value="String">String</option>' +
+        '<option value="None">None</option>' +
+        '</select><br>',
+        '<button class="btnUpdate">Update</button>'],
+      target: target
+    }).render();
   }
   changeSizeHandle() {
     super.changeSizeHandle();
@@ -113,4 +141,71 @@ export class OpmObject extends OpmThing {
       }
     }
   }
+  updatecomputationalPart() {
+    const valueType = this.attr('value/valueType');
+    const value = this.attr('value/value');
+    const units = this.attr('value/units');
+    if ((valueType !== 'None') && (this.attr('rect/filter/args/dx') !== 0)) {
+      this.attr('rect/filter/args', {dx: 0, dy: 0, blur: 0, color: 'grey'});
+    }
+    // the value is saved twice: once in the attr, for visual representation inside
+    // a state and once in 'logicalValue' field for background execution use.
+    if ((!this.get('previousValue') || (value !== this.get('previousValue'))) && (value !== 'None')) {
+      this.updateState(value);
+      this.set('logicalValue', value);
+    }
+    if ((!this.get('previousUnits') || (units !== this.get('previousUnits'))) && (units !== '')) {
+      this.updateUnits(units);
+    }
+  }
+  //  When a value of an object is updated, if a state exists - its value will be updated,
+  // otherwise - a new state will be added with the new value
+  updateState(value) {
+    this.set('previousValue', value);
+    let statesNumber = 0;   // currently only one value for object is allowed
+    _.each(this.getEmbeddedCells(), function(child) {
+      statesNumber ++;
+      // There is already a state with a value - updating the value
+      child.attr({text: {text: value}});
+    });
+    // If got to this line then it means that there is no state yet and need to add a new state
+    if (statesNumber === 0) {
+      this.addState(value);
+    }
+  }
+  updateUnits(units) {
+    this.set('previousUnits', units);
+    let newText = this.attr('text/text');
+    const indexOfStartUnits = newText.lastIndexOf('[');
+    if (indexOfStartUnits > 0) {    // At the first time it will be -1, meaning no units were  defined yet
+      newText  = newText.substring(0, indexOfStartUnits) + '[' + units + ']';
+    } else {
+      newText = newText + '\n[' + units + ']';
+    }
+    this.attr({text: {text: newText}});
+  }
+  updateShapeAttr(newValue) {
+    this.attr('rect', newValue);
+  }
+  getShapeAttr() {
+    return this.attr('rect');
+  }
+  changeEssence() {
+    (this.attr('rect').filter.args.dx === 0) ? this.attr('rect/filter/args', {dx: 3, dy: 3}) :
+      this.attr('rect/filter/args', {dx: 0, dy: 0});
+  }
+  changeAffiliation() {
+    (this.attr('rect')['stroke-dasharray'] === '0') ? this.attr('rect', {'stroke-dasharray':
+      '10,5'}) : this.attr('rect', {'stroke-dasharray': '0'});
+  }
+  getShapeFillColor() {
+    return this.attr('rect/fill');
+  }
+  getShapeOutline() {
+    return this.attr('rect/stroke');
+  }
+  getImageEssenceAffiliation() {
+    return '../../../assets/icons/essenceAffil/EssenceAffilObject.JPG';
+  }
 }
+

@@ -1,3 +1,4 @@
+
 import {OpmDefaultLink} from './OpmDefaultLink';
 import {OpmEntity} from '../OpmEntity';
 

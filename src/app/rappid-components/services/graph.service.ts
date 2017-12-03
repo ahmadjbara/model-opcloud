@@ -6,15 +6,24 @@ import {linkDrawing} from '../../configuration/elementsFunctionality/linkDrawing
 import {OpmProcess} from '../../models/DrawnPart/OpmProcess';
 import {OpmDefaultLink} from '../../models/DrawnPart/Links/OpmDefaultLink';
 import {ResultLink} from '../../models/DrawnPart/Links/ResultLink';
-import {OpmObject} from "../../models/DrawnPart/OpmObject";
-import {OpmVisualObject} from "../../models/VisualPart/OpmVisualObject";
-import {OpmState} from "../../models/DrawnPart/OpmState";
+import {OpmObject} from '../../models/DrawnPart/OpmObject';
+import {OpmVisualObject} from '../../models/VisualPart/OpmVisualObject';
+import {OpmState} from '../../models/DrawnPart/OpmState';
+import {joint, _, vectorizer} from '../../configuration/rappidEnviromentFunctionality/shared';
+import {InstrumentLink} from "../../models/DrawnPart/Links/InstrumentLink";
+import {ConsumptionLink} from "../../models/DrawnPart/Links/ConsumptionLink";
+import {compute} from "../../configuration/elementsFunctionality/computationalPart";
+import {TriangleClass} from "../../models/DrawnPart/Links/OpmFundamentalLink";
+import {ExhibitionLink} from "../../models/DrawnPart/Links/ExhibitionLink";
+import {getRightmostXCoord} from '../../configuration/elementsFunctionality/process-inzooming';
+import {AggregationLink} from "../../models/DrawnPart/Links/AggregationLink";
+import {GeneralizationLink} from "../../models/DrawnPart/Links/GeneralizationLink";
+import {InstantiationLink} from "../../models/DrawnPart/Links/InstantiationLink";
+import {OpmLink} from "../../models/VisualPart/OpmLink";
+import {OpmLinkRappid} from "../../models/DrawnPart/Links/OpmLinkRappid";
 
-const joint = require('rappid');
-const rootId='SD';
+const rootId = 'SD';
 const firebaseKeyEncode = require('firebase-key-encode');
-
-
 
 @Injectable()
 export class GraphService {
@@ -66,10 +75,11 @@ export class GraphService {
   loadGraph(name) {
     this.modelStorage.get(name).then((res) => {
       this.modelObject = res;
-      firebaseKeyEncode.deepDecode(this.modelObject.modelData)
-      this.graph.fromJSON(this.modelObject.modelData);
+      firebaseKeyEncode.deepDecode(this.modelObject.modelData);
+      this.modelStorage.fromJson(this.graph, this.modelObject.modelData);
+      this.modelStorage.listen(name, this.graph);
+      //    this.graph.fromJSON(this.modelObject.modelData);
     });
-    this.modelStorage.listen(name, this.graph);
   }
 
   updateJSON() {
@@ -91,16 +101,26 @@ export class GraphService {
     localStorage.removeItem(ElementId);
   }
 
-  graphSetUpdate(ElementId: string, newNodeRef, treeViewService, type, initRappid) {
+  graphSetUpdate(ElementId: string, newNodeRef, treeViewService, type, initRappid, unfoldingOptions) {
 
     treeViewService.getNodeByIdType(this.currentGraphId, this.type).graph = new joint.dia.Graph;
     treeViewService.getNodeByIdType(this.currentGraphId, this.type).graph.resetCells(this.graph.getCells());
     var newGraph = new joint.dia.Graph;
-    let clonedProcess;
+    let gCell=this.graph.getCell(ElementId);
+    let clonedProcess = gCell.clone();
+    clonedProcess.set('size', gCell.get('size'));
+    clonedProcess.set('z', gCell.get('z'));
+    clonedProcess.set('position',{x:350, y:100});
+    newGraph.addCell(clonedProcess);
+
     if (type === 'unfold') {
-      clonedProcess = this.copyEmbeddedGraphElements(newGraph, ElementId, treeViewService, initRappid);
+      if (unfoldingOptions['Aggregation-Participation'] === true)
+          this.copyEmbeddedGraphElements(newGraph, ElementId, treeViewService, initRappid, clonedProcess);
+
+      this.copyStructuralConnectedElements(newGraph, ElementId, initRappid, clonedProcess);
     }
     else {
+      clonedProcess.remove();
       clonedProcess = this.copyConntectedGraphElements(newGraph, ElementId, initRappid);
     }
 
@@ -114,15 +134,16 @@ export class GraphService {
     return clonedProcess;
   }
 
-  private copyEmbeddedGraphElements(newGraph, elementID, treeViewService, initRappid) {
+  private copyEmbeddedGraphElements(newGraph, elementID, treeViewService, initRappid, clonedProcess) {
     let gCell=this.graph.getCell(elementID);
     let tmp = new joint.dia.Graph;
     let connctedCells;
     let clonedConnectedCells = [];
-    let clonedProcess = gCell.clone();
+    //let clonedProcess = gCell.clone();
+
     clonedProcess.set('position', {x: 350, y: 100});
-    clonedProcess.attributes.attrs.ellipse['stroke'] = gCell.attributes.attrs.ellipse['stroke'];
-    clonedProcess.attributes.attrs.ellipse['stroke-width'] = gCell.attributes.attrs.ellipse['stroke-width'];
+    //clonedProcess.attributes.attrs.ellipse['stroke'] = gCell.attributes.attrs.ellipse['stroke'];
+    //clonedProcess.attributes.attrs.ellipse['stroke-width'] = gCell.attributes.attrs.ellipse['stroke-width'];
 
     if (typeof initRappid.opmModel.getVisualElementById(elementID).refineeInzooming !== 'undefined' ) {
       let pid = initRappid.opmModel.getVisualElementById(elementID).refineeInzooming.id;
@@ -139,14 +160,15 @@ export class GraphService {
     else
       newGraph.addCell(clonedProcess);
 
-    let w = gCell.get('size').width;
-    let h = gCell.get('size').height;
+    let w = clonedProcess.get('size').width;
+    let h = clonedProcess.get('size').height;
     let x =  20;
-    let y = gCell.get('position').y+h;
-
+    let y = clonedProcess.get('position').y;
+    console.log(y);
 
     for (let k=0; k<clonedConnectedCells.length   ; k++){
-      clonedConnectedCells[k].set('position', {x:x+(w+10)*k,y:y+150});
+      console.log(y+160);
+      clonedConnectedCells[k].set('position', {x:x, y:y+160});
       let link = new OpmDefaultLink ();
       link.set({
         source: {id: clonedProcess.id},
@@ -161,9 +183,10 @@ export class GraphService {
       newGraph.addCells([clonedProcess, link, clonedConnectedCells[k]]);
       link.set('graph', newGraph);
       linkDrawing.drawLink(link, link.attributes.name);
+      x = x + clonedConnectedCells[k].get('size').width + 20;
     }
     let graphServiceThis = this;
-    return clonedProcess;
+    //return clonedProcess;
    /* connctedCells.forEach(function(elm){
       let parentId = elm.get('parent');
       if (parentId) {
@@ -175,9 +198,104 @@ export class GraphService {
   }
   //star
 
+  private copyStructuralConnectedElements(newGraph, elementId, initRappid, clonedProcess){
+    let gCell=this.graph.getCell(elementId);
+    let pLinks=this.graph.getConnectedLinks(gCell);
+    let thisGraph = this;
+
+    let x = getRightmostXCoord(clonedProcess, newGraph) + 20;
+    let y = clonedProcess.get('position').y;
+    pLinks.forEach(function(link, index){
+      if (! (link.getTargetElement() instanceof TriangleClass) )
+        pLinks.splice(index,1);
+      else {
+        let nLink;
+        if (link.attributes.OpmLinkType === "ExhibitionLink") {
+          let triaLinks = thisGraph.graph.getConnectedLinks(link.getTargetElement(), {outbound: true});
+          triaLinks.forEach(function (link, index) {
+            let clonedTarget = link.getTargetElement().clone();
+            clonedTarget.set('size', link.getTargetElement().get('size'));
+            clonedTarget.set('position', {x:x, y:y+160})
+            clonedTarget.attributes.attrs.text.text = link.getTargetElement().attributes.attrs.text.text;
+            nLink = new ExhibitionLink(clonedProcess, clonedTarget, newGraph);
+            newGraph.addCells([clonedProcess, nLink, clonedTarget]);
+            x = x + clonedTarget.get('size').width + 20;
+          });
+        }
+        else if (link.attributes.OpmLinkType === "AggregationLink") {
+          let triaLinks = thisGraph.graph.getConnectedLinks(link.getTargetElement(), {outbound: true});
+          triaLinks.forEach(function (link, index) {
+            let clonedTarget = link.getTargetElement().clone();
+            clonedTarget.set('size', link.getTargetElement().get('size'));
+            clonedTarget.set('position', {x:x, y:y+160})
+            clonedTarget.attributes.attrs.text.text = link.getTargetElement().attributes.attrs.text.text;
+            nLink = new AggregationLink(clonedProcess, clonedTarget, newGraph);
+            newGraph.addCells([clonedProcess, nLink, clonedTarget]);
+            x = x + clonedTarget.get('size').width + 20;
+          });
+        }
+        else if (link.attributes.OpmLinkType === "GeneralizationLink") {
+          let triaLinks = thisGraph.graph.getConnectedLinks(link.getTargetElement(), {outbound: true});
+          triaLinks.forEach(function (link, index) {
+            let clonedTarget = link.getTargetElement().clone();
+            clonedTarget.set('size', link.getTargetElement().get('size'));
+            clonedTarget.set('position', {x:x, y:y+160})
+            clonedTarget.attributes.attrs.text.text = link.getTargetElement().attributes.attrs.text.text;
+            nLink = new GeneralizationLink(clonedProcess, clonedTarget, newGraph);
+            newGraph.addCells([clonedProcess, nLink, clonedTarget]);
+            x = x + clonedTarget.get('size').width + 20;
+          });
+        }
+        else if (link.attributes.OpmLinkType === "InstantiationLink") {
+          let triaLinks = thisGraph.graph.getConnectedLinks(link.getTargetElement(), {outbound: true});
+          triaLinks.forEach(function (link, index) {
+            let clonedTarget = link.getTargetElement().clone();
+            clonedTarget.set('size', link.getTargetElement().get('size'));
+            clonedTarget.set('position', {x:x, y:y+160})
+            clonedTarget.attributes.attrs.text.text = link.getTargetElement().attributes.attrs.text.text;
+            nLink = new InstantiationLink(clonedProcess, clonedTarget, newGraph);
+            newGraph.addCells([clonedProcess, nLink, clonedTarget]);
+            x = x + clonedTarget.get('size').width + 20;
+          });
+        }
+      }
+    });
+    /*
+    //connctedCells.push(gCell);
+    let graphServiceThis = this;
+    connctedCells.forEach(function(elm) {
+      let parentId = elm.get('parent');
+      if (parentId && elm instanceof OpmState) {
+        connctedCells.push(graphServiceThis.graph.getCell(parentId));
+      }
+    });
+    let temp = this.graph.cloneSubgraph(connctedCells, {deep:true});
+    connctedCells.push(temp[elementId]);
+    let clonedConnectedCells=[];
+    for (let key in temp) {
+      let cloned =  temp[key];
+      let src = this.graph.getCell(key);
+      cloned.set('position', src.get('position'));
+      cloned.set('size', src.get('size'));
+      cloned.set('z', src.get('z'));
+      clonedConnectedCells.push(temp[key]);
+      if (temp[key] instanceof OpmObject) {
+        let lg = initRappid.opmModel.getLogicalElementByVisualId(key);
+        lg.add(new OpmVisualObject(temp[key].getParams(), lg));
+      }
+    }
+    newGraph.addCells(clonedConnectedCells);
+
+    return temp[elementId];
+    */
+  }
   private copyConntectedGraphElements(newGraph, elementId, initRappid) {
     let gCell=this.graph.getCell(elementId);
     let connctedCells=this.graph.getNeighbors(gCell);
+    connctedCells.forEach(function(elm, index){
+     if (elm instanceof TriangleClass)
+       connctedCells.splice(index,1);
+    });
     connctedCells.push(gCell);
     let graphServiceThis = this;
     connctedCells.forEach(function(elm) {
@@ -194,6 +312,8 @@ export class GraphService {
       cloned.set('position', src.get('position'));
       cloned.set('size', src.get('size'));
       cloned.set('z', src.get('z'));
+      if (! (cloned instanceof OpmLinkRappid))
+      cloned.attributes.attrs.text.text = src.attributes.attrs.text.text;
       clonedConnectedCells.push(temp[key]);
       if (temp[key] instanceof OpmObject) {
         let lg = initRappid.opmModel.getLogicalElementByVisualId(key);
@@ -202,20 +322,6 @@ export class GraphService {
     }
     newGraph.addCells(clonedConnectedCells);
     return temp[elementId];
-   /*let graphServiceThis = this;
-    clonedConnectedCells.forEach(function(elm){
-      let parentId = elm.get('parent');
-      if (parentId) {
-        let temp = graphServiceThis.graph.getCell(parentId).getEmbeddedCells();
-        let tmp = graphServiceThis.graph.cloneCells(temp);
-        let newCells = [];
-        for (let key in tmp)
-          newCells.push(tmp[key]);
-        newGraph.addCells(newCells);
-        newGraph.addCell(graphServiceThis.graph.getCell(parentId));
-      }
-  });*/
-    // this.graphLinks = this.graph.getConnectedLinks(gCell);
   }
 
   changeGraphModel(elementId, treeViewService, type) {
@@ -227,5 +333,53 @@ export class GraphService {
     this.currentGraphId = elementId;
     this.type = type;
   }
+  execute(initRappid, linksArray) {
+    // get all processes in the graph
+    let graphProcesses = this.graph.get('cells').models.filter(element => element.get('type') === 'opm.Process');
+    // sort processes from top to bottom
+    graphProcesses = graphProcesses.sort((p1, p2) => p1.get('position').y - p2.get('position').y);
+    // go over all processes
+    for (let i = 0; i < graphProcesses.length; i++) {
+      // if it is zn in-zoomed process then need to go to the in-zoomed graph and execute it first
+      if (graphProcesses[i].attributes.attrs.ellipse['stroke-width'] === 4) {
+        const inzoomedProcessId = initRappid.opmModel.getVisualElementById(graphProcesses[i].id).refineeInzooming.id;
+        // change view to the in-zzomed graph
+        this.changeGraphModel(inzoomedProcessId, initRappid.treeViewService, 'inzoom');
+        // recursive execution. now the in-zoomed graph will be executed
+        this.execute(initRappid, linksArray);
+        // change the view back to out-zoomed graph
+        initRappid.changeGraphToParent(graphProcesses[0].id);
+      } else {
+        if (graphProcesses[i].attr('value/value') !== 'None') {
+          compute(graphProcesses[i], initRappid.paper, linksArray, graphProcesses[0].id);
+        }
+      }
+    }
+  }
+  showExecution(initRappid, linksArray, linkIndex) {
+    if (linkIndex >= linksArray.length) return;
+    initRappid.changeGraphToParent(linksArray[linkIndex].treeNodeId);
+    const thisGraph = this;
+    let currentLinkView;
+    while (((linkIndex + 1) < linksArray.length) &&
+          (linksArray[linkIndex].link.getTargetElement() === linksArray[linkIndex + 1].link.getTargetElement())) {
+      const token2 = vectorizer.V('circle', {r: 5, fill: 'green', stroke: 'red'});
+      currentLinkView = linksArray[linkIndex].link.findView(initRappid.paper);
+      currentLinkView.sendToken(token2.node, 1000);
+      linkIndex ++;
+    }
+    const token = vectorizer.V('circle', {r: 5, fill: 'green', stroke: 'red'});
+    currentLinkView = linksArray[linkIndex].link.findView(initRappid.paper);
+    currentLinkView.sendToken(token.node, 1000, function() {
+      const targetElement = linksArray[linkIndex].link.getTargetElement();
+      if (targetElement instanceof OpmObject) {
+        const value = targetElement.get('logicalValue');
+        if (value !== targetElement.attr('value/value')) {
+          targetElement.attr({value: {value: value, valueType: 'Number'}});
+        }
+      }
+      // run the token on the next link
+      thisGraph.showExecution(initRappid, linksArray, ++linkIndex);
+    });
+  }
 }
-

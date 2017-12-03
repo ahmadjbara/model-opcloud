@@ -34,7 +34,7 @@ export class RappidOplComponent implements OnInit {
     this.HoverOnCells;
   }
 
-  GenerateOPL(){
+  GenerateOPL() {
       this.graph.on('add', (cell) => {
         if (cell.attributes.type === 'opm.Object') {
           this.updateObjectOPL(cell);
@@ -153,7 +153,7 @@ export class RappidOplComponent implements OnInit {
   }
   unhighlightObject(cell){
     var cellView = this.paper.findViewByModel(cell);
-    cellView.model.attr('rect/fill','#DCDCDC')
+    cellView.model.attr('rect/fill','white')
 
   }
 
@@ -164,7 +164,7 @@ export class RappidOplComponent implements OnInit {
 
   unhighlightProcess(cell){
     var cellView = this.paper.findViewByModel(cell);
-    cellView.model.attr('ellipse/fill','#DCDCDC')
+    cellView.model.attr('ellipse/fill','white')
   }
 
   highlightLink(cell){
@@ -193,7 +193,7 @@ export class RappidOplComponent implements OnInit {
   }
 
 
-  highlightCell(cell){
+  highlightCell(cell) {
     switch(cell.attributes.type) {
       case 'opm.Object':
         this.highlightObject(cell);

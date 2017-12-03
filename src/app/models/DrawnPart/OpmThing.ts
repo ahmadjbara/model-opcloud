@@ -89,4 +89,34 @@ export  class OpmThing extends OpmEntity {
     }
     }
   }
+  getConfigurationTools() {
+    const thingToolsArray = [{ action: 'value', content: 'Computation' },
+      { action: 'essenceAffiliation', content: '<img src=' + this.getImageEssenceAffiliation() + ' width="60" height="25">' }];
+    return super.getConfigurationTools().concat(thingToolsArray);
+  }
+  configurationContextToolbarEvents(target, contextToolbar) {
+    super.configurationContextToolbarEvents(target, contextToolbar);
+    const thisThing = this;
+    contextToolbar.on('action:value', function() {
+      this.remove();
+      thisThing.computation(target);
+    });
+    contextToolbar.on('action:essenceAffiliation', function() {
+      this.remove();
+      const imgPath = '../../../assets/icons/essenceAffil/';
+      const essenceImg = imgPath + ((thisThing.getShapeAttr().filter.args.dx === 0) ? 'EssPhys.JPG' : 'EssInfo.JPG');
+      const affiliationImg = imgPath + ((thisThing.getShapeAttr()['stroke-dasharray'] === '0') ? 'AffEnv.JPG' : 'AffSys.JPG');
+      const tools = [{action: 'essenceChange', content: '<img src=' + essenceImg + ' width="80" height="35">'},
+        {action: 'affiliationChange', content: '<img src=' + affiliationImg + ' width="80" height="35">'}];
+      const essenceAffiliationToolbar = thisThing.contexToolbarGenerator(target, tools).render();
+      essenceAffiliationToolbar.on('action:essenceChange', function () {
+        thisThing.changeEssence();
+        this.remove();
+      });
+      essenceAffiliationToolbar.on('action:affiliationChange', function () {
+        thisThing.changeAffiliation();
+        this.remove();
+      });
+    });
+  }
 }

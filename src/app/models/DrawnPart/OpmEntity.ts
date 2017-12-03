@@ -2,9 +2,10 @@ import {textWrapping} from '../../configuration/elementsFunctionality/textWrappi
 import {OpmProceduralLink} from './Links/OpmProceduralLink';
 import {haloConfig} from '../../configuration/rappidEnviromentFunctionality/halo.config';
 import {joint, _} from '../../configuration/rappidEnviromentFunctionality/shared';
+import {OpmEntityRappid} from './OpmEntityRappid';
 
 const entityText = {
-  fill: 'black',
+  fill: '#000000',
   'font-size': 14,
   'ref-x': .5,
   'ref-y': .5,
@@ -13,25 +14,31 @@ const entityText = {
   'font-family': 'Arial, helvetica, sans-serif',
 };
 
-const entityDefinition = {
-  defaults: _.defaultsDeep({
-    size: {width: 90, height: 50},
-    attrs: {
-      'text': entityText,
-      'wrappingResized' : false,
-      'manuallyResized' : false,
-    }
-  }, joint.shapes.basic.Generic.prototype.defaults),
-};
-
-export class OpmEntity extends joint.dia.Element.extend(entityDefinition) {
-  entityShape() {
+export class OpmEntity extends OpmEntityRappid {
+  constructor() {
+    super();
+    this.set(this.entityAttributes());
+    this.attr(this.enitiyAttrs());
+  }
+  entityAttributes() {
     return {
-      fill: '#DCDCDC',
-      magnet: true,
-      'stroke-width': 2,
+      size: {width: 90, height: 50}
     };
   }
+  enitiyAttrs() {
+    return {
+      'text': entityText,
+      'wrappingResized' : false,
+      'manuallyResized' : false
+    };
+  }
+  entityShape() {
+  return {
+    fill: '#ffffff',
+    magnet: true,
+    'stroke-width': 2,
+  };
+}
   getEntityParams() {
     return {
       xPos: this.get('position').x,
@@ -58,7 +65,50 @@ export class OpmEntity extends joint.dia.Element.extend(entityDefinition) {
       }
     };
   }
-  haloConfiguration(halo, haloConfiguration) {}
+  haloConfiguration(halo, options) {
+    const thisEntity = this;
+    halo.addHandle(this.addHandleGenerator('configuration', 'se', 'Click to configure value', 'right'));
+    halo.on('action:configuration:pointerup', function () {
+      const contextToolbar = thisEntity.contexToolbarGenerator(halo.el, thisEntity.getConfigurationTools()).render();
+      thisEntity.configurationContextToolbarEvents(halo.el, contextToolbar);
+    });
+  }
+  contexToolbarGenerator(target, tools) {
+    return new joint.ui.ContextToolbar({
+      theme: 'modern',
+      tools: tools,
+      target: target,
+      padding: 30
+    });
+  }
+  popupGenerator(target, content, events) {
+    return new joint.ui.Popup({
+      events: events,
+      content: content,
+      target: target
+    });
+  }
+  getConfigurationTools() {
+    return [{ action: 'styling',  content: 'Styling'}];
+  }
+  configurationContextToolbarEvents(target, contextToolbar) {
+    const thisEntity = this;
+    contextToolbar.on('action:styling', function() {
+      this.remove();
+      const stylePopupContent = ['Text color: <input type="color" class="textColor" value=' + thisEntity.attr('text/fill') + '><br>',
+        'Shape fill: <input type="color" class="shapeColor" value=' + thisEntity.getShapeFillColor() + '><br>',
+        'Shape outline: <input type="color" class="shapeOutline" value=' + thisEntity.getShapeOutline() + '><br>',
+        'Text font size: <input size="2" class="textFontSize" value=' + thisEntity.attr('text/font-size') + '><br>',
+        '<button class="btnUpdate">Update</button>'];
+      const stylePopupEvents = { 'click .btnUpdate': function() {
+          thisEntity.attr({text: {fill: this.$('.textColor').val()}});
+          thisEntity.attr({text: {'font-size': this.$('.textFontSize').val()}});
+          thisEntity.updateShapeAttr({fill: this.$('.shapeColor').val()});
+          thisEntity.updateShapeAttr({'stroke': this.$('.shapeOutline').val()});
+          this.remove(); }};
+      thisEntity.popupGenerator(target, stylePopupContent, stylePopupEvents).render();
+    });
+  }
   doubleClickHandle(cellView, evt, paper) {
     joint.ui.TextEditor.edit(evt.target, {
       cellView: cellView,
@@ -111,7 +161,9 @@ export class OpmEntity extends joint.dia.Element.extend(entityDefinition) {
       }
       this.attributes.attrs.wrappingResized = false;
     }
+    this.updatecomputationalPart();
   }
+  updatecomputationalPart() {}
   changeSizeHandle() {
     if (this.attributes.attrs.text && !this.attributes.attrs.wrappingResized) { // resized manually
       textWrapping.wrapTextAfterSizeChange(this);

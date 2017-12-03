@@ -29,4 +29,7 @@ export  class InvocationLink extends OpmProceduralLink {
     const params = { linkType: linkType.Invocation};
     return {...super.getProceduralLinkParams(), ...params};
   }
+  clone(){
+    return new InvocationLink(this.sourceElement, this.targetElement, this.condition, this.event);
+  }
 }
