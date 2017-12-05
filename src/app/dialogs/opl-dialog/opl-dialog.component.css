@@ -14,10 +14,11 @@ td.tdKey{
   width: 350px;
 }
 
-input.tdValue{
-  width:600px
-}
-
-input:checked.tdValue{
-  background-color: #1de9b6;
+input {
+  border: none;
+  display: inline;
+  font-family: inherit;
+  font-size: inherit;
+  padding: none;
+  width: 100%;
 }

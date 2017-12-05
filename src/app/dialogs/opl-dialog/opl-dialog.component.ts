@@ -10,8 +10,8 @@ import { PipeTransform, Pipe } from '@angular/core';
   template: `
       <h1>OPL table</h1>
       <p>select your language
-      <select [(ngModel)]="language">
-        <option *ngFor="let lan of availableLanguage" [value]="lan">
+      <select [(ngModel)]="language" name="selectLan" (click)="updateTable(language)">
+        <option *ngFor="let lan of availableLanguage" [attr.value]="lan">
           {{lan}}
         </option>
       </select></p>
@@ -24,10 +24,12 @@ import { PipeTransform, Pipe } from '@angular/core';
                 <td class="tdKey">{{link.key}}</td>
                 <td>
 
-                  <span (click)="edit=true" *ngIf="!edit" class="tdValue">{{ link.value }} </span>"
-                  <input *ngIf="edit"
-                         (keyup.enter)="changeReservedPhrase(relation.key, link.key, $event); edit=false"
-                         [value]=link.value class="tdValue">
+                  <span (click)="edit[relation.key][link.key]=true"
+                        *ngIf="!edit[relation.key][link.key]" class="tdValue">{{ link.value }} </span>
+
+                  <input *ngIf="edit[relation.key][link.key]"
+                         [value]="oplTable[relation.key][link.key]"
+                         [(ngModel)]="oplTable[relation.key][link.key]">
 
                 </td>
               </tr>
@@ -45,7 +47,8 @@ export class OplDialogComponent implements OnInit {
   public language;
   public availableLanguage;
   private oplService;
-  public edit: boolean[];
+  public edit = {};
+//  private translate = require('google-translate-api');
 
   constructor(
     oplService: OplService,
@@ -54,36 +57,34 @@ export class OplDialogComponent implements OnInit {
     this.oplTable = oplService.getOplTable('en');
     this.language = 'en';
     this.availableLanguage = oplService.getAvailableLanguage();
+
   }
 
   ngOnInit() {
     this.updateTable( this.language );
-  }
-  changeLanguage(selected) {
-    this.language = selected;
-    console.log(this.language);
+    this.initiateEdit();
+    console.log(this.edit);
   }
   updateTable(lan) {
     this.oplTable = this.oplService.getOplTable(lan);
   }
-  changeReservedPhrase(relation, link, event) {
-    this.oplTable[relation][link] = event.target.value;
-    const element = event.srcElement.nextElementSibling;
-    if (element == null) {
-      return;
-    } else {
-      element.focus();
-    }
-  }
   saveTable() {
     this.oplService.changeOplTable(this.language, this.oplTable);
+    console.log(this.oplTable,this.language);
     this.dialogRef.close();
   }
   cancelTableChange() {
     this.updateTable(this.language);
     this.dialogRef.close();
   }
-
+  initiateEdit() {
+    for (const relation of Object.keys(this.oplTable)){
+      this.edit[relation] = {};
+      for (const link of Object.keys(this.oplTable[relation])){
+        this.edit[relation][link] = false;
+      }
+    }
+  }
 }
 
 @Pipe({name: 'keys'})
