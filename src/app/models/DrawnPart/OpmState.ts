@@ -51,7 +51,7 @@ export  class OpmState extends OpmEntity {
       '.outer': {...this.innerOuter(), ...this.createOuter()},
       '.inner': {...this.innerOuter(), ...this.createInner()},
       'text' : {text: stateName, 'font-weight': 300},
-      'image': {'xlink:href' : '../../../assets/icons/OPM_Links/DefaultState.png',display:'none', 'ref-x': 1, 'ref-y':1,  x: -18, y: -18,ref: 'rect', width: 25, height: 25 }
+      'image': {'xlink:href' : '../../../assets/icons/OPM_Links/DefaultState.png', display: 'none', 'ref-x': 1, 'ref-y':1,  x: -18, y: -18,ref: 'rect', width: 25, height: 25 }
     };
   }
   getParams() {
