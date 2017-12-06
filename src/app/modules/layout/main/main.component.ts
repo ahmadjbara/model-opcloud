@@ -33,15 +33,6 @@ import { Subscription } from 'rxjs/Subscription';
 
         <div class="rappid-main rappid main-content">
           <opcloud-rappid-paper [paper]="paper" [paperScroller]="paperScroller"></opcloud-rappid-paper>
-
-          <button class="inspector-button"
-                  (click)="toggleInspector()"
-                  *ngIf="cell$ | async"
-                  md-mini-fab>
-            <md-icon>{{ inspectorOpen ? 'close' : 'assignment' }}</md-icon>
-          </button>
-          <opcloud-rappid-inspector [style.visibility]="inspectorOpen ? 'visible' : 'hidden'"
-                                    [cell]="cell$ | async"></opcloud-rappid-inspector>
         </div>
 
         <opc-opl-container>
