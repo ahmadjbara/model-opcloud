@@ -15,6 +15,17 @@ import { PipeTransform, Pipe } from '@angular/core';
           {{lan}}
         </option>
       </select></p>
+      <p>Default settings for OPL:</p>
+      <label>Essence:</label>
+      <select>
+        <option>Informatical</option>
+        <option>Physical</option>
+      </select>
+      <label>Affiliation:</label>
+      <select>
+        <option>Systemic</option>
+        <option>Environmental</option>
+      </select><br><br>
 
       <md-dialog-content>
           <table *ngFor="let relation of oplTable | keys" >
@@ -70,7 +81,7 @@ export class OplDialogComponent implements OnInit {
   }
   saveTable() {
     this.oplService.changeOplTable(this.language, this.oplTable);
-    console.log(this.oplTable,this.language);
+    console.log(this.oplTable, this.language);
     this.dialogRef.close();
   }
   cancelTableChange() {

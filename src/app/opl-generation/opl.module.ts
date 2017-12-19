@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { OplElementComponent } from './opl-element/opl-element.component';
 import { OplSentenceComponent } from './opl-sentence/opl-sentence.component';
+import { OplParagraphComponent } from './opl-paragraph/opl-paragraph.component';
 
 
 @NgModule({
@@ -12,7 +13,9 @@ import { OplSentenceComponent } from './opl-sentence/opl-sentence.component';
 
   OplElementComponent,
 
-  OplSentenceComponent],
+  OplSentenceComponent,
+
+  OplParagraphComponent],
   providers: [
 
   ],

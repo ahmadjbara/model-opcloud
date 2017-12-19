@@ -1,4 +1,5 @@
 import { dataBase } from './linksDatabase';
+import { OplService } from '../../opl-generation/opl.service';
 
 
 export const linkTypeSelection = {
@@ -205,6 +206,13 @@ export const linkTypeSelection = {
   generateLinkWithOpl(link){
     const linkNames = this.findSuitableLinks(link);
     return this.availableOPL(link, linkNames);
-  }
+/*    let availableOPL=[];
+    const oplservice = new OplService();
+    const table=oplservice.getOplTable('en')['P1-O2'];
+    for (const link of Object.keys(table)){
+      availableOPL.push({name:link.replace(' ','_'), opl:table[link].replace('<P1>','Process').replace('<O1>','Object')});
+    }
+    return availableOPL;*/
+  },
 
 };

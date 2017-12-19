@@ -3,7 +3,7 @@ import { Component, OnInit, Input } from '@angular/core';
 @Component({
   selector: 'opcloud-opl-element',
   template: `
-    <span [ngClass]="entityType" (click)="edit=true" *ngIf="!edit">
+    <span [className]="entityType" (click)="edit=true" *ngIf="!edit" >
       {{entityName}}
     </span>
     <input >
@@ -13,6 +13,7 @@ import { Component, OnInit, Input } from '@angular/core';
 export class OplElementComponent implements OnInit {
   @Input() entityName;
   @Input() entityType;
+  @Input() entityCell;
   constructor() { }
 
 
