@@ -50,6 +50,8 @@ export class OpmEntity extends OpmEntityRappid {
       textFontFamily: this.attr('text/font-family'),
       textColor: this.attr('text/fill'),
       text: this.attr('text/text'),
+      fill: this.getShapeAttr().fill,
+      strokeColor: this.getShapeAttr().stroke,
       id: this.get('id')
     };
   }

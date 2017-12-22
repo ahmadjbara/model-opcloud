@@ -31,10 +31,8 @@ export class OpmProcess extends OpmThing {
   }
   getParams() {
     const params = {
-      fill: this.attr('ellipse/fill'),
-      strokeColor: this.attr('ellipse/stroke'),
-      strokeWidth: this.attr('ellipse/stroke-width'),
-      parentheses: (this.attr('value/value') === 'None') ? false : true
+      function: this.attr('value/value'),
+      userDefinedFunction: this.get('userDefinedFunction')
     };
     return {...super.getThingParams(), ...params};
   }

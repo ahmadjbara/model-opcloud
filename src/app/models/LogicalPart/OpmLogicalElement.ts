@@ -6,11 +6,14 @@
     static objectText = 'Object';
     static processText = 'Process';
     static stateText = 'State';
+    name = '';
     visualElements: Array<T>;
     opmModel: OpmModel;
-    constructor(model) {
+    constructor(params, model) {
+      this.name = this.constructor.name;
       this.opmModel = model;
       this.visualElements = new Array<T>();
+      if (params) this.updateParams(params);
     }
     add(opmVisualElement) {
       this.visualElements.push(opmVisualElement);
@@ -32,5 +35,12 @@
           return this.visualElements[k];
       return null;
     }
+    updateParams(params) {}
+    getElementParams() {
+      return {
+        name: this.name
+      };
+    }
+    updateSourceAndTargetFromJson() {}
   }
 

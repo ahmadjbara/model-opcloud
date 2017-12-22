@@ -56,9 +56,6 @@ export  class OpmState extends OpmEntity {
   }
   getParams() {
     const params = {
-      fill: this.attr('rect/fill'),
-      strokeColor: this.attr('rect/stroke'),
-      strokeWidth: this.attr('rect/stroke-width'),
       fatherObjectId: this.get('father')
     };
     return {...super.getEntityParams(), ...params};
@@ -129,6 +126,9 @@ export  class OpmState extends OpmEntity {
   updateShapeAttr(newValue) {
     this.attr('.inner', newValue);
     this.attr('.outer', newValue);
+  }
+  getShapeAttr() {
+    return this.attr('.inner');
   }
   getShapeFillColor() {
     return this.attr('.inner/fill');

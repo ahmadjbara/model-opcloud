@@ -11,15 +11,9 @@ export class OpmVisualElement {
     id: string;
     constructor(params, logicalElement) {
       this.logicalElement = logicalElement;
-      this.textColor = params.textColor;
-      this.textFontSize = params.textFontSize;
-      this.textFontFamily = params.textFontFamily;
-      this.textFontWeight = params.textFontWeight;
-      this.strokeWidth = params.strokeWidth;
-      this.strokeColor = params.fill;
-      this.id = params.id;
+      if (params) this.updateParams(params);
     }
-    pointToFather(opmLogicalElement){
+    pointToFather(opmLogicalElement) {
       this.logicalElement = opmLogicalElement;
     }
     getElementParams() {
@@ -33,5 +27,24 @@ export class OpmVisualElement {
         id: this.id
       };
     }
+    updateParams(params) {
+      this.textColor = params.textColor;
+      this.textFontSize = params.textFontSize;
+      this.textFontFamily = params.textFontFamily;
+      this.textFontWeight = params.textFontWeight;
+      this.strokeColor = params.strokeColor;
+      this.id = params.id;
+    }
+    getElementParamsFromJsonElement(jsonElement) {
+      return {
+        textColor: jsonElement.textColor,
+        textFontSize: jsonElement.textFontSize,
+        textFontFamily: jsonElement.textFontFamily,
+        textFontWeight: jsonElement.textFontWeight,
+        strokeColor: jsonElement.strokeColor,
+        id: jsonElement.id
+      };
+    }
+  updateComplexityReferences() {}
 }
 

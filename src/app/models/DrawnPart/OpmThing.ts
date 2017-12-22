@@ -29,8 +29,8 @@ export  class OpmThing extends OpmEntity {
   }
   getThingParams() {
     const params = {
-      essence: (this.attr('ellipse/filter/args/dx') === 0) ? Essence.Informatical : Essence.Physical,
-      affiliation: (this.attr('ellipse/stroke-dasharray') === 0) ? Affiliation.Systemic : Affiliation.Environmental,
+      essence: (this.getShapeAttr().filter.args.dx === 0) ? Essence.Informatical : Essence.Physical,
+      affiliation: (this.getShapeAttr()['stroke-dasharray'] === '0') ? Affiliation.Systemic : Affiliation.Environmental,
     };
     return {...super.getEntityParams(), ...params};
   }

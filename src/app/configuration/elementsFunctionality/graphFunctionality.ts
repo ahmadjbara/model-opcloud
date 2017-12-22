@@ -10,6 +10,7 @@ import {OpmTaggedLink} from '../../models/DrawnPart/Links/OpmTaggedLink';
 import {OpmProcess} from '../../models/DrawnPart/OpmProcess';
 import {OpmLogicalObject} from '../../models/LogicalPart/OpmLogicalObject';
 import {OpmObject} from '../../models/DrawnPart/OpmObject';
+import {OpmDefaultLink} from "../../models/DrawnPart/Links/OpmDefaultLink";
 
 export function addHandle(initRappidService, cell, opt) {
   if (opt.stencil) {
@@ -31,4 +32,17 @@ export function addHandle(initRappidService, cell, opt) {
 }
 export function removeHandle(initRappidService, cell) {
   initRappidService.opmModel.remove(cell.id);
+}
+export function changeHandle(initRappidService, cell) {
+  if ((cell.constructor.name !== 'OpmDefaultLink') &&
+    (cell.constructor.name !== 'TriangleClass')) {
+    const params = cell.getParams();
+    const logicalElement = initRappidService.opmModel.getLogicalElementByVisualId(cell.get('id'));
+    const visualElement = initRappidService.opmModel.getVisualElementById(cell.get('id'));
+    if (logicalElement) logicalElement.updateParams(params);
+    if (visualElement)  visualElement.updateParams(params);
+    console.log(initRappidService.opmModel);
+    const opmModelJson = initRappidService.opmModel.toJson();
+    const opmModelFromJson = initRappidService.opmModel.fromJson(opmModelJson);
+  }
 }

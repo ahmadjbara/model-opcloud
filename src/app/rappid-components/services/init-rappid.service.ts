@@ -7,7 +7,7 @@ import { TreeViewService } from './tree-view.service';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import {OpmModel} from '../../models/OpmModel';
 import {OpmDefaultLink} from '../../models/DrawnPart/Links/OpmDefaultLink';
-import {addHandle, removeHandle} from '../../configuration/elementsFunctionality/graphFunctionality';
+import {addHandle, changeHandle, removeHandle} from '../../configuration/elementsFunctionality/graphFunctionality';
 import {defineKeyboardShortcuts} from '../../configuration/rappidEnviromentFunctionality/keyboardShortcuts';
 import {selectionConfiguration} from '../../configuration/rappidEnviromentFunctionality/selectionConfiguration';
 
@@ -123,5 +123,7 @@ export class InitRappidService {
     this.graph.on('add', (cell, collection, opt) => {
       addHandle(_this, cell, opt);
       cell.addHandle(_this); });
+    this.graph.on('change', function (cell) {
+      changeHandle(_this, cell); }, this);
   }
 }

@@ -6,11 +6,9 @@
     private _essence: Essence;
     private _affiliation: Affiliation;
 
-     constructor(params, model) {
-       super(model);
-       this.essence = params.essence;
-       this.affiliation = params.affiliation;
-     }
+   constructor(params, model) {
+     super(params, model);
+   }
 
     get essence(): Essence {
       return this._essence;
@@ -23,6 +21,25 @@
     }
     set affiliation(affiliation: Affiliation) {
       this._affiliation = affiliation;
+    }
+    updateParams(params) {
+      super.updateParams(params);
+      this.essence = params.essence;
+      this.affiliation = params.affiliation;
+    }
+    getThingParams() {
+     const params = {
+       essence: this.essence,
+       affiliation: this.affiliation
+     };
+     return {...super.getEntityParams(), ...params};
+    }
+    getThingParamsFromJsonElement(jsonElement) {
+      const params = {
+        essence: (jsonElement.essence === 0) ? Essence.Informatical : Essence.Physical,
+        affiliation: (jsonElement.affiliation === 0) ? Affiliation.Systemic : Affiliation.Environmental,
+      };
+      return {...super.getEntityParamsFromJsonElement(jsonElement), ...params};
     }
   }
 

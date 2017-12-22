@@ -28,13 +28,10 @@ export class OpmObject extends OpmThing {
   }
   getParams() {
     const params = {
-      fill: this.attr('rect/fill'),
-      strokeColor: this.attr('rect/stroke'),
-      strokeWidth: this.attr('rect/stroke-width'),
       statesArrangement: this.attr('statesArrange'),
       valueType: this.attr('value/valueType'),
       value: this.attr('value/value'),
-      units: this.attr('value/units')
+      units: this.attr('value/units'),
     };
     return {...super.getThingParams(), ...params};
   }

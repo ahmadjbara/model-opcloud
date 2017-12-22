@@ -5,15 +5,23 @@
   export class OpmLogicalState extends OpmLogicalEntity<OpmVisualState> {
     private _stateType: ConfigurationOptions.stateType;
     constructor(params, model) {
-      super(model);
+      super(params, model);
       this.add(new OpmVisualState(params, this));
-      this.text = OpmLogicalState.stateText;
     }
     get stateType(): ConfigurationOptions.stateType {
       return this._stateType;
     }
     set stateType(stateType: ConfigurationOptions.stateType) {
       this._stateType = stateType;
+    }
+    updateParams(params) {
+      super.updateParams(params);
+    }
+    getParams() {
+      return super.getEntityParams();
+    }
+    getParamsFromJsonElement(jsonElement) {
+      return super.getEntityParamsFromJsonElement(jsonElement);
     }
   }
 
