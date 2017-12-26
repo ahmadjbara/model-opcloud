@@ -1,5 +1,5 @@
 import {OpmFundamentalRelation} from '../../models/LogicalPart/OpmFundamentalRelation';
-import {OpmFundamentalLink} from '../../models/DrawnPart/Links/OpmFundamentalLink';
+import {OpmFundamentalLink, TriangleClass} from '../../models/DrawnPart/Links/OpmFundamentalLink';
 import {OpmTaggedRelation} from '../../models/LogicalPart/OpmTaggedRelation';
 import {OpmProceduralRelation} from '../../models/LogicalPart/OpmProceduralRelation';
 import {OpmLogicalState} from '../../models/LogicalPart/OpmLogicalState';
@@ -34,15 +34,27 @@ export function removeHandle(initRappidService, cell) {
   initRappidService.opmModel.remove(cell.id);
 }
 export function changeHandle(initRappidService, cell) {
-  if ((cell.constructor.name !== 'OpmDefaultLink') &&
-    (cell.constructor.name !== 'TriangleClass')) {
+  if (cell.constructor.name === 'TriangleClass') {
+    updateFundamentalLinkFromTriengle(cell, initRappidService.opmModel);
+  } else if (cell.constructor.name === 'OpmDefaultLink') {
+    if (cell.getTargetElement() instanceof TriangleClass) {
+      updateFundamentalLinkFromTriengle(cell.getTargetElement(), initRappidService.opmModel);
+    }
+  } else {
     const params = cell.getParams();
     const logicalElement = initRappidService.opmModel.getLogicalElementByVisualId(cell.get('id'));
     const visualElement = initRappidService.opmModel.getVisualElementById(cell.get('id'));
     if (logicalElement) logicalElement.updateParams(params);
     if (visualElement)  visualElement.updateParams(params);
-    console.log(initRappidService.opmModel);
     const opmModelJson = initRappidService.opmModel.toJson();
     const opmModelFromJson = initRappidService.opmModel.fromJson(opmModelJson);
+  }
+}
+function updateFundamentalLinkFromTriengle(triangleCell, opmModel) {
+  const outboundLinks = triangleCell.graph.getConnectedLinks(triangleCell, { outbound: true });
+  for (let i = 0; i < outboundLinks.length; i++) {
+    const params = outboundLinks[i].getParams();
+    const visualElement = opmModel.getVisualElementById(outboundLinks[i].get('id'));
+    if (visualElement)  visualElement.updateParams(params);
   }
 }

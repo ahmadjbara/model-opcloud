@@ -11,9 +11,12 @@
     }
     updateParams(params) {
       super.updateParams(params);
-      const refineable = this.logicalElement.opmModel.getVisualElementById(params.refineableId);
-      const refineeInzooming = this.logicalElement.opmModel.getVisualElementById(params.refineeInzoomingId);
-      const refineeUnfolding = this.logicalElement.opmModel.getVisualElementById(params.refineeUnfoldingId);
+      let refineable, refineeInzooming, refineeUnfolding;
+      if (this.logicalElement && this.logicalElement.opmModel) {
+        refineable = this.logicalElement.opmModel.getVisualElementById(params.refineableId);
+        refineeInzooming = this.logicalElement.opmModel.getVisualElementById(params.refineeInzoomingId);
+        refineeUnfolding = this.logicalElement.opmModel.getVisualElementById(params.refineeUnfoldingId);
+      }
       this.refineable = refineable ? refineable : params.refineableId;
       this.refineeInzooming = refineeInzooming ? refineeInzooming : params.refineeInzoomingId;
       this.refineeUnfolding = refineeUnfolding ? refineeUnfolding : params.refineeUnfoldingId;
