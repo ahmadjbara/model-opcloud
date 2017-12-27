@@ -1,10 +1,12 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewContainerRef } from '@angular/core';
 import { GraphService } from '../services/graph.service';
 import { MdDialog } from '@angular/material';
 import { LoadModelDialogComponent } from '../../dialogs/load-model-dialog/load-model-dialog.component';
 import { CommandManagerService } from '../services/command-manager.service';
 import { InitRappidService } from '../services/init-rappid.service';
 import {AboutDialogComponent} from '../../dialogs/About/about';
+import {UserService} from '../services/user.service';
+import {SignInComponent} from '../../modules/layout/header/sign-in/sign-in.component';
 
 
 const commandGroups = [
@@ -18,8 +20,8 @@ const commandGroups = [
   {
     group: 'file',
     commands: [
-      { name: 'saveModel', tooltip: 'save', icon: 'save' },
-      { name: 'loadModel', tooltip: 'load', icon: 'open_in_browser' }
+      { name: 'executeIfLogged(saveModel)', tooltip: 'save', icon: 'save' },
+      { name: 'executeIfLogged(loadModel)', tooltip: 'load', icon: 'open_in_browser' }
     ]
   },
   {
@@ -63,6 +65,8 @@ export class RappidToolbarComponent implements OnInit {
     private graphService: GraphService,
     commandManagerService: CommandManagerService,
     private initRappidService: InitRappidService,
+    private userService: UserService,
+    private viewContainer: ViewContainerRef,
     private _dialog: MdDialog) {
     this.commandManager = commandManagerService.commandManager;
   }
@@ -72,7 +76,9 @@ export class RappidToolbarComponent implements OnInit {
   }
 
   buttonClick(command) {
-    return this[command.name]();
+    let func = command.name.substring(0,command.name.indexOf("("));
+    let args = command.name.substring(command.name.indexOf("(")+1,command.name.indexOf(")"));
+    return this[func](args);
   }
 
   undo() {
@@ -94,9 +100,6 @@ export class RappidToolbarComponent implements OnInit {
   }
 
   saveModelAs() {
-    // debugger;
-    // let dialogRef = this._dialog.open(SaveModelDialogComponent);
-    // dialogRef.afterClosed().subscribe(result => {
     const result = prompt('Save Model As:', 'Enter a Model Name');
     if (result === 'Enter a Model Name' || result === null) {
       console.log('Model not saved');
@@ -114,6 +117,16 @@ export class RappidToolbarComponent implements OnInit {
         this.graphService.modelObject.name = result;
       }
     });
+  }
+
+  executeIfLogged(func){
+    if (this.userService.isUserLoggedIn$) {
+      return this[func]();
+    }else{
+      this._dialog.open(SignInComponent, {
+        viewContainerRef: this.viewContainer,
+      });
+    }
   }
 
   zoomin() {

@@ -4,13 +4,14 @@
       <h1>Sign {{ signUp ? 'Up' : 'In' }}</h1>
 
       <md-card>
-        <div fxLayout="row" fxLayoutAlign="space-between start" class="sign-in-or-up">
-          <span>sign in</span>
-          <md-slide-toggle
-            (change)="signUp = !signUp">
-          </md-slide-toggle>
-          <span>sign up</span>
-        </div>
+        <!--REMOVED SIGNUG VERSION FOR airbus-->
+        <!--<div fxLayout="row" fxLayoutAlign="space-between start" class="sign-in-or-up">-->
+          <!--<span>sign in</span>-->
+          <!--<md-slide-toggle-->
+            <!--(change)="signUp = !signUp">-->
+          <!--</md-slide-toggle>-->
+          <!--<span>sign up</span>-->
+        <!--</div>-->
 
         <md-input-container class="sign-in-input" *ngIf="signUp">
           <input mdInput
