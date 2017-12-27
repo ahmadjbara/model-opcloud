@@ -32,6 +32,10 @@ export function addHandle(initRappidService, cell, opt) {
 }
 export function removeHandle(initRappidService, cell) {
   initRappidService.opmModel.remove(cell.id);
+  const opmModelJson = initRappidService.opmModel.toJson();
+  const opmModelFromJson = initRappidService.opmModel.fromJson(opmModelJson);
+  const graph = initRappidService.opmModel.opds[0].createGraph();
+//  initRappidService.graph.resetCells(graph.getCells());
 }
 export function changeHandle(initRappidService, cell) {
   if (cell.constructor.name === 'TriangleClass') {
@@ -46,8 +50,6 @@ export function changeHandle(initRappidService, cell) {
     const visualElement = initRappidService.opmModel.getVisualElementById(cell.get('id'));
     if (logicalElement) logicalElement.updateParams(params);
     if (visualElement)  visualElement.updateParams(params);
-    const opmModelJson = initRappidService.opmModel.toJson();
-    const opmModelFromJson = initRappidService.opmModel.fromJson(opmModelJson);
   }
 }
 function updateFundamentalLinkFromTriengle(triangleCell, opmModel) {
@@ -56,5 +58,14 @@ function updateFundamentalLinkFromTriengle(triangleCell, opmModel) {
     const params = outboundLinks[i].getParams();
     const visualElement = opmModel.getVisualElementById(outboundLinks[i].get('id'));
     if (visualElement)  visualElement.updateParams(params);
+  }
+}
+export function createDrawnEntity(type) {
+  if (type.includes('Object')) {
+    return new OpmObject();
+  } else if (type.includes('Process')) {
+    return new OpmProcess();
+  } else if (type.includes('State')) {
+    return new OpmState();
   }
 }

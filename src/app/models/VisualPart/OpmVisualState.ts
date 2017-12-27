@@ -18,13 +18,13 @@
     }
     getParams() {
       const params = {
-        fatherObjectId: this.fatherObject.id
+        fatherObjectId: this.fatherObject ? this.fatherObject.id : null
       };
       return {...super.getEntityParams(), ...params};
     }
     getParamsFromJsonElement(jsonElement) {
       const params = {
-        fatherObject: jsonElement.fatherObject
+        fatherObjectId: jsonElement.fatherObjectId
       };
       return {...super.getEntityParamsFromJsonElement(jsonElement), ...params};
     }

@@ -3,6 +3,7 @@ import {processInzooming, processUnfolding} from '../../configuration/elementsFu
 import {OpmVisualProcess} from '../VisualPart/OpmVisualProcess';
 import {OpmOpd} from '../OpmOpd';
 import {joint, _, paddingObject} from '../../configuration/rappidEnviromentFunctionality/shared';
+import {code} from "../ConfigurationOptions";
 
 export class OpmProcess extends OpmThing {
   constructor() {
@@ -30,11 +31,27 @@ export class OpmProcess extends OpmThing {
     };
   }
   getParams() {
+    const functionValue = this.attr('value/value');
     const params = {
-      function: this.attr('value/value'),
-      userDefinedFunction: this.get('userDefinedFunction')
+      code: functionValue,
+      insertedFunction: (functionValue === 'userDefined') ? this.get('userDefinedFunction') : functionValue
     };
     return {...super.getThingParams(), ...params};
+  }
+  updateParamsFromOpmModel(visualElement) {
+    let value = 'None', userDefinedFunction;
+    if (visualElement.logicalElement.code === code.PreDefined) {
+      value = visualElement.logicalElement.insertedFunction;
+    } else {
+      value = 'userDefined';
+      userDefinedFunction = visualElement.logicalElement.insertedFunction;
+    }
+    const attr = {
+      ellipse: {...this.updateEntityFromOpmModel(visualElement), ...this.updateThingFromOpmModel(visualElement), ...{stroke: visualElement.strokeColor}},
+      value: {value: value}
+    };
+    this.attr(attr);
+    this.set('userDefinedFunction', userDefinedFunction);
   }
   removeHandle(options) {
     options.treeViewService.removeNode(this.id);
@@ -69,6 +86,7 @@ export class OpmProcess extends OpmThing {
           visualElement.connectRefinementElements(cellModel.id, 'inzoom');
 
           opd.add(visualElement);
+          opd.name = visualElement.id;
         }
         options.treeViewService.treeView.treeModel.getNodeById(clonedProcess.id).toggleActivated();
         options.treeViewService.treeView.treeModel.getNodeById(clonedProcess.id).parent.expand();
@@ -213,6 +231,7 @@ export class OpmProcess extends OpmThing {
       options.opmModel.getLogicalElementByVisualId(cellModel.id).add(visualElement);
       visualElement.connectRefinementElements(cellModel.id, 'unfold');
       opd.add(visualElement);
+      opd.name = visualElement.id;
     }
     options.treeViewService.treeView.treeModel.getNodeById(clonedProcess.id).toggleActivated();
     options.treeViewService.treeView.treeModel.getNodeById(clonedProcess.id).expand();

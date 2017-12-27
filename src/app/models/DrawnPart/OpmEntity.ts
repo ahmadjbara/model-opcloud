@@ -55,6 +55,27 @@ export class OpmEntity extends OpmEntityRappid {
       id: this.get('id')
     };
   }
+  updateEntityFromOpmModel(visualElement) {
+    const attr = {
+      'text' : {
+        fill: visualElement.textColor,
+        'font-size': visualElement.textFontSize,
+        'font-family': visualElement.textFontFamily,
+        'font-weight': visualElement.textFontWeight,
+        'text' : visualElement.logicalElement.text
+      }
+    };
+    this.attr(attr);
+    const attributes = {
+      position: { x: visualElement.xPos, y: visualElement.yPos},
+      size: {width: visualElement.width, height: visualElement.height},
+      id: visualElement.id
+    };
+    this.set(attributes);
+    return {
+      fill: visualElement.fill
+    };
+  }
   addHandleGenerator(handleName, handlePosition, handleTooltip, handleTooltipPosition) {
     return {
       name: handleName, position: handlePosition, icon: null, attrs: {

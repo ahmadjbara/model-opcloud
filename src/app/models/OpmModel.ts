@@ -1,19 +1,19 @@
 import {OpmLogicalElement} from './LogicalPart/OpmLogicalElement';
 import {OpmVisualElement} from './VisualPart/OpmVisualElement';
 import {OpmOpd} from './OpmOpd';
-import {OpmLogicalObject} from "./LogicalPart/OpmLogicalObject";
-import {OpmLogicalProcess} from "./LogicalPart/OpmLogicalProcess";
-import {OpmLogicalState} from "./LogicalPart/OpmLogicalState";
-import {OpmProceduralRelation} from "./LogicalPart/OpmProceduralRelation";
-import {OpmTaggedRelation} from "./LogicalPart/OpmTaggedRelation";
-import {OpmFundamentalRelation} from "./LogicalPart/OpmFundamentalRelation";
-import {OpmVisualObject} from "./VisualPart/OpmVisualObject";
-import {OpmTaggedLink} from "./VisualPart/OpmTaggedLink";
-import {OpmVisualProcess} from "./VisualPart/OpmVisualProcess";
-import {OpmVisualState} from "./VisualPart/OpmVisualState";
-import {OpmProceduralLink} from "./VisualPart/OpmProceduralLink";
-import {OpmFundamentalLink} from "./VisualPart/OpmFundamentalLink";
-import {OpmRelation} from "./LogicalPart/OpmRelation";
+import {OpmLogicalObject} from './LogicalPart/OpmLogicalObject';
+import {OpmLogicalProcess} from './LogicalPart/OpmLogicalProcess';
+import {OpmLogicalState} from './LogicalPart/OpmLogicalState';
+import {OpmProceduralRelation} from './LogicalPart/OpmProceduralRelation';
+import {OpmTaggedRelation} from './LogicalPart/OpmTaggedRelation';
+import {OpmFundamentalRelation} from './LogicalPart/OpmFundamentalRelation';
+import {OpmVisualObject} from './VisualPart/OpmVisualObject';
+import {OpmTaggedLink} from './VisualPart/OpmTaggedLink';
+import {OpmVisualProcess} from './VisualPart/OpmVisualProcess';
+import {OpmVisualState} from './VisualPart/OpmVisualState';
+import {OpmProceduralLink} from './VisualPart/OpmProceduralLink';
+import {OpmFundamentalLink} from './VisualPart/OpmFundamentalLink';
+import {OpmRelation} from './LogicalPart/OpmRelation';
 
 export class OpmModel {
   private name: string;
@@ -111,69 +111,69 @@ export class OpmModel {
   }
   fromJson(jsonString) {
     const opmModelJson = JSON.parse(jsonString);
-    const opmModel = new OpmModel();
     // restore changed fields
+    const logicalElements = new Array<OpmLogicalElement<OpmVisualElement>>();
     for (let i = 0; i < opmModelJson.logicalElements.length; i++) {
-      opmModel.logicalElements.push(opmModel.createNewOpmModelElement(opmModelJson.logicalElements[i], opmModel));
+      logicalElements.push(this.createNewOpmModelElement(opmModelJson.logicalElements[i]));
     }
+    this.logicalElements = logicalElements;
     // in case link's source or target elements weren't restored yet when the link
     // was restored, we go over the links and update source and target elements
-    for (let i = 0; i < opmModel.logicalElements.length; i++) {
-      if (opmModel.logicalElements[i] instanceof OpmRelation) {
-        opmModel.logicalElements[i].updateSourceAndTargetFromJson();
-      } else if (opmModel.logicalElements[i] instanceof OpmLogicalProcess) {
-        for (let j = 0; j < opmModel.logicalElements[i].visualElements.length; j++) {
-          opmModel.logicalElements[i].visualElements[j].updateComplexityReferences();
+    for (let i = 0; i < this.logicalElements.length; i++) {
+      if (this.logicalElements[i] instanceof OpmRelation) {
+        this.logicalElements[i].updateSourceAndTargetFromJson();
+      } else if (this.logicalElements[i] instanceof OpmLogicalProcess) {
+        for (let j = 0; j < this.logicalElements[i].visualElements.length; j++) {
+          this.logicalElements[i].visualElements[j].updateComplexityReferences();
         }
       }
     }
-    opmModel.currentOpd = opmModel.createOpdFromJson(opmModelJson.currentOpd, opmModel);
     const opds = new Array<OpmOpd>();
     for (let i = 0; i < opmModelJson.opds.length; i++) {
-      opds.push(opmModel.createOpdFromJson(opmModelJson.opds[i], opmModel));
+      opds.push(new OpmOpd(opmModelJson.opds[i].name));
+      opds[i].createOpdFromJson(opmModelJson.opds[i], this);
+      if (opds[i].name === opmModelJson.currentOpd.name) {
+        this.currentOpd = opds[i];
+      }
     }
-    opmModel.opds = opds;
-    opmModel.name = opmModelJson.name;
-    opmModel.description = opmModelJson.description;
-    return opmModel;
+    this.opds = opds;
+    this.name = opmModelJson.name;
+    this.description = opmModelJson.description;
+    return this;
   }
-  createOpdFromJson(jsonOpd, opmModel) {
-    const opd  = new OpmOpd(jsonOpd.name);
-    for (let i = 0; i < jsonOpd.visualElements.length; i++) {
-      opd.add(opmModel.getVisualElementById(jsonOpd.visualElements[i]));
-    }
-    return opd;
-  }
-  createNewOpmModelElement(jsonElement, opmModel) {
-    const pseudoLogical = opmModel.createNewLogicalElement(jsonElement.name, null, opmModel);
-    const pseudoVisual = opmModel.createNewVisualElement(jsonElement.name, null, pseudoLogical);
+  // convert json element to opmModel element
+  createNewOpmModelElement(jsonElement) {
+    const pseudoLogical = this.createNewLogicalElement(jsonElement.name, null);
+    const pseudoVisual = this.createNewVisualElement(jsonElement.name, null, pseudoLogical);
     let paramsLogical, paramsVisual;
     let logicalElement;
     paramsLogical = pseudoLogical.getParamsFromJsonElement(jsonElement);
     paramsVisual = pseudoVisual.getParamsFromJsonElement(jsonElement.visualElementsParams[0]);
-    logicalElement = this.createNewLogicalElement(jsonElement.name, {...paramsLogical, ...paramsVisual}, opmModel);
+    logicalElement = this.createNewLogicalElement(jsonElement.name, {...paramsLogical, ...paramsVisual});
     for (let i = 1; i < jsonElement.visualElementsParams.length; i++) {
       paramsVisual = pseudoVisual.getParamsFromJsonElement(jsonElement.visualElementsParams[i]);
       logicalElement.add(this.createNewVisualElement(jsonElement.name, paramsVisual, logicalElement));
     }
     return logicalElement;
   }
-  createNewLogicalElement(elementType, params, opmModel) {
+  // creates new logical element according to elementType
+  createNewLogicalElement(elementType, params) {
     switch (elementType) {
       case 'OpmLogicalObject':
-        return new OpmLogicalObject(params, opmModel);
+        return new OpmLogicalObject(params, this);
       case 'OpmLogicalProcess':
-        return new OpmLogicalProcess(params, opmModel);
+        return new OpmLogicalProcess(params, this);
       case 'OpmLogicalState':
-        return new OpmLogicalState(params, opmModel);
+        return new OpmLogicalState(params, this);
       case 'OpmProceduralRelation':
-        return new OpmProceduralRelation(params, opmModel);
+        return new OpmProceduralRelation(params, this);
       case 'OpmFundamentalRelation':
-        return new OpmFundamentalRelation(params, opmModel);
+        return new OpmFundamentalRelation(params, this);
       case 'OpmTaggedRelation':
-        return new OpmTaggedRelation(params, opmModel);
+        return new OpmTaggedRelation(params, this);
     }
   }
+  // creates a visual element and insert a reference to its logical element according to elementLogicalType
   createNewVisualElement(elementLogicalType, params, logicalElement) {
     switch (elementLogicalType) {
       case 'OpmLogicalObject':

@@ -20,11 +20,9 @@ export  class OpmThing extends OpmEntity {
   }
   thingAttributes() {
     return {
-    //  size: {width: 90, height: 50},
       minSize: {width: 90, height: 50},
       statesWidthPadding: 0,
       statesHeightPadding: 0,
-      value: {'value': 'None', 'valueType': 'None', 'units': ''}
     };
   }
   getThingParams() {
@@ -33,6 +31,14 @@ export  class OpmThing extends OpmEntity {
       affiliation: (this.getShapeAttr()['stroke-dasharray'] === '0') ? Affiliation.Systemic : Affiliation.Environmental,
     };
     return {...super.getEntityParams(), ...params};
+  }
+  updateThingFromOpmModel(visualElement) {
+    const essenceArgs = visualElement.logicalElement.essence ? {dx: 0, dy: 0, blur: 0, color: 'grey'} : {dx: 3, dy: 3, blur: 0, color: 'grey'};
+    const affiliation = visualElement.logicalElement.affiliation ? '10,5' : '0';
+    return {
+      filter: {name: 'dropShadow', args: essenceArgs},
+      'stroke-dasharray': affiliation,
+    };
   }
   // Function gets cell and update the default configuration in the all fields that embeded cells arrangement used.
   arrangeEmbededParams(refX, refY, alignX, alignY, arrangeState, stateWidthPadding, statesHeightPadding) {

@@ -26,11 +26,11 @@
     }
     updateParams(params) {
       super.updateParams(params);
-      this.code = this.getCodeType(params.function);
+      this.code = this.getCodeType(params.code);
       // in case there is a user defined function, it will be stored in userDefinedFunction attribute.
       // in case there is a pre defined function, it will be stored in function attribute.
       // in case there is no function, function='None', userDefinedFunction undefined
-      this.insertedFunction = (this.code === code.UserDefined) ? params.userDefinedFunction : params.function;
+      this.insertedFunction = params.insertedFunction;
     }
     getCodeType(functionType) {
       switch (functionType) {
@@ -56,8 +56,8 @@
     }
     getParamsFromJsonElement(jsonElement) {
       const params = {
-        code: jsonElement.code,
-        userDefinedFunction: jsonElement.insertedFunction
+        code: (jsonElement.code === code.UserDefined) ? 'userDefined' : ((jsonElement.code === code.PreDefined) ? 'preDefined' : 'None'),
+        insertedFunction: jsonElement.insertedFunction
       };
       return {...super.getThingParamsFromJsonElement(jsonElement), ...params};
     }

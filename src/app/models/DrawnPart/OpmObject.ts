@@ -35,6 +35,28 @@ export class OpmObject extends OpmThing {
     };
     return {...super.getThingParams(), ...params};
   }
+  updateParamsFromOpmModel(visualElement) {
+    const attr = {
+      rect: {...this.updateEntityFromOpmModel(visualElement), ...this.updateThingFromOpmModel(visualElement), ...{stroke: visualElement.strokeColor}},
+      'statesArrange' : this.getStateArrangement(visualElement.statesArrangement),
+      value: {value: visualElement.logicalElement.value, valueType: visualElement.logicalElement.valueType, units: visualElement.logicalElement.units}
+    };
+    this.attr(attr);
+  }
+  getStateArrangement(statesArrangement) {
+    if (statesArrangement) {
+      switch (statesArrangement) {
+        case (statesArrangement.Top):
+          return 'top';
+        case (statesArrangement.Bottom):
+          return 'bottom';
+        case (statesArrangement.Left):
+          return 'left';
+        case (statesArrangement.Right):
+          return 'right';
+      }
+    }
+  }
   addState(stateName = null) {
     this.objectChangedSize = false;
     const statesNumber = this.getEmbeddedCells().length;

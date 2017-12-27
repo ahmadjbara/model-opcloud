@@ -36,7 +36,7 @@
     }
     getThingParamsFromJsonElement(jsonElement) {
       const params = {
-        essence: (jsonElement.essence === 0) ? Essence.Informatical : Essence.Physical,
+        essence: (jsonElement.essence === 0) ? Essence.Physical : Essence.Informatical,
         affiliation: (jsonElement.affiliation === 0) ? Affiliation.Systemic : Affiliation.Environmental,
       };
       return {...super.getEntityParamsFromJsonElement(jsonElement), ...params};
