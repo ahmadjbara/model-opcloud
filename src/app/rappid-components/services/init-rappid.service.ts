@@ -10,6 +10,8 @@ import {OpmDefaultLink} from '../../models/DrawnPart/Links/OpmDefaultLink';
 import {addHandle, changeHandle, removeHandle} from '../../configuration/elementsFunctionality/graphFunctionality';
 import {defineKeyboardShortcuts} from '../../configuration/rappidEnviromentFunctionality/keyboardShortcuts';
 import {selectionConfiguration} from '../../configuration/rappidEnviromentFunctionality/selectionConfiguration';
+import {OpmState} from "../../models/DrawnPart/OpmState";
+import {ModelObject} from "./storage/model-object.class";
 
 
 const joint = require('rappid');
@@ -125,5 +127,36 @@ export class InitRappidService {
       cell.addHandle(_this); });
     this.graph.on('change', function (cell) {
       changeHandle(_this, cell); }, this);
+  }
+  saveModel(modelStorage) {
+    const modelInDb = modelStorage.models.includes(this.opmModel.name);
+    // if there is no name to the model or the model wasn't saved yet
+    if (!this.opmModel.name || !modelInDb) {
+      const result = prompt('Save Model As:', 'Enter a Model Name');
+      if (result === 'Enter a Model Name' || result === null) {
+        console.log('Model not saved');
+        return;
+      } else {
+        this.opmModel.name = result;
+      }
+    }
+    const modelObject = new ModelObject(this.opmModel.name, this.opmModel.toJson());
+    modelStorage.save(modelObject);
+  }
+  loadModel(name, modelStorage) {
+    modelStorage.get(name).then((res) => {
+      this.opmModel.fromJson(res.modelData);
+      const newGraph = this.opmModel.opds[0].createGraph();
+      this.graph.resetCells(newGraph.getCells());
+      // update the graph reference for each cell to be the current graph
+      for (let i = 0; i < this.graph.attributes.cells.models.length; i++) {
+        this.graph.attributes.cells.models[i].graph = this.graph;
+        const graphElements = this.graph.attributes.cells.models;
+        if (graphElements[i] instanceof OpmState) {
+          const parentObject = graphElements.filter(element => (element.id === graphElements[i].get('parent')))[0];
+          parentObject.embed(graphElements[i]);
+        }
+      }
+    });
   }
 }

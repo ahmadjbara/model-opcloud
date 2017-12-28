@@ -66,7 +66,7 @@ export  class OpmState extends OpmEntity {
       '.inner': {...this.updateEntityFromOpmModel(visualElement), ...{stroke: visualElement.strokeColor}},
     };
     this.attr(attr);
-    this.set('parent', visualElement.fatherObject.id);
+    if (visualElement.fatherObject) this.set('parent', visualElement.fatherObject.id);
     this.updateInnerOuterSize();
     this.updateStateByType(visualElement.logicalElement.stateType);
   }

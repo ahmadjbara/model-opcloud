@@ -16,8 +16,8 @@ import {OpmFundamentalLink} from './VisualPart/OpmFundamentalLink';
 import {OpmRelation} from './LogicalPart/OpmRelation';
 
 export class OpmModel {
-  private name: string;
-  private description: string;
+  name: string;
+  description: string;
   logicalElements: Array<OpmLogicalElement<OpmVisualElement>>;
   opds: Array<OpmOpd>;
   currentOpd: OpmOpd;
@@ -112,11 +112,12 @@ export class OpmModel {
   fromJson(jsonString) {
     const opmModelJson = JSON.parse(jsonString);
     // restore changed fields
-    const logicalElements = new Array<OpmLogicalElement<OpmVisualElement>>();
+    this.logicalElements = [];
+   // const logicalElements = new Array<OpmLogicalElement<OpmVisualElement>>();
     for (let i = 0; i < opmModelJson.logicalElements.length; i++) {
-      logicalElements.push(this.createNewOpmModelElement(opmModelJson.logicalElements[i]));
+      this.logicalElements.push(this.createNewOpmModelElement(opmModelJson.logicalElements[i]));
     }
-    this.logicalElements = logicalElements;
+   // this.logicalElements = logicalElements;
     // in case link's source or target elements weren't restored yet when the link
     // was restored, we go over the links and update source and target elements
     for (let i = 0; i < this.logicalElements.length; i++) {

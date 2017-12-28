@@ -46,7 +46,7 @@ export enum linkType {
   Invocation,
   UndertimeException,
   OvertimeException,
-  UnderOvertimeException,
+  UndertimeOvertimeException,
   Unidirectional,
   Bidirectional,
   Aggregation,

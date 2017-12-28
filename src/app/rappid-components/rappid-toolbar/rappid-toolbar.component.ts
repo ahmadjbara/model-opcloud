@@ -86,32 +86,13 @@ export class RappidToolbarComponent implements OnInit {
   }
 
   saveModel() {
-    const modelInDb = this.graphService.modelStorage.models.includes(this.graphService.modelObject.name);
-    if ((this.graphService.modelObject.name === null) || !modelInDb) {
-      return this.saveModelAs();
-    }
-    return this.graphService.saveGraph(this.graphService.modelObject.name, false);
+    this.initRappidService.saveModel(this.graphService.modelStorage);
   }
-
-  saveModelAs() {
-    // debugger;
-    // let dialogRef = this._dialog.open(SaveModelDialogComponent);
-    // dialogRef.afterClosed().subscribe(result => {
-    const result = prompt('Save Model As:', 'Enter a Model Name');
-    if (result === 'Enter a Model Name' || result === null) {
-      console.log('Model not saved');
-      return;
-    }
-    this.graphService.saveGraph(result, true);
-  }
-
   loadModel() {
     const dialogRef = this._dialog.open(LoadModelDialogComponent);
-
     dialogRef.afterClosed().subscribe(result => {
       if (!!result) {
-        this.graphService.loadGraph(result);
-        this.graphService.modelObject.name = result;
+        this.initRappidService.loadModel(result, this.graphService.modelStorage);
       }
     });
   }

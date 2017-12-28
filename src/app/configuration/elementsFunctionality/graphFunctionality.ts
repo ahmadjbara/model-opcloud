@@ -11,6 +11,21 @@ import {OpmProcess} from '../../models/DrawnPart/OpmProcess';
 import {OpmLogicalObject} from '../../models/LogicalPart/OpmLogicalObject';
 import {OpmObject} from '../../models/DrawnPart/OpmObject';
 import {OpmDefaultLink} from "../../models/DrawnPart/Links/OpmDefaultLink";
+import {AgentLink} from "../../models/DrawnPart/Links/AgentLink";
+import {InstrumentLink} from "../../models/DrawnPart/Links/InstrumentLink";
+import {InstantiationLink} from "../../models/DrawnPart/Links/InstantiationLink";
+import {GeneralizationLink} from "../../models/DrawnPart/Links/GeneralizationLink";
+import {ExhibitionLink} from "../../models/DrawnPart/Links/ExhibitionLink";
+import {AggregationLink} from "../../models/DrawnPart/Links/AggregationLink";
+import {BiDirectionalTaggedLink} from "../../models/DrawnPart/Links/BiDirectionalTaggedLink";
+import {UnidirectionalTaggedLink} from "../../models/DrawnPart/Links/UnidirectionalTaggedLink";
+import {OvertimeUndertimeExceptionLink} from "../../models/DrawnPart/Links/OvertimeUndertimeExceptionLink";
+import {UndertimeExceptionLink} from "../../models/DrawnPart/Links/UndertimeExceptionLink";
+import {OvertimeExceptionLink} from "../../models/DrawnPart/Links/OvertimeExceptionLink";
+import {EffectLink} from "../../models/DrawnPart/Links/EffectLink";
+import {ConsumptionLink} from "../../models/DrawnPart/Links/ConsumptionLink";
+import {ResultLink} from "../../models/DrawnPart/Links/ResultLink";
+import {InvocationLink} from "../../models/DrawnPart/Links/InvocationLink";
 
 export function addHandle(initRappidService, cell, opt) {
   if (opt.stencil) {
@@ -32,10 +47,6 @@ export function addHandle(initRappidService, cell, opt) {
 }
 export function removeHandle(initRappidService, cell) {
   initRappidService.opmModel.remove(cell.id);
-  const opmModelJson = initRappidService.opmModel.toJson();
-  const opmModelFromJson = initRappidService.opmModel.fromJson(opmModelJson);
-  const graph = initRappidService.opmModel.opds[0].createGraph();
-//  initRappidService.graph.resetCells(graph.getCells());
 }
 export function changeHandle(initRappidService, cell) {
   if (cell.constructor.name === 'TriangleClass') {
@@ -67,5 +78,38 @@ export function createDrawnEntity(type) {
     return new OpmProcess();
   } else if (type.includes('State')) {
     return new OpmState();
+  }
+}
+export function createDrawnLink(source, target, isCondition = null, isEvent = null, linkName, graph) {
+  if (linkName.includes('Agent')) {
+    return new AgentLink(source, target, isCondition, isEvent);
+  } else if (linkName.includes('Instrument')) {
+    return new InstrumentLink(source, target, isCondition, isEvent);
+  } else if (linkName.includes('Invocation')) {
+    return new InvocationLink(source, target, isCondition, isEvent);
+  } else if (linkName.includes('Result')) {
+    return new ResultLink(source, target, isCondition, isEvent);
+  } else if (linkName.includes('Consumption')) {
+    return new ConsumptionLink(source, target, isCondition, isEvent);
+  } else if (linkName.includes('Effect')) {
+    return new EffectLink(source, target, isCondition, isEvent);
+  } else if (linkName.includes('Overtime')) {
+    return new OvertimeExceptionLink(source, target, isCondition, isEvent);
+  } else if (linkName.includes('Undertime')) {
+    return new UndertimeExceptionLink(source, target, isCondition, isEvent);
+  } else if (linkName.includes('UndertimeOvertimeException')) {
+    return new OvertimeUndertimeExceptionLink(source, target, isCondition, isEvent);
+  } else if (linkName.includes('Unidirectional')) {
+    return  new UnidirectionalTaggedLink(source, target);
+  } else if (linkName.includes('Bidirectional')) {
+    return new BiDirectionalTaggedLink(source, target);
+  } else if (linkName.includes('Aggregation')) {
+    return new AggregationLink(source, target, graph);
+  } else if (linkName.includes('Exhibition')) {
+    return new ExhibitionLink(source, target, graph);
+  }else if (linkName.includes('Generalization')) {
+    return  new GeneralizationLink(source, target, graph);
+  }else if (linkName.includes('Instantiation')) {
+    return  new InstantiationLink(source, target, graph);
   }
 }

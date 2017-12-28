@@ -8,7 +8,7 @@ export  class OvertimeUndertimeExceptionLink extends OpmProceduralLink {
     this.attr({'.marker-target' : {d: 'M30,46 L46,26 M40,46 L56,26 M60,46 L76,26 M26,36 L80,36'}});
   }
   getParams() {
-    const params = { linkType: linkType.UnderOvertimeException };
+    const params = { linkType: linkType.UndertimeOvertimeException };
     return {...super.getProceduralLinkParams(), ...params};
   }
 }

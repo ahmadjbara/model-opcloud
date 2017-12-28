@@ -1,7 +1,12 @@
 import {OpmVisualElement} from './VisualPart/OpmVisualElement';
 import {joint} from '../configuration/rappidEnviromentFunctionality/shared';
-import {createDrawnElement, createDrawnEntity} from "../configuration/elementsFunctionality/graphFunctionality";
+import {createDrawnEntity, createDrawnLink} from "../configuration/elementsFunctionality/graphFunctionality";
 import {OpmVisualEntity} from "./VisualPart/OpmVisualEntity";
+import {OpmProceduralRelation} from "./LogicalPart/OpmProceduralRelation";
+import {OpmLink} from "./VisualPart/OpmLink";
+import {OpmProceduralLink} from "./VisualPart/OpmProceduralLink";
+import {OpmStructuralLink} from "./VisualPart/OpmStructuralLink";
+import {linkType} from "./ConfigurationOptions";
 
 export class OpmOpd {
   visualElements: Array<OpmVisualElement>;
@@ -29,15 +34,38 @@ export class OpmOpd {
   }
   createGraph() {
     const graph = new joint.dia.Graph;
-    const graphElements = new Array();
+    const graphEntities = new Array();
+    // first stage insert all entities
     for (let i = 0; i < this.visualElements.length; i++) {
       if (this.visualElements[i] instanceof OpmVisualEntity) {
         const drawnElement = createDrawnEntity(this.visualElements[i].logicalElement.name);
         drawnElement.updateParamsFromOpmModel(this.visualElements[i]);
-        graphElements.push(drawnElement);
+        graphEntities.push(drawnElement);
       }
     }
-    graph.addCells(graphElements);
+    graph.addCells(graphEntities);
+    // second stage insert all link
+    for (let i = 0; i < this.visualElements.length; i++) {
+      if (this.visualElements[i] instanceof OpmLink) {
+        let sourceVisualElement, targetVisualElement, linkT, condition, event;
+        // converting for getting the link type
+        linkT = (<OpmProceduralRelation>(this.visualElements[i].logicalElement)).linkType;
+        if (this.visualElements[i] instanceof OpmProceduralLink) {
+          sourceVisualElement = (<OpmProceduralLink>(this.visualElements[i])).sourceVisualElement;
+          targetVisualElement = (<OpmProceduralLink>(this.visualElements[i])).targetVisualElements[0].targetVisualElement;
+          condition = (<OpmProceduralRelation>(this.visualElements[i].logicalElement)).condition;
+          event = (<OpmProceduralRelation>(this.visualElements[i].logicalElement)).event;
+        } else if (this.visualElements[i] instanceof OpmStructuralLink) {
+          sourceVisualElement = (<OpmStructuralLink>(this.visualElements[i])).sourceVisualElement;
+          targetVisualElement = (<OpmStructuralLink>(this.visualElements[i])).targetVisualElements[0].targetVisualElement;
+        }
+        const sourceDrawnElement = graphEntities.filter(element => (element.id === sourceVisualElement.id))[0];
+        const targetDrawnElement = graphEntities.filter(element => (element.id === targetVisualElement.id))[0];
+        const drawnLink = createDrawnLink(sourceDrawnElement, targetDrawnElement, condition, event, linkType[linkT], graph);
+        // UPDATE PARAMETERS OF LINK!!!!!!!!!!!!!!!
+        graph.addCell(drawnLink);
+      }
+    }
     return graph;
   }
 }
