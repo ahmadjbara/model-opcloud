@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
 import { AngularFireAuth } from 'angularfire2/auth';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
-import { environment } from '../../../environments/environment';
+import { environment } from '../../../environments/environment.airbus';
+import { AngularFireDatabase } from 'angularfire2/database';
 
 import * as firebase from 'firebase/app';
 import 'rxjs/add/operator/map';
@@ -30,12 +31,19 @@ export interface AuthActionPayload {
 export class UserService {
   authPending$ = new BehaviorSubject(true);
   authError$ = new BehaviorSubject(null);
+  isUserLoggedIn$ = false;
 
-  constructor(private afAuth: AngularFireAuth) {
+  constructor(private afAuth: AngularFireAuth, private afDB: AngularFireDatabase) {
     this.afAuth.authState.subscribe((user) => {
-      // this deals with successful authAction, no need to set pending to false again.
+      if (user && user.uid) {
+        this.isUserLoggedIn$=true;
+      }else{
+        this.isUserLoggedIn$=false;
+      }
       this.authPending$.next(false);
     });
+
+
   }
 
   get authState$() {
@@ -43,10 +51,21 @@ export class UserService {
   }
 
   get user$() {
-    return this.authState$.map(authState => {
-      // TODO: get user details from DB
-      return authState ? (authState.providerData ? authState.providerData[0] : authState) : null;
+     return this.authState$.map(authState => {
+       // TODO: get user details from DB
+       return authState ? (authState.providerData ? authState.providerData[0] : authState) : null;
     });
+    // return this.authState$
+    // // TODO: get user details from DB
+    //   .switchMap(userDetails => {
+    //     if (userDetails) {
+    //       return this.afDB.object(`/users/FullDetails/${userDetails.uid}`)
+    //         .map(userData => {
+    //           return {...userDetails, userData};
+    //         });
+    //     }
+    //   })
+    //   .do(res => console.log(res));
   }
 
   authAction(type: AuthActionTypes, payload?: AuthActionPayload) {
@@ -67,7 +86,8 @@ export class UserService {
         return payload.provider ? this.signInWithProvider(payload.provider) : this.signInWithPassword(payload.user);
       }
       case AuthActionTypes.signup: {
-        return this.signUp(payload.user);
+        return this.signUp(payload.user)
+          .then((res) => this.updateDB(payload.user));
       }
       case AuthActionTypes.logout: {
         return this.signOut();
@@ -94,4 +114,26 @@ export class UserService {
   private signOut() {
     return this.afAuth.auth.signOut();
   }
+
+  private updateDB(user){
+    let FBuser = this.afAuth.auth.currentUser;
+    if (FBuser != null){
+      //Update internal profile data
+      FBuser.updateProfile({displayName: user.displayName, photoURL: "https://skyshop.store/image/cache/data/Marcas/airbus%20logo%20site-250x250.png"});
+
+      //Update DB - Users - Full Details
+      // let ref = this.afDB.database.ref(`/users`);
+      // ref.child('FullDetails').child(FBuser.uid).set({
+      //   name: user.displayName,
+      //   email: user.email,
+      //   organization: user.organization
+      // });
+
+      //Update DB - usersByOrg - each org will have
+      // ref.child('GroupByOrg').child(user.organization).child('PendingApproval').child(FBuser.uid).set({
+      //   email: user.email
+      // });
+    }
+  }
+
 }
