@@ -52,7 +52,8 @@ export class OpmEntity extends OpmEntityRappid {
       text: this.attr('text/text'),
       fill: this.getShapeAttr().fill,
       strokeColor: this.getShapeAttr().stroke,
-      id: this.get('id')
+      id: this.get('id'),
+      fatherObjectId: this.get('parent')
     };
   }
   updateEntityFromOpmModel(visualElement) {
@@ -66,6 +67,7 @@ export class OpmEntity extends OpmEntityRappid {
       }
     };
     this.attr(attr);
+    if (visualElement.fatherObject) this.set('parent', visualElement.fatherObject.id);
     const attributes = {
       position: { x: visualElement.xPos, y: visualElement.yPos},
       size: {width: visualElement.width, height: visualElement.height},

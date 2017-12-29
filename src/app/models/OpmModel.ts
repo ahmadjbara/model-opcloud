@@ -94,6 +94,7 @@ export class OpmModel {
       elementIds.push(this.currentOpd.visualElements[i].id);
     }
     jsonOpmModel.currentOpd.name = this.currentOpd.name;
+    jsonOpmModel.currentOpd.parendId = this.currentOpd.parendId;
     jsonOpmModel.currentOpd.visualElements = elementIds;
     const opds = new Array<OpmOpd>();
     for (let i = 0; i < this.opds.length; i++) {
@@ -102,6 +103,7 @@ export class OpmModel {
         elementIds.push(this.opds[i].visualElements[j].id);
       }
       const opd  = new OpmOpd(this.opds[i].name);
+      opd.parendId = this.opds[i].parendId;
       opd.visualElements = elementIds;
       opds.push(opd);
     }
@@ -132,6 +134,7 @@ export class OpmModel {
     const opds = new Array<OpmOpd>();
     for (let i = 0; i < opmModelJson.opds.length; i++) {
       opds.push(new OpmOpd(opmModelJson.opds[i].name));
+      opds[i].parendId = opmModelJson.opds[i].parendId;
       opds[i].createOpdFromJson(opmModelJson.opds[i], this);
       if (opds[i].name === opmModelJson.currentOpd.name) {
         this.currentOpd = opds[i];

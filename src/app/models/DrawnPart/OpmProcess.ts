@@ -51,7 +51,12 @@ export class OpmProcess extends OpmThing {
       value: {value: value}
     };
     this.attr(attr);
-    this.set('userDefinedFunction', userDefinedFunction);
+    const father = visualElement.refineable ? visualElement.refineable.id : null;
+    const attributes = {
+      userDefinedFunction: userDefinedFunction,
+      //parent: this.get('parent') ? this.get('parent') : father
+    };
+    this.set(attributes);
   }
   removeHandle(options) {
     options.treeViewService.removeNode(this.id);
@@ -87,6 +92,7 @@ export class OpmProcess extends OpmThing {
 
           opd.add(visualElement);
           opd.name = visualElement.id;
+          opd.parendId = cellModel.get('id');
         }
         options.treeViewService.treeView.treeModel.getNodeById(clonedProcess.id).toggleActivated();
         options.treeViewService.treeView.treeModel.getNodeById(clonedProcess.id).parent.expand();
@@ -232,6 +238,7 @@ export class OpmProcess extends OpmThing {
       visualElement.connectRefinementElements(cellModel.id, 'unfold');
       opd.add(visualElement);
       opd.name = visualElement.id;
+      opd.parendId = cellModel.get('id');
     }
     options.treeViewService.treeView.treeModel.getNodeById(clonedProcess.id).toggleActivated();
     options.treeViewService.treeView.treeModel.getNodeById(clonedProcess.id).expand();

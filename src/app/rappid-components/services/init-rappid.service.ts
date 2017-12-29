@@ -146,16 +146,13 @@ export class InitRappidService {
   loadModel(name, modelStorage) {
     modelStorage.get(name).then((res) => {
       this.opmModel.fromJson(res.modelData);
-      const newGraph = this.opmModel.opds[0].createGraph();
+      let newGraph = this.opmModel.opds[0].createGraph();
       this.graph.resetCells(newGraph.getCells());
       // update the graph reference for each cell to be the current graph
-      for (let i = 0; i < this.graph.attributes.cells.models.length; i++) {
-        this.graph.attributes.cells.models[i].graph = this.graph;
-        const graphElements = this.graph.attributes.cells.models;
-        if (graphElements[i] instanceof OpmState) {
-          const parentObject = graphElements.filter(element => (element.id === graphElements[i].get('parent')))[0];
-          parentObject.embed(graphElements[i]);
-        }
+      this.graph.getCells().map((cell) => cell.graph = this.graph);
+      for (let i = 1; i < this.opmModel.opds.length; i++) {
+        newGraph = this.opmModel.opds[i].createGraph();
+        this.treeViewService.insetNodeWithGraph(newGraph, this.opmModel.opds[i].name, this.opmModel.opds[i].parendId);
       }
     });
   }

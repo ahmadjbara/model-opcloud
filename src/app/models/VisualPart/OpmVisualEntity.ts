@@ -6,9 +6,16 @@
     yPos: number;
     width: number;
     height: number;
+    private _fatherObject;
 
     constructor(params, logicalElement) {
       super(params, logicalElement);
+    }
+    get fatherObject() {
+      return this._fatherObject;
+    }
+    set fatherObject(value) {
+      this._fatherObject = value;
     }
     getEntityParams() {
       const params =  {
@@ -17,6 +24,7 @@
         width: this.width,
         height: this.height,
         fill: this.fill,
+        fatherObjectId: this.fatherObject ? (this.fatherObject.id ? this.fatherObject.id : this.fatherObject) : null
       };
       return {...super.getElementParams(), ...params};
     }
@@ -27,6 +35,10 @@
       this.yPos = params.yPos;
       this.width = params.width;
       this.height = params.height;
+      if (this.logicalElement) {
+        const father = this.logicalElement.opmModel.getVisualElementById(params.fatherObjectId);
+        this.fatherObject = father ? father : params.fatherObjectId;
+      }
     }
     getEntityParamsFromJsonElement(jsonElement) {
       const params =  {
@@ -34,7 +46,8 @@
         xPos: jsonElement.xPos,
         yPos: jsonElement.yPos,
         width: jsonElement.width,
-        height: jsonElement.height
+        height: jsonElement.height,
+        fatherObjectId: jsonElement.fatherObjectId
       };
       return {...super.getElementParamsFromJsonElement(jsonElement), ...params};
     }

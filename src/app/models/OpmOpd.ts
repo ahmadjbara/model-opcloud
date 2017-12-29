@@ -7,10 +7,13 @@ import {OpmLink} from "./VisualPart/OpmLink";
 import {OpmProceduralLink} from "./VisualPart/OpmProceduralLink";
 import {OpmStructuralLink} from "./VisualPart/OpmStructuralLink";
 import {linkType} from "./ConfigurationOptions";
+import {OpmState} from "./DrawnPart/OpmState";
+import {OpmEntity} from "./DrawnPart/OpmEntity";
 
 export class OpmOpd {
   visualElements: Array<OpmVisualElement>;
   name: string;
+  parendId: string;
 
   constructor(name) {
     this.visualElements = new Array<OpmVisualElement>();
@@ -66,6 +69,16 @@ export class OpmOpd {
         graph.addCell(drawnLink);
       }
     }
+    reEmbed(graph);
     return graph;
+  }
+}
+function reEmbed(graph) {
+  for (let i = 0; i < graph.attributes.cells.models.length; i++) {
+    const graphElements = graph.attributes.cells.models;
+    if (graphElements[i] instanceof OpmEntity) {
+      const parentObject = graphElements.filter(element => (element.id === graphElements[i].get('parent')))[0];
+      if (parentObject) parentObject.embed(graphElements[i]);
+    }
   }
 }

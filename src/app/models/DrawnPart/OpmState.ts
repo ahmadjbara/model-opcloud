@@ -55,7 +55,6 @@ export  class OpmState extends OpmEntity {
   }
   getParams() {
     const params = {
-      fatherObjectId: this.get('parent'),
       stateType: this.checkType()
     };
     return {...super.getEntityParams(), ...params};
@@ -66,7 +65,6 @@ export  class OpmState extends OpmEntity {
       '.inner': {...this.updateEntityFromOpmModel(visualElement), ...{stroke: visualElement.strokeColor}},
     };
     this.attr(attr);
-    if (visualElement.fatherObject) this.set('parent', visualElement.fatherObject.id);
     this.updateInnerOuterSize();
     this.updateStateByType(visualElement.logicalElement.stateType);
   }
