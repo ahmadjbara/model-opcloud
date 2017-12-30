@@ -20,6 +20,8 @@ const commandGroups = [
   {
     group: 'file',
     commands: [
+     // { name: 'executeIfLogged(saveModel)', tooltip: 'save', icon: 'save' },
+     // { name: 'executeIfLogged(loadModel)', tooltip: 'load', icon: 'open_in_browser' }
       { name: 'executeIfLogged(saveModel)', tooltip: 'save', icon: 'save' },
       { name: 'executeIfLogged(loadModel)', tooltip: 'load', icon: 'open_in_browser' }
     ]
@@ -103,7 +105,7 @@ export class RappidToolbarComponent implements OnInit {
     });
   }
 
-  executeIfLogged(func){
+  executeIfLogged(func) {
     if (this.userService.isUserLoggedIn$) {
       return this[func]();
     }else{

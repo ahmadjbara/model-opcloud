@@ -142,13 +142,13 @@ export class InitRappidService {
   loadModel(name, modelStorage) {
     modelStorage.get(name).then((res) => {
       this.opmModel.fromJson(res.modelData);
-      let newGraph = this.opmModel.opds[0].createGraph();
+      let newGraph = this.graphService.createGraph(this.opmModel.opds[0]);
       this.treeViewService.nodes[0].graph = newGraph;
       this.graph.resetCells(newGraph.getCells());
       // update the graph reference for each cell to be the current graph
       this.graph.getCells().map((cell) => cell.graph = this.graph);
       for (let i = 1; i < this.opmModel.opds.length; i++) {
-        newGraph = this.opmModel.opds[i].createGraph();
+        newGraph = this.graphService.createGraph(this.opmModel.opds[i]);
         this.treeViewService.insetNodeWithGraph(newGraph, this.opmModel.opds[i].name, this.opmModel.opds[i].parendId);
       }
       this.treeViewService.treeView.treeModel.getNodeById('SD').toggleActivated();

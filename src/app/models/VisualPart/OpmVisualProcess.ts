@@ -30,7 +30,7 @@
       return {...super.getThingParams(), ...params};
     }
     connectRefinementElements(id, type) {
-      if (type=='inzoom')
+      if (type=='in-zoom')
       (<OpmVisualProcess>this.logicalElement.findVisualElement(id)).refineeInzooming = this;
       else
         (<OpmVisualProcess>this.logicalElement.findVisualElement(id)).refineeUnfolding = this;

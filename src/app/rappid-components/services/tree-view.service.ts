@@ -84,10 +84,10 @@ export class TreeViewService {
     const idStr = nodeId.toString();
    this.removeNodeBy((node) => node.id.toString() === idStr,this.nodes[0],nodeId);
     if (node!=null){
-      this.graphService.removeGraphById(nodeId,node.parent.id);
+     // this.graphService.removeGraphById(nodeId,node.parent.id);
     }
 
-    this.nodesSubject.next(this.nodes);
+    // this.nodesSubject.next(this.nodes);
   }
 
 
