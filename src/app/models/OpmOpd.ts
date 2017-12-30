@@ -9,6 +9,7 @@ import {OpmStructuralLink} from "./VisualPart/OpmStructuralLink";
 import {linkType} from "./ConfigurationOptions";
 import {OpmState} from "./DrawnPart/OpmState";
 import {OpmEntity} from "./DrawnPart/OpmEntity";
+import {OpmProcess} from "./DrawnPart/OpmProcess";
 
 export class OpmOpd {
   visualElements: Array<OpmVisualElement>;
@@ -37,17 +38,30 @@ export class OpmOpd {
   }
   createGraph() {
     const graph = new joint.dia.Graph;
-    const graphEntities = new Array();
+    let graphEntities = new Array();
     // first stage insert all entities
     for (let i = 0; i < this.visualElements.length; i++) {
-      if (this.visualElements[i] instanceof OpmVisualEntity) {
+      // if it is an entity and it is not an embedded entity. needed for getting the right z value
+      if ((this.visualElements[i] instanceof OpmVisualEntity) && !(<OpmVisualEntity>this.visualElements[i]).fatherObject) {
         const drawnElement = createDrawnEntity(this.visualElements[i].logicalElement.name);
         drawnElement.updateParamsFromOpmModel(this.visualElements[i]);
         graphEntities.push(drawnElement);
       }
     }
     graph.addCells(graphEntities);
-    // second stage insert all link
+    // second stage insert embedded entities
+    graphEntities = [];
+    for (let i = 0; i < this.visualElements.length; i++) {
+      // if it is an embedded entity
+      if ((this.visualElements[i] instanceof OpmVisualEntity) && (<OpmVisualEntity>this.visualElements[i]).fatherObject) {
+        const drawnElement = createDrawnEntity(this.visualElements[i].logicalElement.name);
+        drawnElement.updateParamsFromOpmModel(this.visualElements[i]);
+        graphEntities.push(drawnElement);
+      }
+    }
+    graph.addCells(graphEntities);
+    reEmbed(graph);
+    // third stage insert all links
     for (let i = 0; i < this.visualElements.length; i++) {
       if (this.visualElements[i] instanceof OpmLink) {
         let sourceVisualElement, targetVisualElement, linkT, condition, event;
@@ -62,14 +76,13 @@ export class OpmOpd {
           sourceVisualElement = (<OpmStructuralLink>(this.visualElements[i])).sourceVisualElement;
           targetVisualElement = (<OpmStructuralLink>(this.visualElements[i])).targetVisualElements[0].targetVisualElement;
         }
-        const sourceDrawnElement = graphEntities.filter(element => (element.id === sourceVisualElement.id))[0];
-        const targetDrawnElement = graphEntities.filter(element => (element.id === targetVisualElement.id))[0];
+        const sourceDrawnElement = graph.getCells().filter(element => (element.id === sourceVisualElement.id))[0];
+        const targetDrawnElement = graph.getCells().filter(element => (element.id === targetVisualElement.id))[0];
         const drawnLink = createDrawnLink(sourceDrawnElement, targetDrawnElement, condition, event, linkType[linkT], graph);
         // UPDATE PARAMETERS OF LINK!!!!!!!!!!!!!!!
         graph.addCell(drawnLink);
       }
     }
-    reEmbed(graph);
     return graph;
   }
 }
@@ -78,7 +91,10 @@ function reEmbed(graph) {
     const graphElements = graph.attributes.cells.models;
     if (graphElements[i] instanceof OpmEntity) {
       const parentObject = graphElements.filter(element => (element.id === graphElements[i].get('parent')))[0];
-      if (parentObject) parentObject.embed(graphElements[i]);
+      if (parentObject) {
+        parentObject.embed(graphElements[i]);
+        if (parentObject instanceof OpmProcess) parentObject.set('padding', 100);
+      }
     }
   }
 }

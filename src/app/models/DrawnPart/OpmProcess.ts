@@ -39,8 +39,10 @@ export class OpmProcess extends OpmThing {
     return {...super.getThingParams(), ...params};
   }
   updateParamsFromOpmModel(visualElement) {
-    let value = 'None', userDefinedFunction;
-    if (visualElement.logicalElement.code === code.PreDefined) {
+    let value, userDefinedFunction;
+    if (visualElement.logicalElement.code === code.Unspecified) {
+      value = 'None';
+    } else if (visualElement.logicalElement.code === code.PreDefined) {
       value = visualElement.logicalElement.insertedFunction;
     } else {
       value = 'userDefined';

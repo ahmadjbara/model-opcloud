@@ -99,14 +99,10 @@ export class InitRappidService {
     this.paper.on('cell:pointerdblclick', function (cellView, evt) {
       cellView.model.doubleClickHandle(cellView, evt, this.paper); }, this);
     this.paper.on('cell:pointerup', function (cellView) {
-      cellView.model.pointerUpHandle(cellView, _this);
-      _this.graphService.updateJSON(); }, this);      // save to firebase
+      cellView.model.pointerUpHandle(cellView, _this); }, this);      // save to firebase
     this.paper.on('element:pointerup link:options', function (cellView) {
       if (!this.selection.collection.contains(cellView.model)) {
         this.cell$.next(cellView.model); }}, this);
-    this.paper.on('blank:pointerclick ', function () {
-      _this.graphService.updateJSON();      // save to firebase
-    });
     this.paper.on('blank:pointerdown', function (evt, x, y) {
       selectionConfiguration.blankPointerdown(this, evt, x, y); }, this);
     this.paper.on('cell:pointerdown', function (cellView, evt) {
@@ -147,6 +143,7 @@ export class InitRappidService {
     modelStorage.get(name).then((res) => {
       this.opmModel.fromJson(res.modelData);
       let newGraph = this.opmModel.opds[0].createGraph();
+      this.treeViewService.nodes[0].graph = newGraph;
       this.graph.resetCells(newGraph.getCells());
       // update the graph reference for each cell to be the current graph
       this.graph.getCells().map((cell) => cell.graph = this.graph);
@@ -154,6 +151,8 @@ export class InitRappidService {
         newGraph = this.opmModel.opds[i].createGraph();
         this.treeViewService.insetNodeWithGraph(newGraph, this.opmModel.opds[i].name, this.opmModel.opds[i].parendId);
       }
+      this.treeViewService.treeView.treeModel.getNodeById('SD').toggleActivated();
+      this.treeViewService.treeView.treeModel.getNodeById('SD').parent.expand();
     });
   }
 }

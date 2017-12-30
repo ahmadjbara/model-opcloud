@@ -312,11 +312,10 @@ export class GraphService {
       cloned.set('position', src.get('position'));
       cloned.set('size', src.get('size'));
       cloned.set('z', src.get('z'));
-      if (! (cloned instanceof OpmLinkRappid))
-      cloned.attributes.attrs.text.text = src.attributes.attrs.text.text;
+      cloned.attr('text/text', src.attr('text/text'));
       clonedConnectedCells.push(temp[key]);
+      let lg = initRappid.opmModel.getLogicalElementByVisualId(key);
       if (temp[key] instanceof OpmObject) {
-        let lg = initRappid.opmModel.getLogicalElementByVisualId(key);
         lg.add(new OpmVisualObject(temp[key].getParams(), lg));
       }
     }
