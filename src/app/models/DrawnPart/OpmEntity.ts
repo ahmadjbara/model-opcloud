@@ -15,6 +15,9 @@ const entityText = {
 };
 
 export class OpmEntity extends OpmEntityRappid {
+  cloneof: OpmEntity;
+  inzoomClone: OpmEntity;
+  unfoldClone: OpmEntity;
   constructor() {
     super();
     this.set(this.entityAttributes());
@@ -185,6 +188,20 @@ export class OpmEntity extends OpmEntityRappid {
         this.attributes.attrs.manuallyResized = false;
       }
       this.attributes.attrs.wrappingResized = false;
+      if ( typeof this.cloneof !== 'undefined') {
+        this.cloneof.attributes.attrs.text.text = this.attributes.attrs.text.text;
+        if (typeof this.cloneof.unfoldClone != 'undefined' && this.cloneof.unfoldClone != this)
+          this.cloneof.unfoldClone.attributes.attrs.text.text = this.attributes.attrs.text.text;
+        if (typeof this.cloneof.inzoomClone != 'undefined' && this.cloneof.inzoomClone != this)
+          this.cloneof.inzoomClone.attributes.attrs.text.text = this.attributes.attrs.text.text;
+      }
+
+      if ( typeof this.inzoomClone !== 'undefined')
+        this.inzoomClone.attributes.attrs.text.text = this.attributes.attrs.text.text;
+      if ( typeof this.unfoldClone !== 'undefined')
+        this.unfoldClone.attributes.attrs.text.text = this.attributes.attrs.text.text;
+
+
     }
     this.updatecomputationalPart();
   }
