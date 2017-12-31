@@ -16,17 +16,9 @@ export enum statesArrangement {
 }
 
 export enum code {
-  Specified,
-  Unspecified
-}
-
-export enum functionType {
-  None,
-  Add,
-  Subtract,
-  Multiply,
-  Divide,
-  Other
+  Unspecified,
+  PreDefined,
+  UserDefined
 }
 
 export enum valueType {
@@ -41,7 +33,6 @@ export enum stateType {
 }
 
 export enum linkConnectionType {
-  default,
   enviromental,
   systemic
 }
@@ -55,7 +46,7 @@ export enum linkType {
   Invocation,
   UndertimeException,
   OvertimeException,
-  UnderOvertimeException,
+  UndertimeOvertimeException,
   Unidirectional,
   Bidirectional,
   Aggregation,

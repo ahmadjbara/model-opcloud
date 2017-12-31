@@ -41,7 +41,7 @@ export class OpmDefaultLink extends OpmLinkRappid {
         text: '',
         'font-family': 'Arial, helvetica, sans-serif',
         'font-size': 10,
-        fill: 'red',
+        fill: 'black',
         'font-weight': 200} } }]
     };
   }
@@ -52,16 +52,15 @@ export class OpmDefaultLink extends OpmLinkRappid {
   }
   getDefaultLinkParams() {
     return {
-      sourceElementId: this.getSourceElement().get('id'),
-      targetElementId: this.getTargetElement().get('id'),
+      sourceElementId: this.getSourceElement() ? this.getSourceElement().get('id') : null,
+      targetElementId: this.getTargetElement() ? this.getTargetElement().get('id') : null,
       vertices: this.get('vertices'),
-      linkConnectionType: (this.attr('.connection/stroke-dasharray') === 0) ? linkConnectionType.systemic : linkConnectionType.enviromental,
+      linkConnectionType: (this.attr('.connection/stroke-dasharray') === '0') ? linkConnectionType.systemic : linkConnectionType.enviromental,
       textColor: this.get('labels')[0].attrs.text.fill,
       textFontWeight: this.get('labels')[0].attrs.text['font-weight'],
       textFontSize: this.get('labels')[0].attrs.text['font-size'],
       textFontFamily: this.get('labels')[0].attrs.text['font-family'],
       strokeColor: this.attr('.connection/stroke'),
-      strokeWidth: this.attr('.connection/stroke-width'),
       id: this.get('id')
     };
   }

@@ -1,11 +1,12 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewContainerRef } from '@angular/core';
 import { GraphService } from '../services/graph.service';
 import { MdDialog } from '@angular/material';
 import { LoadModelDialogComponent } from '../../dialogs/load-model-dialog/load-model-dialog.component';
 import { CommandManagerService } from '../services/command-manager.service';
 import { InitRappidService } from '../services/init-rappid.service';
 import {AboutDialogComponent} from '../../dialogs/About/about';
-import {OplDialogComponent} from "../../dialogs/opl-dialog/opl-dialog.component";
+import {UserService} from '../services/user.service';
+import {SignInComponent} from '../../modules/layout/header/sign-in/sign-in.component';
 
 
 const commandGroups = [
@@ -19,9 +20,10 @@ const commandGroups = [
   {
     group: 'file',
     commands: [
-      { name: 'saveModel', tooltip: 'save', icon: 'save' },
-      { name: 'loadModel', tooltip: 'load', icon: 'open_in_browser' },
-      { name: 'oplTable', tooltip:'opl table', icon:'format_list_bulleted' }
+     // { name: 'executeIfLogged(saveModel)', tooltip: 'save', icon: 'save' },
+     // { name: 'executeIfLogged(loadModel)', tooltip: 'load', icon: 'open_in_browser' }
+      { name: 'executeIfLogged(saveModel)', tooltip: 'save', icon: 'save' },
+      { name: 'executeIfLogged(loadModel)', tooltip: 'load', icon: 'open_in_browser' }
     ]
   },
   {
@@ -65,6 +67,8 @@ export class RappidToolbarComponent implements OnInit {
     private graphService: GraphService,
     commandManagerService: CommandManagerService,
     private initRappidService: InitRappidService,
+    private userService: UserService,
+    private viewContainer: ViewContainerRef,
     private _dialog: MdDialog) {
     this.commandManager = commandManagerService.commandManager;
   }
@@ -74,7 +78,9 @@ export class RappidToolbarComponent implements OnInit {
   }
 
   buttonClick(command) {
-    return this[command.name]();
+    let func = command.name.substring(0,command.name.indexOf("("));
+    let args = command.name.substring(command.name.indexOf("(")+1,command.name.indexOf(")"));
+    return this[func](args);
   }
 
   undo() {
@@ -88,38 +94,25 @@ export class RappidToolbarComponent implements OnInit {
   }
 
   saveModel() {
-    const modelInDb = this.graphService.modelStorage.models.includes(this.graphService.modelObject.name);
-    if ((this.graphService.modelObject.name === null) || !modelInDb) {
-      return this.saveModelAs();
-    }
-    return this.graphService.saveGraph(this.graphService.modelObject.name, false);
+    this.initRappidService.saveModel(this.graphService.modelStorage);
   }
-
-  saveModelAs() {
-    // debugger;
-    // let dialogRef = this._dialog.open(SaveModelDialogComponent);
-    // dialogRef.afterClosed().subscribe(result => {
-    const result = prompt('Save Model As:', 'Enter a Model Name');
-    if (result === 'Enter a Model Name' || result === null) {
-      console.log('Model not saved');
-      return;
-    }
-    this.graphService.saveGraph(result, true);
-  }
-
   loadModel() {
     const dialogRef = this._dialog.open(LoadModelDialogComponent);
-
     dialogRef.afterClosed().subscribe(result => {
       if (!!result) {
-        this.graphService.loadGraph(result);
-        this.graphService.modelObject.name = result;
+        this.initRappidService.loadModel(result, this.graphService.modelStorage);
       }
     });
   }
 
-  oplTable(){
-    let dialogRef = this._dialog.open(OplDialogComponent);
+  executeIfLogged(func) {
+    if (this.userService.isUserLoggedIn$) {
+      return this[func]();
+    }else{
+      this._dialog.open(SignInComponent, {
+        viewContainerRef: this.viewContainer,
+      });
+    }
   }
 
   zoomin() {

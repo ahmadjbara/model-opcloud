@@ -64,7 +64,8 @@ export  class OpmFundamentalLink extends OpmStructuralLink {
   getFundamentalLinkParams() {
     const params = {
       symbolPos: [this.triangle.get('position').x, this.triangle.get('position').y],
-      UpperConnectionVertices: this.mainUpperLink.get('vertices')
+      UpperConnectionVertices: this.mainUpperLink.get('vertices'),
+      sourceElementId: this.sourceElement.get('id')
     };
     return {...super.getStructuralLinkParams(), ...params};
   }

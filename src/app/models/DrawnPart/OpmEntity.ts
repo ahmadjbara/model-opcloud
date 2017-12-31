@@ -15,6 +15,9 @@ const entityText = {
 };
 
 export class OpmEntity extends OpmEntityRappid {
+  cloneof: OpmEntity;
+  inzoomClone: OpmEntity;
+  unfoldClone: OpmEntity;
   constructor() {
     super();
     this.set(this.entityAttributes());
@@ -50,7 +53,32 @@ export class OpmEntity extends OpmEntityRappid {
       textFontFamily: this.attr('text/font-family'),
       textColor: this.attr('text/fill'),
       text: this.attr('text/text'),
-      id: this.get('id')
+      fill: this.getShapeAttr().fill,
+      strokeColor: this.getShapeAttr().stroke,
+      id: this.get('id'),
+      fatherObjectId: this.get('parent')
+    };
+  }
+  updateEntityFromOpmModel(visualElement) {
+    const attr = {
+      'text' : {
+        fill: visualElement.textColor,
+        'font-size': visualElement.textFontSize,
+        'font-family': visualElement.textFontFamily,
+        'font-weight': visualElement.textFontWeight,
+        'text' : visualElement.logicalElement.text
+      }
+    };
+    this.attr(attr);
+    if (visualElement.fatherObject) this.set('parent', visualElement.fatherObject.id);
+    const attributes = {
+      position: { x: visualElement.xPos, y: visualElement.yPos},
+      size: {width: visualElement.width, height: visualElement.height},
+      id: visualElement.id
+    };
+    this.set(attributes);
+    return {
+      fill: visualElement.fill
     };
   }
   addHandleGenerator(handleName, handlePosition, handleTooltip, handleTooltipPosition) {
@@ -160,6 +188,20 @@ export class OpmEntity extends OpmEntityRappid {
         this.attributes.attrs.manuallyResized = false;
       }
       this.attributes.attrs.wrappingResized = false;
+      if ( typeof this.cloneof !== 'undefined') {
+        this.cloneof.attributes.attrs.text.text = this.attributes.attrs.text.text;
+        if (typeof this.cloneof.unfoldClone != 'undefined' && this.cloneof.unfoldClone != this)
+          this.cloneof.unfoldClone.attributes.attrs.text.text = this.attributes.attrs.text.text;
+        if (typeof this.cloneof.inzoomClone != 'undefined' && this.cloneof.inzoomClone != this)
+          this.cloneof.inzoomClone.attributes.attrs.text.text = this.attributes.attrs.text.text;
+      }
+
+      if ( typeof this.inzoomClone !== 'undefined')
+        this.inzoomClone.attributes.attrs.text.text = this.attributes.attrs.text.text;
+      if ( typeof this.unfoldClone !== 'undefined')
+        this.unfoldClone.attributes.attrs.text.text = this.attributes.attrs.text.text;
+
+
     }
     this.updatecomputationalPart();
   }
