@@ -5,6 +5,7 @@ import { LoadModelDialogComponent } from '../../dialogs/load-model-dialog/load-m
 import { CommandManagerService } from '../services/command-manager.service';
 import { InitRappidService } from '../services/init-rappid.service';
 import {AboutDialogComponent} from '../../dialogs/About/about';
+import {ClearCanvasComponent} from '../../dialogs/clear-canvas/clear-canvas';
 import {UserService} from '../services/user.service';
 import {SignInComponent} from '../../modules/layout/header/sign-in/sign-in.component';
 
@@ -13,8 +14,9 @@ const commandGroups = [
   {
     group: 'editor',
     commands: [
-      { name: 'undo', tooltip: 'undo', icon: 'undo' },
-      { name: 'redo', tooltip: 'redo', icon: 'redo' }
+      { name: 'undo', tooltip: 'Undo', icon: 'undo' },
+      { name: 'redo', tooltip: 'Redo', icon: 'redo' },
+      { name: 'clearcanvas', tooltip: 'Clear Canvas', icon: 'delete_sweep' }
     ]
   },
   {
@@ -22,19 +24,19 @@ const commandGroups = [
     commands: [
      // { name: 'executeIfLogged(saveModel)', tooltip: 'save', icon: 'save' },
      // { name: 'executeIfLogged(loadModel)', tooltip: 'load', icon: 'open_in_browser' }
-      { name: 'executeIfLogged(saveModel)', tooltip: 'save', icon: 'save' },
-      { name: 'executeIfLogged(loadModel)', tooltip: 'load', icon: 'open_in_browser' }
+      { name: 'executeIfLogged(saveModel)', tooltip: 'Save', icon: 'save' },
+      { name: 'executeIfLogged(loadModel)', tooltip: 'Load', icon: 'open_in_browser' }
     ]
   },
   {
     group: 'zoom',
     commands: [
-      { name: 'zoomin', tooltip: 'zoom in', icon: 'zoom_in' },
-      { name: 'zoomout', tooltip: 'zoom out', icon: 'zoom_out' },
-      { name: 'zoomtofit', tooltip: 'zoom to fit', icon: 'zoom_out_map' },
-      { name: 'zoomtodefault', tooltip: 'default zoom', icon: 'youtube_searched_for' },
+      { name: 'zoomin', tooltip: 'Zoom In', icon: 'zoom_in' },
+      { name: 'zoomout', tooltip: 'Zoom Out', icon: 'zoom_out' },
+      { name: 'zoomtofit', tooltip: 'Zoom to Fit', icon: 'zoom_out_map' },
+      { name: 'zoomtodefault', tooltip: 'Default Zoom', icon: 'youtube_searched_for' },
       { name: 'about', tooltip: 'About', icon: 'info' },
-      { name: 'execute', tooltip: 'execute', icon: 'send' }
+      { name: 'execute', tooltip: 'Execute', icon: 'send' }
     ]
   }
 ];
@@ -140,6 +142,17 @@ export class RappidToolbarComponent implements OnInit {
       }
     });
   }
+
+  clearcanvas() {
+    const dialogRef = this._dialog.open(ClearCanvasComponent);
+    //context.clearRect(0, 0, this.canvas.width, this.canvas.height);
+    dialogRef.afterClosed().subscribe(result => {
+      if (result==='clear') {
+        this.graph.resetCells([]);
+     }
+    });
+  }
+
   execute() {
     // start execute from SD graph
     this.initRappidService.changeGraphToSD();

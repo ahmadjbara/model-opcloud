@@ -514,3 +514,7 @@ function reEmbed(graph) {
     }
   }
 }
+
+function clearCanvas() {
+
+}

@@ -27,6 +27,7 @@ import { Tab } from '../dialogs/choose-link-dialog/tab';
 import { Tabs } from '../dialogs/choose-link-dialog/tabs';
 import { DialogComponent } from '../dialogs/choose-link-dialog/Dialog.component';
 import {AboutDialogComponent} from '../dialogs/About/about';
+import {ClearCanvasComponent} from '../dialogs/clear-canvas/clear-canvas';
 import {KeysPipe, OplDialogComponent} from '../dialogs/opl-dialog/opl-dialog.component';
 import { OplService } from "../opl-generation/opl.service";
 
@@ -37,6 +38,7 @@ import { OplService } from "../opl-generation/opl.service";
     LoadModelDialogComponent,
     DialogComponent,
     AboutDialogComponent,
+    ClearCanvasComponent,
     OplDialogComponent,
     Tabs,
     Tab,
@@ -67,6 +69,7 @@ import { OplService } from "../opl-generation/opl.service";
     LoadModelDialogComponent,
     DialogComponent,
     OplDialogComponent,
+    ClearCanvasComponent,
     AboutDialogComponent
   ],
   bootstrap: [AppComponent]
