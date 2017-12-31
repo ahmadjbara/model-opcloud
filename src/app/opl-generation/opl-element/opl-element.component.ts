@@ -3,18 +3,20 @@ import { Component, OnInit, Input } from '@angular/core';
 @Component({
   selector: 'opcloud-opl-element',
   template: `
-    <span [className]="entityType" (click)="edit=true" *ngIf="!edit" >
+    <span [className]="entityType"  >
       {{entityName}}
     </span>
-    <input >
   `,
   styleUrls: ['./opl-element.component.scss']
 })
 export class OplElementComponent implements OnInit {
-  @Input() entityName;
-  @Input() entityType;
-  @Input() entityCell;
-  constructor() { }
+  @Input() cell;
+  entityType;
+  entityName;
+  constructor() {
+    this.entityType = this.cell.attributes.type;
+    this.entityName = this.cell.attributes.attrs.text.text;
+  }
 
 
   ngOnInit() {

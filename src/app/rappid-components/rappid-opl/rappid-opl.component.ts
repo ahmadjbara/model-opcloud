@@ -1,5 +1,6 @@
 import { Component, OnInit, ViewChild, ViewContainerRef,ComponentFactoryResolver,ComponentRef,Input } from '@angular/core';
-import { linkTypeSelection} from '../../configuration/elementsFunctionality/linkTypeSelection'
+import { linkTypeSelection} from '../../configuration/elementsFunctionality/linkTypeSelection';
+import { oplFunctions} from "../../opl-generation/opl-functions";
 
 // popup imports
 import {DialogComponent} from "../../dialogs/choose-link-dialog/Dialog.component";
@@ -11,7 +12,7 @@ import {OplDialogComponent} from "../../dialogs/opl-dialog/opl-dialog.component"
   selector: 'opcloud-rappid-opl',
   template: `
     <div class="opl-container">
-       <ng-container *ngFor="let cell of graph.getCells()">
+       <ng-container *ngFor="let cell of graph.getCells().reverse()">
           <p *ngIf = "cell.attributes.opl" 
             [innerHTML]="cell.attributes.opl" 
             (mouseover)="highlightCell(cell)"
@@ -32,11 +33,17 @@ export class RappidOplComponent implements OnInit {
   ngOnInit() {
     this.GenerateOPL();
     this.HoverOnCells;
+    this.test();
+  }
+
+  test(){
+    this.graph.on('add',(cell)=>{
+      console.log(cell);
+    });
   }
 
   GenerateOPL() {
       this.graph.on('add', (cell) => {
-        console.log(this.graph);
         if (cell.attributes.type === 'opm.Object') {
           this.updateObjectOPL(cell);
         }
@@ -46,24 +53,17 @@ export class RappidOplComponent implements OnInit {
         }
 
         if (cell.attributes.type === 'opm.State') {
-          var parentId = cell.attributes.parent;
-          if(parentId) {
-            var parent = this.graph.getCell(parentId).attributes.attrs.text.text;
-            cell.attributes['opl'] = `${parent} can be ${cell.attributes.attrs.text.text}`;
-          }
+          this.updateStateOPL(cell);
         }
         if (cell.attributes.type === 'opm.Link') {
           this.updateLinkOPL(cell);
         }
       });
 
+
       this.graph.on('change', (cell) => {
         if (cell.attributes.type === 'opm.State') {
-          var parentId = cell.attributes.parent;
-          if(parentId){
-            var parent = this.graph.getCell(parentId).attributes.attrs.text.text;
-            cell.attributes['opl'] = `${parent} can be ${cell.attributes.attrs.text.text}`;
-          }
+          this.updateStateOPL(cell);
         }
 
         if (cell.attributes.type === 'opm.Object') {
@@ -71,7 +71,7 @@ export class RappidOplComponent implements OnInit {
         }
 
         if (cell.attributes.type === 'opm.Process') {
-          this.updateProcessOPL(cell)
+          this.updateProcessOPL(cell);
         }
 
         if (cell.attributes.type != 'opm.Link') {
@@ -123,10 +123,13 @@ export class RappidOplComponent implements OnInit {
 
   //update OPL for a link when link is added or changed
   updateLinkOPL(cell){
+
     var src=cell.getSourceElement();
     var tgt=cell.getTargetElement();
-    if(src && tgt)
-        cell.attributes.opl=linkTypeSelection.generateOPL(src,tgt,cell.attributes.name);
+    if(src && tgt){
+        //cell.attributes.opl=linkTypeSelection.generateOPL(src,tgt,cell.attributes.name);
+        cell.attributes.opl = oplFunctions.generateLinkOpl(cell, cell.attributes.name);
+    }
   }
   //update OPL for an Object when object is added or changed
   updateObjectOPL(cell){
@@ -145,6 +148,38 @@ export class RappidOplComponent implements OnInit {
 
     cell.attributes.opl=`<b class="process">${processName}</b> is <i>${affiliation}</i> and <i>${essence}</i><b>.</b>`;
 
+  }
+  updateStateOPL(cell) {
+    const parent = cell.getParent();
+    if ( !parent) {return; }
+    const objectName = parent.attributes.attrs.text.text;
+    if (parent.getEmbeddedCells()) {
+      const states = parent.getEmbeddedCells();
+      let stateOpl = `<b class="object">${objectName}</b> can be`;
+      if (states.length === 1) {
+        stateOpl = stateOpl + ` <b class="state">${states[0].attributes.attrs.text.text}</b>.`;
+      }else {
+        let i = 0;
+        for (; i < states.length - 2 ; i++) {
+          stateOpl = stateOpl + ` <b class="state">${states[i].attributes.attrs.text.text}</b>,`;
+        }
+        stateOpl = stateOpl + ` <b class="state">${states[i].attributes.attrs.text.text}</b> and <b class="state">${states[i+1].attributes.attrs.text.text}</b>.`;
+      }
+     parent.getEmbeddedCells()[0].attributes.opl = stateOpl;
+    }
+  }
+  removeStateOpl(cell) {
+    const parent = cell.getParent();
+    const objectName = parent.attributes.attrs.text.text;
+    if (parent.getEmbeddedCells()) {
+      const states = parent.getEmbeddedCells();
+      let stateOpl = `<b class="object">${objectName}</b> can be`;
+      for (const state of states){
+        if (state === cell) {continue; }
+        stateOpl = stateOpl + ` <b class="state">${state.attributes.attrs.text.text}</b>`;
+      }
+      parent.getEmbeddedCells()[0].attributes.opl = stateOpl;
+    }
   }
 
   highlightObject(cell){

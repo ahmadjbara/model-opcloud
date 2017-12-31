@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
-import { defaultTable} from './opl-database';
+import { OplTables, language} from './opl-database';
 import { OplElementComponent} from './opl-element/opl-element.component';
+import { GraphService} from "../rappid-components/services/graph.service";
 
 //set GCLOUD_PROJECT=opcloud-sandbox
 
@@ -20,11 +21,14 @@ export class OplService {
 
 
   constructor() {
-    this.currentLanguage = 'en';
-    this.OplTables = {'en': defaultTable};
-    this.availableLanguage = ['en', 'cn', 'swe', 'fr'];
+    this.currentLanguage = language.current;
+    this.OplTables = OplTables;
+    this.availableLanguage = language.available;
     this.defaultEssence = 'Informatical';
     this.defaultAffiliation = 'Systemic';
+  }
+  getCurrentLanguage() {
+    return this.currentLanguage;
   }
 
   getOplTable(selectedLanguage: string) {
@@ -56,6 +60,9 @@ export class OplService {
   }
   changeOplTable(lan: string, updatedTable) {
     this.OplTables[lan] = updatedTable;
+    this.currentLanguage = lan;
+    language.current = lan;
+
   }
   replaceElement(template: string , from: string , to: string) {
     return template.replace(from, to);
@@ -87,52 +94,6 @@ export class OplService {
     const s = Os.slice(cutPoint);
     const O = Os.replace(s, '');
     return [O, s];
-  }
-  sourceTargetRelation(source, target) {
-    const relations = this.getRelationsList();
-    const sourceID = source.attributes._id;
-    const targetID = target.attributes._id;
-    const sourceType = source.attributes.type.slice(4, 5);
-    const targetType = target.attributes.type.slice(4, 5);
-    if (target.length === 1) {
-      for (const relation of Object.keys(relations)){
-        if (sourceType in relations[relation].source && targetType in relations[relation].target) {
-          return relation;
-        }
-      }
-    }
-  }
-
-  replaceInTemplate(source, target, template){
-    let opl = template;
-
-
-
-  }
-  stringify(cell) {
-    if (cell.isPrototypeOf(Array)) {
-      if (cell.length === 1 ) {
-        return `<opl-element [cell]="${cell}"></opl-element>`;
-      } else {
-        const len = cell.length;
-        let group = ``;
-        for (let i = 0; i < (len - 1); i++) {
-          group = group + `<opl-element [cell]="${cell[i]}"></opl-element> `;
-        }
-        group = group + `and <opl-element [cell]="${cell[len - 1]}"></opl-element>`;
-        return group;
-      }
-    }else {
-      return `<opl-element [cell]="${cell}"></opl-element>`;
-    }
-  }
-
-  generateOPL(source, target, template) {
-    const relation = this.sourceTargetRelation(source, target);
-    const sourceString = this.stringify(source);
-    const targetString = this.stringify(target);
-
-    return
   }
 
 

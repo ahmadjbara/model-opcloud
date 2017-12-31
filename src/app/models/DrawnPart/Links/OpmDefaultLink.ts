@@ -5,6 +5,7 @@ import {validationAlert} from '../../../configuration/rappidEnviromentFunctional
 import {createDialog} from '../../../configuration/elementsFunctionality/linkDialog';
 import {joint, _} from '../../../configuration/rappidEnviromentFunctionality/shared';
 import {OpmLinkRappid} from "./OpmLinkRappid";
+import { oplFunctions} from "../../../opl-generation/opl-functions";
 
 
 const linkDefinition = {
@@ -109,7 +110,7 @@ export class OpmDefaultLink extends OpmLinkRappid {
         !((source instanceof OpmState) && (target instanceof OpmState) &&
           source.get('parent') === target.get('parent'))) {
          if (!this.get('previousTargetId') || (this.get('previousTargetId') !== this.attributes.target.id)) {
-            const relevantLinks = linkTypeSelection.generateLinkWithOpl(this);
+            const relevantLinks = oplFunctions.generateLinksWithOpl(this);
             if (relevantLinks.length > 0) {
               this.set('previousTargetId', this.attributes.target.id);
               this.set('previousSourceId', this.attributes.source.id);

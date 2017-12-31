@@ -2,6 +2,8 @@ import { Component, EventEmitter, HostListener, Inject } from '@angular/core';
 import {linkDrawing} from "../../configuration/elementsFunctionality/linkDrawing";
 import { MD_DIALOG_DATA, MdDialogRef } from '@angular/material';
 import {GraphService} from '../../rappid-components/services/graph.service';
+
+
 const joint = require('rappid');
 @Component({
   selector: 'opcloud-choose-link-dialog',

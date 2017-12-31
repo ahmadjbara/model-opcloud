@@ -2,7 +2,8 @@ import { Component, OnInit, Optional } from '@angular/core';
 import { MdDialogRef, MdDialog } from '@angular/material';
 import { OplService } from '../../opl-generation/opl.service';
 import { PipeTransform, Pipe } from '@angular/core';
-
+import {Affiliation, Essence} from "../../models/ConfigurationOptions";
+import {defaultEssence, defaultAffiliation} from "../../opl-generation/opl-database";
 
 
 @Component({
@@ -17,7 +18,7 @@ import { PipeTransform, Pipe } from '@angular/core';
       </select></p>
       <p>Default settings for OPL:</p>
       <label>Essence:</label>
-      <select>
+      <select >
         <option>Informatical</option>
         <option>Physical</option>
       </select>
@@ -59,15 +60,18 @@ export class OplDialogComponent implements OnInit {
   public availableLanguage;
   private oplService;
   public edit = {};
+  public essence: Essence;
+  public affiliation: Affiliation;
 //  private translate = require('google-translate-api');
 
   constructor(
     oplService: OplService,
     @Optional() public dialogRef: MdDialogRef<OplDialogComponent>) {
     this.oplService = oplService;
-    this.oplTable = oplService.getOplTable('en');
-    this.language = 'en';
+    this.language = oplService.getCurrentLanguage();
+    this.oplTable = oplService.getOplTable(this.language);
     this.availableLanguage = oplService.getAvailableLanguage();
+    this.essence = defaultEssence;
 
   }
 
@@ -81,6 +85,7 @@ export class OplDialogComponent implements OnInit {
   }
   saveTable() {
     this.oplService.changeOplTable(this.language, this.oplTable);
+
     console.log(this.oplTable, this.language);
     this.dialogRef.close();
   }
