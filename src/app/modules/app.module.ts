@@ -27,7 +27,8 @@ import { Tab } from '../dialogs/choose-link-dialog/tab';
 import { Tabs } from '../dialogs/choose-link-dialog/tabs';
 import { DialogComponent } from '../dialogs/choose-link-dialog/Dialog.component';
 import {AboutDialogComponent} from '../dialogs/About/about';
-import { OplDialogComponent } from '../dialogs/opl-dialog/opl-dialog.component';
+import {KeysPipe, OplDialogComponent} from '../dialogs/opl-dialog/opl-dialog.component';
+import { OplService } from "../opl-generation/opl.service";
 
 @NgModule({
   declarations: [
@@ -38,7 +39,8 @@ import { OplDialogComponent } from '../dialogs/opl-dialog/opl-dialog.component';
     AboutDialogComponent,
     OplDialogComponent,
     Tabs,
-    Tab
+    Tab,
+    KeysPipe
   ],
   imports: [
     BrowserModule,
@@ -57,7 +59,8 @@ import { OplDialogComponent } from '../dialogs/opl-dialog/opl-dialog.component';
   providers: [
     { provide: ModelStorageInterface, useClass: ModelFbStorageService },
     TreeViewService,
-    UserService
+    UserService,
+    OplService
   ],
   entryComponents: [
     SaveModelDialogComponent,

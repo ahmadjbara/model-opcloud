@@ -79,6 +79,9 @@ export  class OpmFundamentalLink extends OpmStructuralLink {
       triangle.remove();
     }
   }
+  getSource() {
+    return this.sourceElement;
+  }
 }
 
 export class TriangleClass extends joint.shapes.devs.Model.extend({
