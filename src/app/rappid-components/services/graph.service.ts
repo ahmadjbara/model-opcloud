@@ -13,7 +13,7 @@ import {joint, _, vectorizer} from '../../configuration/rappidEnviromentFunction
 import {InstrumentLink} from "../../models/DrawnPart/Links/InstrumentLink";
 import {ConsumptionLink} from "../../models/DrawnPart/Links/ConsumptionLink";
 import {compute} from "../../configuration/elementsFunctionality/computationalPart";
-import {TriangleClass} from "../../models/DrawnPart/Links/OpmFundamentalLink";
+import {OpmFundamentalLink, TriangleClass} from "../../models/DrawnPart/Links/OpmFundamentalLink";
 import {ExhibitionLink} from "../../models/DrawnPart/Links/ExhibitionLink";
 import {getRightmostXCoord} from '../../configuration/elementsFunctionality/process-inzooming';
 import {AggregationLink} from "../../models/DrawnPart/Links/AggregationLink";
@@ -25,10 +25,16 @@ import {OpmEntity} from "../../models/DrawnPart/OpmEntity";
 import {OpmVisualEntity} from "../../models/VisualPart/OpmVisualEntity";
 import {createDrawnEntity, createDrawnLink} from "../../configuration/elementsFunctionality/graphFunctionality";
 import {OpmProceduralRelation} from "../../models/LogicalPart/OpmProceduralRelation";
-import {OpmProceduralLink} from "../../models/VisualPart/OpmProceduralLink";
+import {OpmProceduralLink as OpmProceduralLinkVisual} from "../../models/VisualPart/OpmProceduralLink";
 import {OpmStructuralLink} from "../../models/VisualPart/OpmStructuralLink";
 import {linkType} from "../../models/ConfigurationOptions";
 import {arrangeEmbedded} from "../../configuration/elementsFunctionality/arrangeStates";
+import {OpmVisualProcess} from "../../models/VisualPart/OpmVisualProcess";
+import {OpmVisualState} from "../../models/VisualPart/OpmVisualState";
+import {OpmProceduralLink} from "../../models/DrawnPart/Links/OpmProceduralLink";
+import {OpmFundamentalLink as OpmFundamentalLinkVisual} from "../../models/VisualPart/OpmFundamentalLink";
+import {OpmTaggedLink} from "../../models/DrawnPart/Links/OpmTaggedLink";
+import {OpmTaggedLink as OpmTaggedLinkVisual} from "../../models/VisualPart/OpmTaggedLink";
 
 const rootId = 'SD';
 const firebaseKeyEncode = require('firebase-key-encode');
@@ -361,15 +367,31 @@ export class GraphService {
       cloned.set('size', src.get('size'));
       cloned.set('z', src.get('z'));
       if (! (cloned instanceof OpmLinkRappid))
-        cloned.attributes.attrs.text.text = src.attributes.attrs.text.text;
+        cloned.attr('text/text', src.attr('text/text'));
       clonedConnectedCells.push(temp[key]);
-      if (temp[key] instanceof OpmObject) {
-        let lg = initRappid.opmModel.getLogicalElementByVisualId(key);
-
-        lg.add(new OpmVisualObject(temp[key].getParams(), lg));
-      }
     }
     newGraph.addCells(clonedConnectedCells);
+    for (let key in temp) {
+      const lg = initRappid.opmModel.getLogicalElementByVisualId(key);
+      if (temp[key] instanceof OpmObject) {
+        lg.add(new OpmVisualObject(temp[key].getParams(), lg));
+      }
+      if (temp[key] instanceof OpmProcess) {
+        lg.add(new OpmVisualProcess(temp[key].getParams(), lg));
+      }
+      if (temp[key] instanceof OpmState) {
+        lg.add(new OpmVisualState(temp[key].getParams(), lg));
+      }
+      if (temp[key] instanceof OpmProceduralLink) {
+        lg.add(new OpmProceduralLinkVisual(temp[key].getParams(), lg));
+      }
+      if (temp[key] instanceof OpmFundamentalLink) {
+        lg.add(new OpmFundamentalLinkVisual(temp[key].getParams(), lg));
+      }
+      if (temp[key] instanceof OpmTaggedLink) {
+        lg.add(new OpmTaggedLinkVisual(temp[key].getParams(), lg));
+      }
+    }
     return temp[elementId];
   }
   changeGraphModel(elementId, treeViewService, type) {
@@ -461,9 +483,9 @@ export class GraphService {
         let sourceVisualElement, targetVisualElement, linkT, condition, event;
         // converting for getting the link type
         linkT = (<OpmProceduralRelation>(opd.visualElements[i].logicalElement)).linkType;
-        if (opd.visualElements[i] instanceof OpmProceduralLink) {
-          sourceVisualElement = (<OpmProceduralLink>(opd.visualElements[i])).sourceVisualElement;
-          targetVisualElement = (<OpmProceduralLink>(opd.visualElements[i])).targetVisualElements[0].targetVisualElement;
+        if (opd.visualElements[i] instanceof OpmProceduralLinkVisual) {
+          sourceVisualElement = (<OpmProceduralLinkVisual>(opd.visualElements[i])).sourceVisualElement;
+          targetVisualElement = (<OpmProceduralLinkVisual>(opd.visualElements[i])).targetVisualElements[0].targetVisualElement;
           condition = (<OpmProceduralRelation>(opd.visualElements[i].logicalElement)).condition;
           event = (<OpmProceduralRelation>(opd.visualElements[i].logicalElement)).event;
         } else if (opd.visualElements[i] instanceof OpmStructuralLink) {

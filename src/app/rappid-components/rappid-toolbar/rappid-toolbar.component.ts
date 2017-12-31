@@ -78,8 +78,8 @@ export class RappidToolbarComponent implements OnInit {
   }
 
   buttonClick(command) {
-    let func = command.name.substring(0,command.name.indexOf("("));
-    let args = command.name.substring(command.name.indexOf("(")+1,command.name.indexOf(")"));
+    const func = command.name.substring(0, command.name.indexOf('(')) || command.name;
+    const args = command.name.substring(command.name.indexOf('(') + 1, command.name.indexOf(')')) || '';
     return this[func](args);
   }
 
