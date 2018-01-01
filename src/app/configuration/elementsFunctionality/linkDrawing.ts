@@ -59,9 +59,9 @@ export const linkDrawing = {
     }else if (linkName.includes('In/out_linkPair')) {
       InOutLinkpair(link.getSourceElement(), link.getTargetElement(),newLink, graph , isCondition, isEvent);
     }
- //   newLink[0].set('previousTargetId', link.get('previousTargetId'));
-  //  newLink[0].set('previousSourceId', link.get('previousSourceId'));
-   // newLink[0].set('name', link.get('name'));
+    newLink[0].set('previousTargetId', link.get('previousTargetId'));
+    newLink[0].set('previousSourceId', link.get('previousSourceId'));
+    newLink[0].set('name', link.get('name'));
     link.remove();
     graph.addCells(newLink);
 /*
