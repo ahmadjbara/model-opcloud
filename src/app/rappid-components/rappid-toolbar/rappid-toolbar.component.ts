@@ -54,7 +54,7 @@ const commandGroups = [
     <div class="button-row">
       <div class="button-group" *ngFor="let commandGroup of commandGroups">
         <button *ngFor="let command of commandGroup.commands"
-                md-mini-fab
+                md-mini-fab [disabled]="command.icon === 'undo' || command.icon === 'redo'" 
                 [mdTooltip]="command.tooltip"
                 class="button"
                 (click)="buttonClick(command)">
