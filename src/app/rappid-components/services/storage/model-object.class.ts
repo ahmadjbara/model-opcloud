@@ -2,7 +2,7 @@ export class ModelObject {
   name: string;
   modelData: any;
 
-  constructor(name: string, modelData: any) {
+  constructor(name: string = '', modelData: any = null) {
     this.name = name;
     this.modelData = modelData;
   }

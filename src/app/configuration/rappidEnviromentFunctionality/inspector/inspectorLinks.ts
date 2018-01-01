@@ -5,7 +5,8 @@ export const inspectorLinks = {
   // From this point defined  the groups that all the inspector parameters are grouped by.
   groupsDefinition: {
     marker: createGroup('Style', 1),
-    labels: createGroup('Labels', 2)
+    labels: createGroup('Labels', 2),
+
   },
 
   linkDefinition: {
@@ -26,10 +27,28 @@ export const inspectorLinks = {
         text: {
           group: 'Labels',
           type: 'text',
-          label: 'text',
+          label: 'Above Tag',
           index: 3
+
         }
-      }
-    }
-  }]
+      },
+
+    },},
+    {
+    attrs: {
+      text: {
+        text: {
+          group: 'Labels',
+          type: 'text',
+          label: 'Below Tag',
+          index: 3
+
+        }
+      },
+
+    },
+  }],
+
+
+
 };

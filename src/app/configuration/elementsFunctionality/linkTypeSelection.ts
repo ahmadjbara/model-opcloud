@@ -1,4 +1,7 @@
 import { dataBase } from './linksDatabase';
+import { OplService } from '../../opl-generation/opl.service';
+
+
 
 
 export const linkTypeSelection = {
@@ -114,7 +117,7 @@ export const linkTypeSelection = {
       else if (linkName == 'Undertime_exception') {
         return `${desName} occurs if ${srcName} falls short of mintime units.`;
       }
-      else if (linkName == 'UndertimeOvertimeException'){
+      else if (linkName == 'OvertimeUndertime-exception'){
         return `${desName} occurs if ${srcName} falls short of mintime units or lasts more than mintime units.`;
       }
       else if (linkName == 'Condition_Consumption') {
@@ -165,15 +168,15 @@ export const linkTypeSelection = {
 
 //Function findSuitableLinks gets a potential link, get from it the source and target types, go over
 // the database and find all link types the are suitable to this specific link. The function return all found links in an array
-  findSuitableLinks(link){
+  findSuitableLinks(link) {
     //substring because we want to remove the prefix 'opm.'
     //toLowerCase because we need the type to match the format in database.
-    const source: string = link.getSourceElement().attributes.type.substring(4).toLowerCase();
-    const target: string = link.getTargetElement().attributes.type.substring(4).toLowerCase();
+   // const source: string = link.getSourceElement().attributes.type.substring(4).toLowerCase();
+   // const target: string = link.getTargetElement().attributes.type.substring(4).toLowerCase();
     const result: Array<any> = [];
     const linksDataArray: dataBase = new dataBase();
 
-    //Go over the database
+/*    //Go over the database
     for (const linkData of linksDataArray.linksArray){
       //If the link name is already in the final array so no need to check it, as every link name will appear only once
       if (result.indexOf(linkData.linkName) > -1){
@@ -197,14 +200,22 @@ export const linkTypeSelection = {
       if (isSourceMatch && isTargetMatch){
         result.push({name: linkData.linkName, opl: 'gggggg'});
       }
-    }
+    }*/
 
-    return result;
+
   },
 
-  generateLinkWithOpl(link){
-    const linkNames = this.findSuitableLinks(link);
-    return this.availableOPL(link, linkNames);
-  }
+  generateLinkWithOpl(link) {
+   /* const linkNames = this.findSuitableLinks(link);
+    return this.availableOPL(link, linkNames);*/
+    return this.findSuitableLinks(link);
+/*    let availableOPL=[];
+    const oplservice = new OplService();
+    const table=oplservice.getOplTable('en')['P1-O2'];
+    for (const link of Object.keys(table)){
+      availableOPL.push({name:link.replace(' ','_'), opl:table[link].replace('<P1>','Process').replace('<O1>','Object')});
+    }
+    return availableOPL;*/
+  },
 
 };

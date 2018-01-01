@@ -6,14 +6,16 @@
 export const environment = {
   production: false,
   firebaseCredentials: {
-    apiKey: 'AIzaSyDCcM4LU4GtKEAUtpW-xjfL1Vq9G8K0J2w',
-    authDomain: 'opcloud-client.firebaseapp.com',
-    databaseURL: 'https://opcloud-client.firebaseio.com',
-    projectId: 'opcloud-client',
-    storageBucket: 'opcloud-client.appspot.com',
-    messagingSenderId: '926349859368'
+    apiKey: 'AIzaSyB5U9LNxnybO6eAiVBBUHB1JuC0rLoIpXs',
+    authDomain: 'opcloud-opl.firebaseapp.com',
+    databaseURL: 'https://opcloud-opl.firebaseio.com',
+    projectId: 'opcloud-opl',
+    storageBucket: 'opcloud-opl.appspot.com',
+    messagingSenderId: '553915308715'
   },
   firebaseAuthProviders: [
     'google'
-  ]
+  ],
+
 };
+

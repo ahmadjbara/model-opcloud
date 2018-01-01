@@ -9,13 +9,7 @@
 
     constructor(params, model) {
       super(params, model);
-
       this.add(new OpmVisualObject(params, this));
-      this.text = OpmLogicalObject.objectText;
-      // Different types - will be changed.
-      // this.valueType = params.valueType;
-      this.value = params.value;
-      this.units = params.units;
     }
     // getters and setters
     get valueType(): valueType {
@@ -35,6 +29,33 @@
     }
     set units(units: string) {
       this._units = units;
+    }
+    updateParams(params) {
+      super.updateParams(params);
+      this.valueType = params.valueType;
+      this.value = params.value;
+      this.units = params.units;
+    }
+    getParams() {
+      const visualElementsParams = new Array();
+      for (let i = 0; i < this.visualElements.length; i++) {
+        visualElementsParams.push(this.visualElements[i].getParams());
+      }
+      const params = {
+        valueType: this.valueType,
+        value: this.value,
+        units: this.units,
+        visualElementsParams: visualElementsParams
+      };
+      return {...super.getThingParams(), ...params};
+    }
+    getParamsFromJsonElement(jsonElement) {
+      const params = {
+        valueType: jsonElement.valueType,
+        value: jsonElement.value,
+        units: jsonElement.units,
+      };
+      return {...super.getThingParamsFromJsonElement(jsonElement), ...params};
     }
   }
 

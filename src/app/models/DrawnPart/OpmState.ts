@@ -5,6 +5,10 @@ import {min} from "rxjs/operator/min";
 const $ = require('jquery');
 
 export  class OpmState extends OpmEntity {
+
+  min_width:number = 60;
+  min_height:number = 30;
+
   constructor(stateName = 'State') {
     super();
     this.set(this.stateAttributes());
@@ -13,13 +17,29 @@ export  class OpmState extends OpmEntity {
     else
       this.attr(this.stateAttrs(stateName['attrs'].text.text));
   }
+
+  fromData(angle: number, name: string, id: string, width: number, height: number,
+           pos_x: number, pos_y: number,
+           type: string, z: number, father,Defualt,Final,Initial){
+    this.attr({text: {text: name}});
+    this.checker(Defualt,Initial,Final)
+    this.set(  {
+      angle: angle,
+      id: id,
+      size: {width: width>this.min_width ? width:this.min_width, height: height>this.min_height ? height:this.min_height},
+      position: {x: pos_x, y: pos_y},
+      type: type,
+      'father' : father,
+      'parent':father
+    });
+  }
+
   stateAttributes() {
     return {
       markup: '<image/><g class="rotatable"><g class="scalable"><rect class="outer"/><rect class="inner"/></g><text/></g>',
       type: 'opm.State',
       size: {width: 60, height: 30},
       minSize: {width: 60, height: 30},
-      'father': null,
     };
   }
   innerOuter() {
@@ -56,12 +76,18 @@ export  class OpmState extends OpmEntity {
   }
   getParams() {
     const params = {
-      fill: this.attr('rect/fill'),
-      strokeColor: this.attr('rect/stroke'),
-      strokeWidth: this.attr('rect/stroke-width'),
-      fatherObjectId: this.get('father')
+      stateType: this.checkType()
     };
     return {...super.getEntityParams(), ...params};
+  }
+  updateParamsFromOpmModel(visualElement) {
+    const attr = {
+      '.outer': {...this.updateEntityFromOpmModel(visualElement), ...{stroke: visualElement.strokeColor}},
+      '.inner': {...this.updateEntityFromOpmModel(visualElement), ...{stroke: visualElement.strokeColor}},
+    };
+    this.attr(attr);
+    this.updateInnerOuterSize();
+    this.updateStateByType(visualElement.logicalElement.stateType);
   }
   changeSizeHandle() {
     super.changeSizeHandle();
@@ -70,12 +96,24 @@ export  class OpmState extends OpmEntity {
     const parentId = this.get('parent');
     const parent = this.graph.getCell(parentId);
     parent.updateSizeToFitEmbeded();
-    // update inner and outer frames size
+    this.updateInnerOuterSize();
+  }
+  // update inner and outer frames size
+  updateInnerOuterSize() {
     const width = this.get('size').width;
     const height = this.get('size').height;
     const diff = Math.max(0.15 * width, 0.15 * height);
-    this.attr('.inner', {width: this.get('size').width, height: this.get('size').height});
-    this.attr('.outer', {width: (this.get('size').width + diff), height: (this.get('size').height + diff)});
+  //  this.attr('.inner', {width: this.get('size').width, height: this.get('size').height});
+   // this.attr('.outer', {width: (this.get('size').width + diff), height: (this.get('size').height + diff)});
+  }
+  updateStateByType(type) {
+    let init = 2, final = 0, def = 'none';
+    if ((type.includes('init')) || ((type.includes('Init'))) || (type === 'all')) init = 3;
+    if ((type.includes('fin')) || ((type.includes('Fin'))) || (type === 'all')) final = 2;
+    if ((type.includes('def')) || ((type.includes('Def'))) || (type === 'all')) def = 'flex';
+    this.attr('image/display', def);
+    this.attr('.outer/stroke-width', init);
+    this.attr('.inner/stroke-width', final);
   }
   changePositionHandle() {
     super.changePositionHandle();
@@ -83,6 +121,11 @@ export  class OpmState extends OpmEntity {
     const parentId = this.get('parent');
     const parent = this.graph.getCell(parentId);
     parent.updateSizeToFitEmbeded();
+  }
+  getParent() {
+    const parentId = this.get('parent');
+    const parent = this.graph.getCell(parentId);
+    return parent;
   }
   removeHandle(options) {
     const fatherObject = options.graph.getCell(this.get('father'));
@@ -98,6 +141,73 @@ export  class OpmState extends OpmEntity {
     } else {
       arrangeEmbedded(fatherObject, fatherObject.attr('statesArrange'));
     }
+  }
+
+  checker(Dchecked, Ichecked, Fchecked) {
+    if (!Dchecked && !Ichecked && !Fchecked) {
+      this.attr('image/display', 'none');
+      this.attr('.inner/stroke-width', 0);
+      this.attr('.outer/stroke-width', 2);
+
+    }
+    if (!Dchecked && !Ichecked && Fchecked) {
+      this.attr('image/display', 'none');
+      this.attr('.inner/stroke-width', 2);
+      this.attr('.outer/stroke-width', 2);
+
+    }
+    if (!Dchecked && Ichecked && !Fchecked) {
+      this.attr('image/display', 'none');
+      this.attr('.inner/stroke-width', 0);
+      this.attr('.outer/stroke-width', 3);
+
+    }
+    if (!Dchecked && Ichecked && Fchecked) {
+      this.attr('image/display', 'none');
+      this.attr('.inner/stroke-width', 2);
+      this.attr('.outer/stroke-width', 3);
+
+    }
+    if (Dchecked && !Ichecked && !Fchecked) {
+      this.attr('image/display', 'flex');
+      this.attr('.inner/stroke-width', 0);
+      this.attr('.outer/stroke-width', 2);
+
+    }
+    if (Dchecked && !Ichecked && Fchecked) {
+      this.attr('image/display', 'flex');
+      this.attr('.inner/stroke-width', 2);
+      this.attr('.outer/stroke-width', 2);
+
+    }
+
+    if (Dchecked && Ichecked && !Fchecked) {
+      this.attr('image/display', 'flex');
+      this.attr('.inner/stroke-width', 0);
+      this.attr('.outer/stroke-width', 3);
+
+    }
+    if (Dchecked && Ichecked && Fchecked) {
+      this.attr('image/display', 'flex');
+      this.attr('.inner/stroke-width', 2);
+      this.attr('.outer/stroke-width', 3);
+
+    }
+
+  checkType() {
+    let type = 'none';
+    if (this.attr('.inner/stroke-width') === 0) {
+      if (this.attr('image/display') === 'flex') {
+        if (this.attr('.outer/stroke-width') === 2) type = 'Default';
+        else type = 'DefInitial';
+      } else if (this.attr('.outer/stroke-width') === 3) type = 'Initial';
+    } else if (this.attr('.outer/stroke-width') === 3) {
+      if (this.attr('image/display') === 'flex') type = 'all';
+      else type = 'finInitial';
+    } else if (this.attr('image/display') === 'flex') {
+      type = 'DefFinal';
+    } else type = 'Final';
+    return type;
   }
   haloConfiguration(halo, options) {
     super.haloConfiguration(halo, options);
@@ -129,6 +239,9 @@ export  class OpmState extends OpmEntity {
   updateShapeAttr(newValue) {
     this.attr('.inner', newValue);
     this.attr('.outer', newValue);
+  }
+  getShapeAttr() {
+    return this.attr('.inner');
   }
   getShapeFillColor() {
     return this.attr('.inner/fill');

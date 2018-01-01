@@ -1,0 +1,43 @@
+<p>Import / Export Model </p>
+<br>
+<span>Import</span>
+
+<md-slide-toggle color="warn"
+  (change)="importOPX = !importOPX">
+</md-slide-toggle>
+<span>Export</span>
+<br>
+<div style="display: inline-block" *ngIf="importOPX">
+  <label>Attention: the input file must be .opx saved in OPCAT 4.2.</label><br>
+   <label> download OPCAT 4.2 from <a href="http://esml.iem.technion.ac.il/opcat-installation/" target="_blank">OPCAT Installation</a> </label><br>
+  <button   md-mini-fab color="accent" (click)="fileInput.click()">
+    <md-icon>attach_file</md-icon>
+    <input  #fileInput type="file"  accept=".opx" class="form-control" name="single" ng2FileSelect [uploader]="uploader"  style="display:none;"/>
+  </button>
+  <label>Import OPX Model </label>
+</div>
+<div style="display: inline-block" *ngIf="!importOPX">
+  <button   md-mini-fab disabled color="primary" (click)="fileInput.click()">
+    <md-icon>folder_open</md-icon>
+    <input  #fileInput type="file"  accept=".opx" class="form-control" name="single" ng2FileSelect [uploader]="uploader"  style="display:none;"/>
+  </button>
+  <label>Export OPX Model </label>
+</div>
+
+<md-dialog-content>
+  <ul *ngFor="let item of uploader.queue">
+    <li ><span>File Name : </span>{{ item.file.name }}</li>
+    <li ><span>File Size : </span>{{ item.file.size/1024/1024 | number:'.2' }} MB</li>
+  </ul>
+</md-dialog-content>
+<hr>
+
+<p>
+  <button md-raised-button  (click)="Import()"  *ngIf="importOPX">IMPORT</button>
+  <button md-raised-button  (click)="dialogRef.close()" *ngIf="!importOPX">EXPORT</button>
+  <button md-raised-button  (click)="dialogRef.close()">CANCEL</button>
+</p>
+
+
+
+

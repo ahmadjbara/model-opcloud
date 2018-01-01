@@ -5,10 +5,12 @@ import {validationAlert} from '../../../configuration/rappidEnviromentFunctional
 import {createDialog} from '../../../configuration/elementsFunctionality/linkDialog';
 import {joint, _} from '../../../configuration/rappidEnviromentFunctionality/shared';
 import {OpmLinkRappid} from "./OpmLinkRappid";
+import { oplFunctions} from "../../../opl-generation/opl-functions";
 
 
 const linkDefinition = {
   defaults: _.defaultsDeep({
+    markup: '<g class="scalable"><g class="rotatable"><text/></g></g>',
     type: 'opm.Link',
     connector: {
       name : 'jumpover'
@@ -24,11 +26,21 @@ const linkDefinition = {
 };
 
 export class OpmDefaultLink extends OpmLinkRappid {
-  constructor() {
+  constructor(id?:string) {
     super();
     this.set(this.linkAttributes());
     this.attr(this.linkAttrs());
+    this.IDSetter(id);
   }
+
+  IDSetter(id){
+    if(id){
+      this.set('id',id);
+    }
+  }
+
+
+
   linkAttributes() {
     return {
       type: 'opm.Link',
@@ -36,13 +48,35 @@ export class OpmDefaultLink extends OpmLinkRappid {
       connector: {
         name : 'jumpover'
       },
-      labels: [{ position: 0.5, attrs: { text: {
+      labels: [{
+        position:{ distance: 0.5, offset: { x: -10, y: -10 }},
+        attrs: { text: {
         text: '',
         'font-family': 'Arial, helvetica, sans-serif',
+
+        'font-size': 12,
+        fill: 'black',
+        'font-weight': 'bold'},
+        rect: { stroke: 'none', 'fill-opacity': 0 },} }
+        ,
+        {
+          position:{ distance: 0.5, offset: { x: 10, y: 10 }},
+          attrs: { text: {
+            text: '',
+            'font-family': 'Arial, helvetica, sans-serif',
+            'font-size': 12,
+            fill: 'black',
+            'font-weight': 'bold'},
+            rect: { stroke: 'none', 'fill-opacity': 0 },} }
+
+        ],
+
         'font-size': 10,
-        fill: 'red',
+        fill: 'black',
         'font-weight': 200} } }]
+
     };
+
   }
   linkAttrs() {
     return {
@@ -51,16 +85,15 @@ export class OpmDefaultLink extends OpmLinkRappid {
   }
   getDefaultLinkParams() {
     return {
-      sourceElementId: this.getSourceElement().get('id'),
-      targetElementId: this.getTargetElement().get('id'),
+      sourceElementId: this.getSourceElement() ? this.getSourceElement().get('id') : null,
+      targetElementId: this.getTargetElement() ? this.getTargetElement().get('id') : null,
       vertices: this.get('vertices'),
-      linkConnectionType: (this.attr('.connection/stroke-dasharray') === 0) ? linkConnectionType.systemic : linkConnectionType.enviromental,
+      linkConnectionType: (this.attr('.connection/stroke-dasharray') === '0') ? linkConnectionType.systemic : linkConnectionType.enviromental,
       textColor: this.get('labels')[0].attrs.text.fill,
       textFontWeight: this.get('labels')[0].attrs.text['font-weight'],
       textFontSize: this.get('labels')[0].attrs.text['font-size'],
       textFontFamily: this.get('labels')[0].attrs.text['font-family'],
       strokeColor: this.attr('.connection/stroke'),
-      strokeWidth: this.attr('.connection/stroke-width'),
       id: this.get('id')
     };
   }
@@ -109,7 +142,7 @@ export class OpmDefaultLink extends OpmLinkRappid {
         !((source instanceof OpmState) && (target instanceof OpmState) &&
           source.get('parent') === target.get('parent'))) {
          if (!this.get('previousTargetId') || (this.get('previousTargetId') !== this.attributes.target.id)) {
-            const relevantLinks = linkTypeSelection.generateLinkWithOpl(this);
+            const relevantLinks = oplFunctions.generateLinksWithOpl(this);
             if (relevantLinks.length > 0) {
               this.set('previousTargetId', this.attributes.target.id);
               this.set('previousSourceId', this.attributes.source.id);

@@ -1,20 +1,38 @@
   import {OpmVisualThing} from './OpmVisualThing';
-  import * as ConfigurationOptions from '../ConfigurationOptions';
-  import {OpmLogicalObject} from "../LogicalPart/OpmLogicalObject";
+  import {statesArrangement} from '../ConfigurationOptions';
 
   export class OpmVisualObject extends OpmVisualThing {
-    statesArrangement: ConfigurationOptions.statesArrangement;
-    valueType: ConfigurationOptions.valueType;
-    value: any;
-    units: string;
+    statesArrangement: statesArrangement;
     constructor(params, logicalElement) {
       super(params, logicalElement);
-      // statesArrangement fro different types. one is string and the new one is enum.
-      // Once all states and values related code be refactored the lines should be uncommented
-     // this.statesArrangement = params.statesArrangement;
-     // this.valueType = params.valueType;
-      this.value = params.value;
-      this.units = params.units;
+    }
+    updateParams(params) {
+      super.updateParams(params);
+      this.statesArrangement = this.getStateArrangement(params.statesArrangement);
+    }
+    getStateArrangement(statesArrangement) {
+      switch (statesArrangement) {
+        case ('top' || 0):
+          return statesArrangement.Top;
+        case ('bottom' || 1):
+          return statesArrangement.Bottom;
+        case ('left' || 2):
+          return statesArrangement.Left;
+        case ('right' || 3):
+          return statesArrangement.Right;
+      }
+    }
+    getParams() {
+      const params = {
+        statesArrangement: this.statesArrangement
+      };
+      return {...super.getThingParams(), ...params};
+    }
+    getParamsFromJsonElement(jsonElement) {
+      const params = {
+        statesArrangement: this.getStateArrangement(jsonElement.statesArrangement)
+      };
+      return {...super.getThingParamsFromJsonElement(jsonElement), ...params};
     }
   }
 

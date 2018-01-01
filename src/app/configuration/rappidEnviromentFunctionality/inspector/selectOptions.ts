@@ -32,9 +32,9 @@ export const selectOptions = {
   ],
 
   labelPosition: [
-    {value: 30, content: 'Close to source'},
-    {value: 0.5, content: 'In the middle'},
-    {value: -30, content: 'Close to target'},
+    {value: {distance: 30, offset: { x: -10, y: -10 }}, content: 'Close to source'},
+    {value: {distance: 0.5, offset: { x: -10, y: -10 }}, content: 'In the middle'},
+    {value: {distance: -30, offset: { x: -10, y: -10 }}, content: 'Close to target'},
   ],
 
   predefinedFunctions: [
