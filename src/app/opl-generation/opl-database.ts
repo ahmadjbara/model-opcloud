@@ -25,10 +25,11 @@ export const defaultTable =  {
    // 'Bidirectional_Relation_(tag)': `<P1> and <P2> are <forward tag>.`,
     'OvertimeUndertime-exception':
       `<P2> occurs if <P1> falls short of <mintime> <units> or lasts more than <maxtime> <units>.`,
-    'Unidirectional_Relation': `<P1> relates to <P2>.', 'Invocation': '<P1> invokes <P2>.`,
+    'Unidirectional_Relation': `<P1> relates to <P2>.`,
+    'Invocation': `<P1> invokes <P2>.`,
 
     'Bidirectional_Relation': `<P1> and <P2> are equivalent.`,
-    'Generalization-Specialization': `<P2>is a <P1>.`,
+    'Generalization-Specialization': `<P2> is a <P1>.`,
     'Classification-Instantiation': `<P2> is an instance of <P1>.`,
    // 'Unidirectional_Relation_(tag)': `<P1> <tag> <P2>.`,
    // 'Bidirectional_Relation_(ftag,btag)': `<P1> <forward tag> <P2> and <P2> <backward tag> <P1>.`,
