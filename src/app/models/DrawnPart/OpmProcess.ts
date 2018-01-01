@@ -20,10 +20,13 @@ const y_margin = 10; // height margin between subprocess
 const childMargin = 55;
 
 export class OpmProcess extends OpmThing {
+
+  static counter: number =0;
+
   constructor() {
     super();
     this.set(this.processAttributes());
-    this.attr({text: {text: 'Processing'}});
+    this.attr({text: {text: 'Process'}});
     this.attr({ellipse: {stroke: '#0000FF', rx: 40, ry: 40, cx: 40, cy: 40}});
     this.attr({ellipse: this.entityShape()});
     this.attr({ellipse: this.thingShape()});
@@ -35,6 +38,11 @@ export class OpmProcess extends OpmThing {
       padding: 35
     };
   }
+
+  getCounter() {
+    return ++OpmProcess.counter;
+  }
+
   processAttrs() {
     return {
       ellipse: {

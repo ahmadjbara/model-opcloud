@@ -19,6 +19,13 @@ export  class OpmThing extends OpmEntity {
     this.attr({text: {'font-weight': 600}});
     this.attr({value: {'value': 'None', 'valueType': 'None', 'units': ''}});
   }
+  numberThing() {
+    let thisText = this.attributes.attrs.text.text;
+    if (this instanceof OpmProcess)
+      thisText += 'ing';
+    const thisCounter = this.getCounter();
+    this.attr({text: {text: thisText + thisCounter}});
+  }
 
   thingShape() {
     return {

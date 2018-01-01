@@ -12,6 +12,7 @@ import {defineKeyboardShortcuts} from '../../configuration/rappidEnviromentFunct
 import {selectionConfiguration} from '../../configuration/rappidEnviromentFunctionality/selectionConfiguration';
 import {OpmState} from "../../models/DrawnPart/OpmState";
 import {ModelObject} from "./storage/model-object.class";
+import {OpmThing} from '../../models/DrawnPart/OpmThing';
 
 
 const joint = require('rappid');
@@ -119,6 +120,10 @@ export class InitRappidService {
       removeHandle(_this, cell);
       cell.removeHandle(_this); });
     this.graph.on('add', (cell, collection, opt) => {
+      // Alon: We only want to number Object/Process at this time
+      if ( cell instanceof OpmThing) {
+        cell.numberThing();
+      }
       addHandle(_this, cell, opt);
       cell.addHandle(_this); });
     this.graph.on('change', function (cell) {

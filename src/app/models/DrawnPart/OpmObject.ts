@@ -17,6 +17,9 @@ const y_margin = 10; // height margin between subprocess
 const childMargin = 55;
 
 export class OpmObject extends OpmThing {
+
+  static counter: number =0;
+
   constructor() {
     super();
     this.set(this.objectAttributes());
@@ -31,6 +34,11 @@ export class OpmObject extends OpmThing {
       logicalValue: null
     };
   }
+
+  getCounter() {
+    return ++OpmObject.counter;
+  }
+
   objectAttrs() {
     return {
       rect: {...this.entityShape(), ...this.thingShape(), ...{stroke: '#00AA00'}},
