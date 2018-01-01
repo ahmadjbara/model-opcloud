@@ -118,6 +118,22 @@ export class OpmObject extends OpmThing {
   }
 
   addState(stateName = null , Graph ?:any) {
+    this.objectChangedSize = false;
+    const statesNumber = this.getEmbeddedCells().length;
+    this.createNewState((stateName ? stateName : ('state' + (statesNumber + 1))),Graph);
+    // For the first time of clicking on general addState should be added 3 states
+    if (!stateName && (statesNumber === 0)) {
+      for (let i = 2; i <= 2; i++) {
+        this.createNewState(('state' + (statesNumber + i)),Graph);
+      }
+    }
+    // Add the new state using the current states arrangement
+    if (this.get('embeds').length < 2) {
+      arrangeEmbedded(this, 'bottom');
+    } else {
+      arrangeEmbedded(this, this.attr('statesArrange'));
+    }
+  }
 
   updateParamsFromOpmModel(visualElement) {
     const attr = {
@@ -141,7 +157,7 @@ export class OpmObject extends OpmThing {
       }
     }
   }
-  
+
   createNewState(stateName , Graph) {
     const defaultState = new OpmState(stateName);
     this.embed(defaultState);     // makes the state stay in the bounds of the object

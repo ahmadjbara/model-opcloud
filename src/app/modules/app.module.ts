@@ -32,7 +32,7 @@ import { FileSelectDirective, FileDropDirective } from 'ng2-file-upload';
 import {UploadFile} from "../dialogs/FileUploader/FileUploader";
 import {ProgressSpinner} from "../dialogs/Spinner/Progress_Spinner";
 import {ClearCanvasComponent} from '../dialogs/clear-canvas/clear-canvas';
-import {KeysPipe, OplDialogComponent} from '../dialogs/opl-dialog/opl-dialog.component';
+import {KeysPipe} from '../dialogs/opl-dialog/opl-dialog.component';
 import { OplService } from "../opl-generation/opl.service";
 
 
@@ -82,7 +82,7 @@ import { OplService } from "../opl-generation/opl.service";
     OplDialogComponent,
     AboutDialogComponent,
     UploadFile,
-    ProgressSpinner
+    ProgressSpinner,
     ClearCanvasComponent,
     AboutDialogComponent
   ],
