@@ -1,8 +1,9 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MaterialModule } from './material.module';
-import { ResizableDirective } from './resizable.directive';
 import { AvatarComponent } from './avatar/avatar.component';
+import { ResizeBarDirective } from './resize-bar/resize-bar.directive';
+import { ResizeBarComponent } from './resize-bar/resize-bar.component';
 
 @NgModule({
   imports: [
@@ -11,12 +12,17 @@ import { AvatarComponent } from './avatar/avatar.component';
   ],
   exports: [
     MaterialModule,
-    ResizableDirective,
-    AvatarComponent
+    AvatarComponent,
+    ResizeBarDirective
   ],
   declarations: [
-    ResizableDirective,
-    AvatarComponent
+    AvatarComponent,
+    ResizeBarDirective,
+    ResizeBarComponent
+  ],
+  entryComponents: [
+    ResizeBarComponent
   ]
 })
-export class SharedModule { }
+export class SharedModule {
+}
