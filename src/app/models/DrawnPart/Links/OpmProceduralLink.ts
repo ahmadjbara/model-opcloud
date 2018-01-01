@@ -10,8 +10,8 @@ export  class OpmProceduralLink extends OpmDefaultLink {
   pathText: string;
   probability: number;
   rate: number;
-  constructor(sourceElement, targetElement, condition, event) {
-    super();
+  constructor(sourceElement, targetElement, condition, event ,id?:string) {
+    super(id);
     this.sourceElement = sourceElement;
     this.targetElement = targetElement;
     this.condition = condition;

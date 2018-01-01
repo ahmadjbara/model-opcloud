@@ -10,6 +10,7 @@ import { oplFunctions} from "../../../opl-generation/opl-functions";
 
 const linkDefinition = {
   defaults: _.defaultsDeep({
+    markup: '<g class="scalable"><g class="rotatable"><text/></g></g>',
     type: 'opm.Link',
     connector: {
       name : 'jumpover'
@@ -25,11 +26,21 @@ const linkDefinition = {
 };
 
 export class OpmDefaultLink extends OpmLinkRappid {
-  constructor() {
+  constructor(id?:string) {
     super();
     this.set(this.linkAttributes());
     this.attr(this.linkAttrs());
+    this.IDSetter(id);
   }
+
+  IDSetter(id){
+    if(id){
+      this.set('id',id);
+    }
+  }
+
+
+
   linkAttributes() {
     return {
       type: 'opm.Link',
@@ -37,13 +48,35 @@ export class OpmDefaultLink extends OpmLinkRappid {
       connector: {
         name : 'jumpover'
       },
-      labels: [{ position: 0.5, attrs: { text: {
+      labels: [{
+        position:{ distance: 0.5, offset: { x: -10, y: -10 }},
+        attrs: { text: {
         text: '',
         'font-family': 'Arial, helvetica, sans-serif',
+
+        'font-size': 12,
+        fill: 'black',
+        'font-weight': 'bold'},
+        rect: { stroke: 'none', 'fill-opacity': 0 },} }
+        ,
+        {
+          position:{ distance: 0.5, offset: { x: 10, y: 10 }},
+          attrs: { text: {
+            text: '',
+            'font-family': 'Arial, helvetica, sans-serif',
+            'font-size': 12,
+            fill: 'black',
+            'font-weight': 'bold'},
+            rect: { stroke: 'none', 'fill-opacity': 0 },} }
+
+        ],
+
         'font-size': 10,
         fill: 'black',
         'font-weight': 200} } }]
+
     };
+
   }
   linkAttrs() {
     return {

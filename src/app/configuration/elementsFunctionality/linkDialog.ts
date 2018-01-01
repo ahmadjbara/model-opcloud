@@ -68,7 +68,7 @@ export function createDialog(options, link ) {
       dialogComponentRef.instance.Invocation_links.push(link);
     } else if (link.name === 'Overtime_exception'
       || link.name === 'Undertime_exception'
-      || link.name === 'UndertimeOvertimeException') {
+      || link.name === 'OvertimeUndertime-exception') {
       // Exception Links
       dialogComponentRef.instance.Exception_links.push(link);
     }
@@ -77,3 +77,4 @@ export function createDialog(options, link ) {
   options.dialog$.next(dialogComponentRef);
   return dialogComponentRef;
 }
+

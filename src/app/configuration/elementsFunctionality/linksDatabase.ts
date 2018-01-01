@@ -53,6 +53,7 @@ export class dataBase {
       {sourceType: "object1", targetType1: "object2.state",targetType2: "null", linkName: "Exhibition-Characterization"},
       {sourceType: "object1.state", targetType1: "process2",targetType2: "null", linkName: "Exhibition-Characterization"},
       {sourceType: "process1", targetType1: "object2.state",targetType2: "null", linkName: "Exhibition-Characterization"},
+      {sourceType: "object1.state1", targetType1: "object2.state2",targetType2: "null", linkName: "Exhibition-Characterization"},
 
       {sourceType: "object1", targetType1: "object2",targetType2: "null", linkName: "Generalization-Specialization"},
 //      {sourceType: "object1", targetType1: "object2.1", targetType2: "object2.2", linkName: "Generalization-Specialization"},
@@ -79,9 +80,9 @@ export class dataBase {
       {sourceType: "object1", targetType1: "process2",targetType2: "null", linkName: "Instrument"},
       {sourceType: "object1.state", targetType1: "process2",targetType2: "null", linkName: "Instrument"},
 
-      {sourceType: "object1.state1", targetType1: "object1.state2",targetType2: "null", linkName: "In/out_linkPair"},
-      {sourceType: "object1.state", targetType1: "object1",targetType2: "null", linkName: "In/out_linkPair"},
-      {sourceType: "object1", targetType1: "object1.state",targetType2: "null", linkName: "In/out_linkPair"},
+    //  {sourceType: "object1.state1", targetType1: "object1.state2",targetType2: "null", linkName: "In/out_linkPair"},
+    //  {sourceType: "object1.state", targetType1: "object1",targetType2: "null", linkName: "In/out_linkPair"},
+    //  {sourceType: "object1", targetType1: "object1.state",targetType2: "null", linkName: "In/out_linkPair"},
       {sourceType: "object1.state", targetType1: "process2",targetType2: "null", linkName: "In/out_linkPair"},
       {sourceType: "process1", targetType1: "object2.state",targetType2: "null", linkName: "In/out_linkPair"},
 
@@ -94,18 +95,18 @@ export class dataBase {
 
       {sourceType: "process1", targetType1: "process2",targetType2: "null", linkName: "Overtime_exception"},
       {sourceType: "object1.state", targetType1: "process2",targetType2: "null", linkName: "Overtime_exception"},
-      {sourceType: "object1.state1", targetType1: "object1.state2",targetType2: "null", linkName: "Overtime_exception"},
-      {sourceType: "object1.state", targetType1: "object1",targetType2: "null", linkName: "Overtime_exception"},
+   //   {sourceType: "object1.state1", targetType1: "object1.state2",targetType2: "null", linkName: "Overtime_exception"},
+    //  {sourceType: "object1.state", targetType1: "object1",targetType2: "null", linkName: "Overtime_exception"},
 
       {sourceType: "process1", targetType1: "process2",targetType2: "null", linkName: "Undertime_exception"},
       {sourceType: "object1.state", targetType1: "process2",targetType2: "null", linkName: "Undertime_exception"},
-      {sourceType: "object1.state1", targetType1: "object1.state2",targetType2: "null", linkName: "Undertime_exception"},
-      {sourceType: "object1.state", targetType1: "object1",targetType2: "null", linkName: "Undertime_exception"},
+    //  {sourceType: "object1.state1", targetType1: "object1.state2",targetType2: "null", linkName: "Undertime_exception"},
+    //  {sourceType: "object1.state", targetType1: "object1",targetType2: "null", linkName: "Undertime_exception"},
 
-      {sourceType: "process1", targetType1: "process2",targetType2: "null", linkName: "UndertimeOvertimeException"},
-      {sourceType: "object1.state", targetType1: "process2",targetType2: "null", linkName: "UndertimeOvertimeException"},
-      {sourceType: "object1.state1", targetType1: "object1.state2",targetType2: "null", linkName: "UndertimeOvertimeException"},
-      {sourceType: "object1.state", targetType1: "object1",targetType2: "null", linkName: "UndertimeOvertimeException"},
+      {sourceType: "process1", targetType1: "process2",targetType2: "null", linkName: "OvertimeUndertime-exception"},
+      {sourceType: "object1.state", targetType1: "process2",targetType2: "null", linkName: "OvertimeUndertime-exception"},
+     // {sourceType: "object1.state1", targetType1: "object1.state2",targetType2: "null", linkName: "OvertimeUndertime-exception"},
+   //   {sourceType: "object1.state", targetType1: "object1",targetType2: "null", linkName: "OvertimeUndertime-exception"},
 
 //      {sourceType: "process1", targetType1: "process2",targetType2: "null", linkName: "Undertime_and_overtime_exeption"},
 
