@@ -99,6 +99,9 @@ export  class OpmFundamentalLink extends OpmStructuralLink {
   getSource() {
     return this.sourceElement;
   }
+  getMainUpperLink(){
+    return this.mainUpperLink;
+  }
 }
 
 
