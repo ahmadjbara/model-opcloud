@@ -193,6 +193,8 @@ export class OpmEntity extends OpmEntityRappid {
       this.resize(newParams.width, newParams.height);
     }
   }
-  removeHandle(options) {}
+  removeHandle(options) {
+    console.log('remove from entity')
+  }
   addHandle(options) {}
 }

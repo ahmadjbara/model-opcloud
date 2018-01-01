@@ -5,6 +5,10 @@ import {min} from "rxjs/operator/min";
 const $ = require('jquery');
 
 export  class OpmState extends OpmEntity {
+
+  min_width:number = 60;
+  min_height:number = 30;
+
   constructor(stateName = 'State') {
     super();
     this.set(this.stateAttributes());
@@ -13,6 +17,23 @@ export  class OpmState extends OpmEntity {
     else
       this.attr(this.stateAttrs(stateName['attrs'].text.text));
   }
+
+  fromData(angle: number, name: string, id: string, width: number, height: number,
+           pos_x: number, pos_y: number,
+           type: string, z: number, father,Defualt,Final,Initial){
+    this.attr({text: {text: name}});
+    this.checker(Defualt,Initial,Final)
+    this.set(  {
+      angle: angle,
+      id: id,
+      size: {width: width>this.min_width ? width:this.min_width, height: height>this.min_height ? height:this.min_height},
+      position: {x: pos_x, y: pos_y},
+      type: type,
+      'father' : father,
+      'parent':father
+    });
+  }
+
   stateAttributes() {
     return {
       markup: '<image/><g class="rotatable"><g class="scalable"><rect class="outer"/><rect class="inner"/></g><text/></g>',
@@ -74,8 +95,8 @@ export  class OpmState extends OpmEntity {
     const width = this.get('size').width;
     const height = this.get('size').height;
     const diff = Math.max(0.15 * width, 0.15 * height);
-    this.attr('.inner', {width: this.get('size').width, height: this.get('size').height});
-    this.attr('.outer', {width: (this.get('size').width + diff), height: (this.get('size').height + diff)});
+  //  this.attr('.inner', {width: this.get('size').width, height: this.get('size').height});
+   // this.attr('.outer', {width: (this.get('size').width + diff), height: (this.get('size').height + diff)});
   }
   changePositionHandle() {
     super.changePositionHandle();
@@ -99,48 +120,56 @@ export  class OpmState extends OpmEntity {
       arrangeEmbedded(fatherObject, fatherObject.attr('statesArrange'));
     }
   }
-  checktype() {
-    if(this.attr('.inner/stroke-width') === 0 &&
-      this.attr('.outer/stroke-width') === 2 &&
-      this.attr('image/display') ==='none'){
-      return 'none';
+  checker(Dchecked, Ichecked, Fchecked) {
+    if (!Dchecked && !Ichecked && !Fchecked) {
+      this.attr('image/display', 'none');
+      this.attr('.inner/stroke-width', 0);
+      this.attr('.outer/stroke-width', 2);
+
     }
-    if(this.attr('.inner/stroke-width') === 0 &&
-      this.attr('.outer/stroke-width') === 2 &&
-      this.attr('image/display') ==='flex'){
-      return 'Default';
+    if (!Dchecked && !Ichecked && Fchecked) {
+      this.attr('image/display', 'none');
+      this.attr('.inner/stroke-width', 2);
+      this.attr('.outer/stroke-width', 2);
+
     }
-    if(this.attr('.inner/stroke-width') === 0 &&
-      this.attr('.outer/stroke-width') === 3 &&
-      this.attr('image/display') ==='none'){
-      return 'Initial';
+    if (!Dchecked && Ichecked && !Fchecked) {
+      this.attr('image/display', 'none');
+      this.attr('.inner/stroke-width', 0);
+      this.attr('.outer/stroke-width', 3);
+
     }
-    if(this.attr('.inner/stroke-width') === 2 &&
-      this.attr('.outer/stroke-width') === 2 &&
-      this.attr('image/display') ==='none'){
-      return 'Final';
+    if (!Dchecked && Ichecked && Fchecked) {
+      this.attr('image/display', 'none');
+      this.attr('.inner/stroke-width', 2);
+      this.attr('.outer/stroke-width', 3);
+
     }
-    if(this.attr('.inner/stroke-width') === 0 &&
-      this.attr('.outer/stroke-width') === 3 &&
-      this.attr('image/display') ==='flex'){
-      return 'DefInitial';
+    if (Dchecked && !Ichecked && !Fchecked) {
+      this.attr('image/display', 'flex');
+      this.attr('.inner/stroke-width', 0);
+      this.attr('.outer/stroke-width', 2);
+
     }
-    if(this.attr('.inner/stroke-width') === 2 &&
-      this.attr('.outer/stroke-width') === 2 &&
-      this.attr('image/display') ==='flex'){
-      return 'DefFinal';
-      }
-    if(this.attr('.inner/stroke-width') === 2 &&
-      this.attr('.outer/stroke-width') === 3 &&
-      this.attr('image/display') ==='none'){
-      return 'finInitial'
-    }
-    if(this.attr('.inner/stroke-width') === 2 &&
-      this.attr('.outer/stroke-width') === 3 &&
-      this.attr('image/display') ==='flex'){
-      return 'all';
+    if (Dchecked && !Ichecked && Fchecked) {
+      this.attr('image/display', 'flex');
+      this.attr('.inner/stroke-width', 2);
+      this.attr('.outer/stroke-width', 2);
+
     }
 
+    if (Dchecked && Ichecked && !Fchecked) {
+      this.attr('image/display', 'flex');
+      this.attr('.inner/stroke-width', 0);
+      this.attr('.outer/stroke-width', 3);
+
+    }
+    if (Dchecked && Ichecked && Fchecked) {
+      this.attr('image/display', 'flex');
+      this.attr('.inner/stroke-width', 2);
+      this.attr('.outer/stroke-width', 3);
+
+    }
   }
 
   haloConfiguration(halo, options) {

@@ -30,25 +30,8 @@
   </header>
 
   <div style="height:85%;overflow-y:auto;overflow-x: hidden">
-
-
-    <!-- In Out Link Pair -->
-
-
-    <div *ngIf=check_empty(In_out_Link_Pair)>
-      <md-grid-list cols="2" (click)="onClickedExit(link)" rowHeight="8:1" *ngFor="let link of In_out_Link_Pair">
-        <md-grid-tile>
-          <div class='In_out_Link_Pair {{link.name}}'></div>
-          <div class="oplname">{{replacename(link.name)}}</div>
-        </md-grid-tile>
-        <md-grid-tile class="item">
-          <div class="opl" [innerHtml]="link.opl">{{link.opl}}</div>
-        </md-grid-tile>
-      </md-grid-list>
-    </div>
-
     <!-- Structural Links -->
-    <div *ngIf=check_empty(Structural_Links)>
+    <div id="Structrial" *ngIf=check_empty(Structural_Links)>
       <md-grid-list cols="2" (click)="onClickedExit(link)" rowHeight="8:1" *ngFor="let link of Structural_Links">
         <md-grid-tile  >
           <div class='Structrial {{link.name}}'></div>
@@ -61,7 +44,7 @@
     </div>
 
     <!-- Relation Links -->
-    <div *ngIf=check_empty(Relation_Links)>
+    <div id="Relation" *ngIf=check_empty(Relation_Links)>
       <md-grid-list  cols="2"  (click)="onClickedExit(link)"  rowHeight="8:1" *ngFor="let link of Relation_Links">
         <md-grid-tile>
           <div  class='Structrial {{link.name}}'></div>
@@ -73,7 +56,7 @@
     </div>
 
     <!-- Result Link -->
-    <div *ngIf=check_empty(Result_Link)>
+    <div id="Result" *ngIf=check_empty(Result_Link)>
       <md-grid-list cols="2" (click)="onClickedExit(link)" rowHeight="8:1" *ngFor="let link of Result_Link">
         <md-grid-tile>
           <div class='Result {{link.name}}'></div>
@@ -84,9 +67,25 @@
         </md-grid-tile>
       </md-grid-list>
     </div>
+
+    <!-- In Out Link Pair -->
+
+
+    <div id="In_out_Link_Pair" *ngIf=check_empty(In_out_Link_Pair)>
+      <md-grid-list cols="2" (click)="onClickedExit(link)" rowHeight="8:1" *ngFor="let link of In_out_Link_Pair">
+        <md-grid-tile>
+          <div class='In_out_Link_Pair {{link.name}}'></div>
+          <div class="oplname">{{replacename(link.name)}}</div>
+        </md-grid-tile>
+        <md-grid-tile class="item">
+          <div class="opl" [innerHtml]="link.opl">{{link.opl}}</div>
+        </md-grid-tile>
+      </md-grid-list>
+    </div>
+
     <!-- Invocation Link -->
 
-    <div *ngIf=check_empty(Invocation_links)>
+    <div id="Invocation" *ngIf=check_empty(Invocation_links)>
       <md-grid-list cols="2" (click)="onClickedExit(link)" rowHeight="8:1" *ngFor="let link of Invocation_links">
         <md-grid-tile>
           <div class='Invocation {{link.name}}'></div>
@@ -101,7 +100,7 @@
 
     <!-- Agents Links -->
 
-    <div *ngIf=check_empty(Agent_Links)>
+    <div id="Agents" *ngIf="check_empty(Agent_Links)&& IsPhysicalObject(linkSource)">
       <tabs>
         <tab [tabTitle]="'(wait)'">
           <md-grid-list cols="2" (click)="onClickedExit(Agent_Links[0])" rowHeight="8:1">
@@ -150,7 +149,7 @@
       </tabs>
     </div>
     <!-- Instrument Links -->
-    <div *ngIf=check_empty(Instrument_Links)>
+    <div id="Instruments" *ngIf=check_empty(Instrument_Links)>
       <tabs>
         <tab [tabTitle]="'(wait)'">
           <md-grid-list cols="2" (click)="onClickedExit(Instrument_Links[0])" rowHeight="8:1">
@@ -204,7 +203,7 @@
     </div>
 
     <!-- Consumption Links -->
-    <div *ngIf=check_empty(Consumption_links)>
+    <div id="Consumptions" *ngIf=check_empty(Consumption_links)>
 
       <tabs>
         <tab [tabTitle]="'(wait)'">
@@ -259,7 +258,7 @@
     </div>
 
     <!-- Effect Links -->
-    <div *ngIf="check_empty(Effect_links)">
+    <div id="Effects" *ngIf="check_empty(Effect_links)">
       <tabs>
         <tab [tabTitle]="'(wait)'">
           <md-grid-list cols="2" (click)="onClickedExit(Effect_links[1])" rowHeight="8:1">
@@ -314,7 +313,7 @@
     </div>
 
   <!-- Exception Links -->
-  <div *ngIf=check_empty(Exception_links)>
+  <div id="Exceptions" *ngIf=check_empty(Exception_links)>
     <tabs>
       <tab [tabTitle]="'Overtime Exception'">
         <md-grid-list cols="2" (click)="onClickedExit(Exception_links[0])" rowHeight="8:1">
@@ -348,7 +347,7 @@
           </md-grid-tile>
         </md-grid-list>
       </tab>
-      <tab [tabTitle]="'Undertime and Overtime Exception'">
+      <tab [tabTitle]="'Overtime and Undertime Exception'">
         <md-grid-list cols="2" (click)="onClickedExit(Exception_links[2])" rowHeight="8:1">
           <md-grid-tile>
             <div class='Exceptions {{Exception_links[2].name}}'></div>

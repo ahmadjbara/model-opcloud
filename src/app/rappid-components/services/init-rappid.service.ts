@@ -10,6 +10,8 @@ import {OpmDefaultLink} from '../../models/DrawnPart/Links/OpmDefaultLink';
 import {addHandle, removeHandle} from '../../configuration/elementsFunctionality/graphFunctionality';
 import {defineKeyboardShortcuts} from '../../configuration/rappidEnviromentFunctionality/keyboardShortcuts';
 import {selectionConfiguration} from '../../configuration/rappidEnviromentFunctionality/selectionConfiguration';
+import {InvocationLink} from "../../models/DrawnPart/Links/InvocationLink";
+import {OpmFundamentalLink} from '../../models/DrawnPart/Links/OpmFundamentalLink';
 
 
 const joint = require('rappid');
@@ -22,6 +24,7 @@ export class InitRappidService {
   cell$ = new BehaviorSubject(null);
   dialog$ = new BehaviorSubject(null);
   graph = null;
+  ImportedGraph = null;
   paper;
   commandManager;
   paperScroller;
@@ -36,14 +39,20 @@ export class InitRappidService {
     commandManagerService: CommandManagerService,
     private treeViewService: TreeViewService) {
     this.graph = graphService.getGraph();
+    this.ImportedGraph = this.graphService.getImportedGraph();
     this.commandManager = commandManagerService.commandManager;
 
     joint.setTheme('modern');
     this.initializeDesktop();
-    this.initializeEvents();
+    this.initializeEvents(this.graph);
     this.opmModel = new OpmModel();
     defineKeyboardShortcuts(this);
     console.log(this.opmModel);
+  }
+
+
+  getTreeView(){
+    return this.treeViewService;
   }
 
   initializeDesktop() {
@@ -56,7 +65,29 @@ export class InitRappidService {
       model: this.graph,
       defaultLink: new OpmDefaultLink(),
       multiLinks: false,
-    });
+      interactive:
+        function (cellView) {
+
+          if (cellView.model instanceof InvocationLink) {
+            return {
+              vertexAdd: false,
+              vertexRemove: false,
+              vertexMove: false,
+
+            }
+          }
+          if (cellView.model instanceof OpmFundamentalLink) {
+            return {
+              arrowheadMove: false,
+            }
+          }
+
+          return true;
+        },
+
+
+      });
+
     this.paperScroller = new joint.ui.PaperScroller({
       paper: this.paper,
       autoResizePaper: true,
@@ -92,7 +123,7 @@ export class InitRappidService {
       this.graphService.changeGraphModel(parentNode.id, this.treeViewService, parentNode.type);
     }
   }
-  initializeEvents() {
+  initializeEvents(graph?:any) {
     const _this = this;
     this.paper.on('cell:pointerdblclick', function (cellView, evt) {
       cellView.model.doubleClickHandle(cellView, evt, this.paper); }, this);
@@ -110,18 +141,22 @@ export class InitRappidService {
     this.paper.on('cell:pointerdown', function (cellView, evt) {
       selectionConfiguration.cellPointerdown(this, cellView, evt); }, this);
     this.selection.on('selection-box:pointerdown', function (cellView, evt) {
+
       selectionConfiguration.selectionBoxPointerdown(this, cellView, evt); }, this);
-    this.graph.on('change:attrs', function (cell) {
+    graph.on('change:attrs', function (cell) {
       cell.changeAttributesHandle(); }, this);
-    this.graph.on('change:size', _.bind(function (cell) {
+    graph.on('change:size', _.bind(function (cell) {
       cell.changeSizeHandle(); }, this));
-    this.graph.on('change:position', _.bind(function (cell) {
+    graph.on('change:position', _.bind(function (cell) {
       cell.changePositionHandle(); }, this));
-    this.graph.on('remove', (cell) => {
+    graph.on('remove', (cell) => {
+      cell = cell.model || cell;
       removeHandle(_this, cell);
-      cell.removeHandle(_this); });
-    this.graph.on('add', (cell, collection, opt) => {
+      cell.removeHandle(_this);
+      });
+    graph.on('add', (cell, collection, opt) => {
       addHandle(_this, cell, opt);
-      cell.addHandle(_this); });
+      cell.addHandle(_this);
+    });
   }
 }

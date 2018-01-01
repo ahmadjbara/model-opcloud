@@ -11,8 +11,8 @@ export  class OpmFundamentalLink extends OpmStructuralLink {
   triangle: any;
   mainUpperLink: OpmDefaultLink;
   graph: dia.Graph;
-  constructor(sourceElement, targetElement, graph) {
-    super();
+  constructor(sourceElement, targetElement, graph ,id?:string) {
+    super(id);
     this.sourceElement = sourceElement;
     this.targetElement = targetElement;
     // Get all outgoing links from the source element
@@ -37,9 +37,19 @@ export  class OpmFundamentalLink extends OpmStructuralLink {
       newLink.set({
         source: {id: this.sourceElement.id},
         target: {id: this.triangle.id, port: 'in'},
-        router: {name: 'manhattan', args: { step: 5}},
+        router: {name: 'manhattan', args: { step: 1}},
+        connector : {name:'jumpover'},
         OpmLinkType: this.constructor.name
       });
+
+      newLink.attr('.connection/targetMarker', {
+        type: 'polyline', // SVG polyline
+        fill: 'none',
+        stroke: 'black',
+        'stroke-width': 2,
+        points:'0,0 -2,0'
+      });
+
       newLink.attr({
         '.link-tools': {display: 'none'},
         '.marker-arrowheads': {display: 'none'},
@@ -48,16 +58,17 @@ export  class OpmFundamentalLink extends OpmStructuralLink {
       this.mainUpperLink = newLink;
       graph.addCells([this.triangle, newLink]);
     }
+
     // Define the connection from the triangle to the current link
     this.set({
       source: {id: this.triangle.id, port: 'out'},
       target: {id: this.targetElement.id},
-      router: {name: 'manhattan', args: { step: 5}}
+      router: {name: 'manhattan', args: { step: 1}},
+      connector : {name:'jumpover'},
+
+
     });
-    this.attr({attrs: {
-      '.link-tools': {display: 'none'},
-      '.marker-arrowheads': {display: 'none'}
-    }});
+
     let numberOfTargets = this.triangle.get('numberOfTargets') + 1;
     this.triangle.set('numberOfTargets', numberOfTargets);
   }
@@ -78,50 +89,68 @@ export  class OpmFundamentalLink extends OpmStructuralLink {
       triangle.remove();
     }
   }
+
+  getTriangle(){
+    return this.triangle;
+  }
 }
+
 
 export class TriangleClass extends joint.shapes.devs.Model.extend({
   markup: '<image/>',
   defaults: _.defaultsDeep({
     type: 'opm.TriangleAgg',
-    size: {width: 31, height: 30},
+
     inPorts: ['in'],
     outPorts: ['out'],
     ports: {
       groups: {
         'in': {
           position: {
-            name: 'top'
+            name: 'top',
           },
           attrs: {
             '.port-body': {
               fill: 'black',
-              magnet: 'passive',
-              r: 1
+              magnet: true,
+              r: 0
             }
           },
           label: {markup: '<text class="label-text"/>'}
         },
         'out': {
           position: {
-            name: 'bottom'
+            name: 'bottom',
           },
           attrs: {
             '.port-body': {
               fill: 'black',
-              magnet: 'passive',
-              r: 1
+              magnet: true,
+              r: 0
             }
           },
           label: {markup: '<text class="label-text"/>'}
         }
       }
     },
+
     attrs: {
-      image: { 'xlink:href': '../../assets/OPM_Links/StructuralAgg.png', width: 30, height: 30},
+
+    //  image: { 'xlink:href': '../../assets/OPM_Links/StructuralAgg.png', width: 30, height: 30},
+      image: {
+
+      }
+
     }
   }, joint.shapes.devs.Model.prototype.defaults)
-}) {
+})
+
+
+
+
+{
+
+
   doubleClickHandle(cellView, evt, paper) {}
   pointerUpHandle(cellView) {}
   changeAttributesHandle() {}

@@ -31,4 +31,5 @@ export function addHandle(initRappidService, cell, opt) {
 }
 export function removeHandle(initRappidService, cell) {
   initRappidService.opmModel.remove(cell.id);
+
 }

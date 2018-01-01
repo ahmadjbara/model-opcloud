@@ -5,6 +5,7 @@ import { TreeViewService } from '../rappid-components/services/tree-view.service
 import { Node } from '../models/node.model';
 import { Subscription } from 'rxjs/Subscription';
 import {DomSanitizer} from "@angular/platform-browser"
+const joint = require('rappid');
 
 const actionMapping: IActionMapping = {
   mouse: {
@@ -38,6 +39,7 @@ export class OPDHierarchyComponent implements OnInit {
   @ViewChild(TreeComponent) treeView: TreeComponent;
   private graph;
   showApi = false;
+  private ServGraph = new joint.dia.Graph();
 
   constructor(private graphService: GraphService, public _treeViewService: TreeViewService, private sanitizer: DomSanitizer) {
     this.graph = graphService.getGraph();
@@ -57,7 +59,7 @@ export class OPDHierarchyComponent implements OnInit {
     isExpandedField: 'expanded',
     idField: 'id',
     actionMapping,
-    nodeHeight: 23,
+    nodeHeight: 1,
     allowDrag: true,
     useVirtualScroll: true
   };
@@ -67,7 +69,12 @@ export class OPDHierarchyComponent implements OnInit {
 
   changeGraphModel($event, node) {
     console.log(node);
-    this.graphService.changeGraphModel(node.data.id, this._treeViewService, node.data.type);
+    this.graph =  this.graphService.changeGraphModel(node.data.id, this._treeViewService, node.data.type);
+    if(node.data.id === 'SD'){
+      node.data.graph.resetCells(this.graph.getCells())
+    }
+
+    return this
   }
 
   getNodeNum(node) {
