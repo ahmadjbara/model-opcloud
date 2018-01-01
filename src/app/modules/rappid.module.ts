@@ -13,15 +13,16 @@ import { OPDHierarchyComponent } from '../opd-hierarchy/opd-hierarchy.component'
 import { InitRappidService } from '../rappid-components/services/init-rappid.service';
 import { MdButtonModule, MdIconModule, MdTooltipModule } from '@angular/material';
 
-
 @NgModule({
   imports: [
+
     CommonModule,
     TreeModule,
     MdIconModule,
     MdButtonModule,
     MdTooltipModule,
-    MdIconModule
+    MdIconModule,
+
   ],
   declarations: [
     RappidToolbarComponent,

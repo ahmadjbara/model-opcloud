@@ -26,7 +26,7 @@ import { Subscription } from 'rxjs/Subscription';
                   (opcResize)="onResize($event)">
         <opcloud-opd-hierarchy id="opd-block"></opcloud-opd-hierarchy>
 
-        <opcloud-rappid-navigator [paperScroller]="paperScroller"></opcloud-rappid-navigator>
+      <!--  <opcloud-rappid-navigator [paperScroller]="paperScroller"></opcloud-rappid-navigator> -->
       </md-sidenav>
 
       <div class="sd-content">

@@ -99,6 +99,7 @@ export class OpmEntity extends OpmEntityRappid {
     halo.on('action:configuration:pointerup', function () {
       const contextToolbar = thisEntity.contexToolbarGenerator(halo.el, thisEntity.getConfigurationTools()).render();
       thisEntity.configurationContextToolbarEvents(halo.el, contextToolbar);
+      joint.ui.Popup.close();
     });
   }
   contexToolbarGenerator(target, tools) {
@@ -232,6 +233,8 @@ export class OpmEntity extends OpmEntityRappid {
       this.resize(newParams.width, newParams.height);
     }
   }
-  removeHandle(options) {}
+  removeHandle(options) {
+    console.log('remove from entity')
+  }
   addHandle(options) {}
 }
