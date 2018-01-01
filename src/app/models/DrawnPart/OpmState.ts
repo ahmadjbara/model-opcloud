@@ -193,7 +193,7 @@ export  class OpmState extends OpmEntity {
       this.attr('.outer/stroke-width', 3);
 
     }
-
+  }
   checkType() {
     let type = 'none';
     if (this.attr('.inner/stroke-width') === 0) {
