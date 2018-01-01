@@ -157,28 +157,15 @@ export class RappidOplComponent implements OnInit {
       const states = parent.getEmbeddedCells();
       let stateOpl = `<b class="object">${objectName}</b> can be`;
       if (states.length === 1) {
-        stateOpl = stateOpl + ` <b class="state">${states[0].attributes.attrs.text.text}</b>.`;
+        stateOpl = `<b class="object">${objectName}</b> is <b class="state">${states[0].attributes.attrs.text.text}</b><b>.</b>`;
       }else {
         let i = 0;
         for (; i < states.length - 2 ; i++) {
-          stateOpl = stateOpl + ` <b class="state">${states[i].attributes.attrs.text.text}</b>,`;
+          stateOpl = stateOpl + ` <b class="state">${states[i].attributes.attrs.text.text}</b><b>,</b>`;
         }
-        stateOpl = stateOpl + ` <b class="state">${states[i].attributes.attrs.text.text}</b> and <b class="state">${states[i+1].attributes.attrs.text.text}</b>.`;
+        stateOpl = stateOpl + ` <b class="state">${states[i].attributes.attrs.text.text}</b> or <b class="state">${states[i+1].attributes.attrs.text.text}</b><b>.</b>`;
       }
      parent.getEmbeddedCells()[0].attributes.opl = stateOpl;
-    }
-  }
-  removeStateOpl(cell) {
-    const parent = cell.getParent();
-    const objectName = parent.attributes.attrs.text.text;
-    if (parent.getEmbeddedCells()) {
-      const states = parent.getEmbeddedCells();
-      let stateOpl = `<b class="object">${objectName}</b> can be`;
-      for (const state of states){
-        if (state === cell) {continue; }
-        stateOpl = stateOpl + ` <b class="state">${state.attributes.attrs.text.text}</b>`;
-      }
-      parent.getEmbeddedCells()[0].attributes.opl = stateOpl;
     }
   }
 
@@ -204,28 +191,72 @@ export class RappidOplComponent implements OnInit {
   }
 
   highlightLink(cell){
-
-    var source=cell.getSourceElement();
-    var target=cell.getTargetElement();
+    const linkType = cell.attributes.name;
+    let source= cell.getSourceElement();
+    const target= cell.getTargetElement();
+    if ([ 'Aggregation-Participation', 'Generalization-Specialization', 'Classification-Instantiation',
+        'Exhibition-Characterization'].indexOf(linkType) > -1) {
+      source = cell.getSource();
+      const cellView = this.paper.findViewByModel(cell.getMainUpperLink());
+      cellView.model.attr('.connection/stroke','#FFA500');
+    }
     if(source.attributes.type==='opm.Object') this.highlightObject(source);
     else if(source.attributes.type==='opm.Process') this.highlightProcess(source);
+    else if(source.attributes.type==='opm.State') this.highlightSingleState(source);
     if(target.attributes.type==='opm.Object') this.highlightObject(target);
     else if(target.attributes.type==='opm.Process') this.highlightProcess(target);
+    else if(target.attributes.type==='opm.State') this.highlightSingleState(target);
 
     var cellView = this.paper.findViewByModel(cell);
     cellView.model.attr('.connection/stroke','#FFA500');
   }
   unhighlightLink(cell){
-
-    var source=cell.getSourceElement();
-    var target=cell.getTargetElement();
+    const linkType = cell.attributes.name;
+    let source= cell.getSourceElement();
+    const target= cell.getTargetElement();
+    if ([ 'Aggregation-Participation', 'Generalization-Specialization', 'Classification-Instantiation',
+        'Exhibition-Characterization'].indexOf(linkType) > -1) {
+      source = cell.getSource();
+      const cellView = this.paper.findViewByModel(cell.getMainUpperLink());
+      cellView.model.removeAttr('.connection/stroke');
+    }
     if(source.attributes.type==='opm.Object') this.unhighlightObject(source);
     else if(source.attributes.type==='opm.Process') this.unhighlightProcess(source);
+    else if(source.attributes.type==='opm.State') this.unhighlightSingleState(source);
     if(target.attributes.type==='opm.Object') this.unhighlightObject(target);
     else if(target.attributes.type==='opm.Process') this.unhighlightProcess(target);
+    else if(target.attributes.type==='opm.State') this.unhighlightSingleState(target);
 
     var cellView = this.paper.findViewByModel(cell);
     cellView.model.removeAttr('.connection/stroke');
+  }
+  highlightStates(cell){
+    const parent = cell.getParent();
+    if (parent.getEmbeddedCells()) {
+      const states = parent.getEmbeddedCells();
+      for (const state of states) {
+        this.highlightSingleState(state);
+      }
+    }
+  }
+  unhighlightStates(cell){
+    const parent = cell.getParent();
+    if (parent.getEmbeddedCells()) {
+      const states = parent.getEmbeddedCells();
+      for (const state of states) {
+        this.unhighlightSingleState(state);
+      }
+    }
+  }
+  highlightSingleState(state){
+    const cellView = this.paper.findViewByModel(state);
+    cellView.model.attr('.inner/fill','#FFA500');
+    cellView.model.attr('.outer/fill','#FFA500');
+  }
+  unhighlightSingleState(state){
+    const cellView = this.paper.findViewByModel(state);
+    cellView.model.attr('.inner/fill','white');
+    cellView.model.attr('.outer/fill','white');
   }
 
 
@@ -238,6 +269,8 @@ export class RappidOplComponent implements OnInit {
         break;
       case 'opm.Link': this.highlightLink(cell);
         break;
+      case 'opm.State': this.highlightStates(cell);
+        break;
     }
 
   }
@@ -249,6 +282,8 @@ export class RappidOplComponent implements OnInit {
       case 'opm.Process': this.unhighlightProcess(cell);
         break;
       case 'opm.Link': this.unhighlightLink(cell);
+        break;
+      case 'opm.State': this.unhighlightStates(cell);
         break;
     }
 

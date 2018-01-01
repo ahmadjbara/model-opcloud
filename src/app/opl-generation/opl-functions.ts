@@ -140,7 +140,6 @@ export const oplFunctions = {
     if ([ 'Aggregation-Participation', 'Generalization-Specialization', 'Classification-Instantiation',
       'Exhibition-Characterization'].indexOf(linkType) > -1) {
       source = link.getSource();
-      console.log(source);
     }
     const stRelation = this.sourceTargetRelation(source, target);
     const relation = stRelation['relation'];

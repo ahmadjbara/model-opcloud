@@ -24,7 +24,8 @@ export const defaultTable =  {
     'Bidirectional_Relation_(tag)': `<P1> and <P2> are <forward tag>.`,
     'UndertimeOvertimeException':
       `<P2> occurs if <P1> falls short of <mintime> <units> or lasts more than <maxtime> <units>.`,
-    'Unidirectional_Relation': `<P1> relates to <P2>.', 'Invocation': '<P1> invokes <P2>.`,
+    'Unidirectional_Relation': `<P1> relates to <P2>.`,
+    'Invocation': `<P1> invokes <P2>.`,
     'Overtime_exception': `<P2> occurs if <P1> lasts more than <maxtime> <units>.`,
     'Bidirectional_Relation': `<P1> and <P2> are equivalent.`,
     'Generalization-Specialization': `<P2>is a <P1>.`,
