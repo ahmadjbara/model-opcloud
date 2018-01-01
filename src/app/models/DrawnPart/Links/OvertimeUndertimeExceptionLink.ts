@@ -17,7 +17,7 @@ export  class OvertimeUndertimeExceptionLink extends OpmProceduralLink {
 
   }
   getParams() {
-    const params = { linkType: linkType.UnderOvertimeException };
+    const params = { linkType: linkType.UndertimeOvertimeException };
     return {...super.getProceduralLinkParams(), ...params};
   }
 }

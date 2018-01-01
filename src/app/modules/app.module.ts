@@ -21,7 +21,7 @@ import 'hammerjs';
 import { CoreModule } from './core.module';
 import { SharedModule } from './shared.module';
 import { UserService } from '../rappid-components/services/user.service';
-import { environment } from '../../environments/environment';
+import { environment } from '../../environments/environment.airbus';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { Tab } from '../dialogs/choose-link-dialog/tab';
 import { Tabs } from '../dialogs/choose-link-dialog/tabs';
@@ -31,6 +31,9 @@ import { OplDialogComponent } from '../dialogs/opl-dialog/opl-dialog.component';
 import { FileSelectDirective, FileDropDirective } from 'ng2-file-upload';
 import {UploadFile} from "../dialogs/FileUploader/FileUploader";
 import {ProgressSpinner} from "../dialogs/Spinner/Progress_Spinner";
+import {ClearCanvasComponent} from '../dialogs/clear-canvas/clear-canvas';
+import {KeysPipe, OplDialogComponent} from '../dialogs/opl-dialog/opl-dialog.component';
+import { OplService } from "../opl-generation/opl.service";
 
 
 @NgModule({
@@ -40,6 +43,7 @@ import {ProgressSpinner} from "../dialogs/Spinner/Progress_Spinner";
     LoadModelDialogComponent,
     DialogComponent,
     AboutDialogComponent,
+    ClearCanvasComponent,
     OplDialogComponent,
     Tabs,
     Tab,
@@ -47,6 +51,7 @@ import {ProgressSpinner} from "../dialogs/Spinner/Progress_Spinner";
     FileDropDirective,
     UploadFile,
     ProgressSpinner,
+    KeysPipe
 
   ],
   imports: [
@@ -67,7 +72,8 @@ import {ProgressSpinner} from "../dialogs/Spinner/Progress_Spinner";
   providers: [
     { provide: ModelStorageInterface, useClass: ModelFbStorageService },
     TreeViewService,
-    UserService
+    UserService,
+    OplService
   ],
   entryComponents: [
     SaveModelDialogComponent,
@@ -77,6 +83,8 @@ import {ProgressSpinner} from "../dialogs/Spinner/Progress_Spinner";
     AboutDialogComponent,
     UploadFile,
     ProgressSpinner
+    ClearCanvasComponent,
+    AboutDialogComponent
   ],
   bootstrap: [AppComponent]
 })

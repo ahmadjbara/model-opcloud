@@ -1,5 +1,5 @@
-import {linkTypeSelection} from './linkTypeSelection';
-
+//import {GenerateOPLs} from './linkTypeSelection';
+import { oplFunctions} from '../../opl-generation/opl-functions';
 
 
 const joint = require('rappid');
@@ -13,7 +13,7 @@ export function createDialog(options, link ) {
       newLink: link,
       linkSource: link.getSourceElement(),
       linkTarget: link.getTargetElement(),
-      opmLinks: linkTypeSelection.generateLinkWithOpl(link),
+      opmLinks: oplFunctions.generateLinksWithOpl(link),
       Structural_Links: [],
       Agent_Links: [],
       Instrument_Links: [],
@@ -26,6 +26,7 @@ export function createDialog(options, link ) {
       In_out_Link_Pair: [],
     }
   };
+  console.log(dialogComponentRef.instance.opmLinks);
 
 
   for (const link of dialogComponentRef.instance.opmLinks) {

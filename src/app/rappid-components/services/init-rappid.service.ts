@@ -7,11 +7,14 @@ import { TreeViewService } from './tree-view.service';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import {OpmModel} from '../../models/OpmModel';
 import {OpmDefaultLink} from '../../models/DrawnPart/Links/OpmDefaultLink';
-import {addHandle, removeHandle} from '../../configuration/elementsFunctionality/graphFunctionality';
+import {addHandle, changeHandle, removeHandle} from '../../configuration/elementsFunctionality/graphFunctionality';
 import {defineKeyboardShortcuts} from '../../configuration/rappidEnviromentFunctionality/keyboardShortcuts';
 import {selectionConfiguration} from '../../configuration/rappidEnviromentFunctionality/selectionConfiguration';
 import {InvocationLink} from "../../models/DrawnPart/Links/InvocationLink";
 import {OpmFundamentalLink} from '../../models/DrawnPart/Links/OpmFundamentalLink';
+import {OpmState} from "../../models/DrawnPart/OpmState";
+import {ModelObject} from "./storage/model-object.class";
+import {OpmThing} from '../../models/DrawnPart/OpmThing';
 
 
 const joint = require('rappid');
@@ -128,14 +131,10 @@ export class InitRappidService {
     this.paper.on('cell:pointerdblclick', function (cellView, evt) {
       cellView.model.doubleClickHandle(cellView, evt, this.paper); }, this);
     this.paper.on('cell:pointerup', function (cellView) {
-      cellView.model.pointerUpHandle(cellView, _this);
-      _this.graphService.updateJSON(); }, this);      // save to firebase
+      cellView.model.pointerUpHandle(cellView, _this); }, this);      // save to firebase
     this.paper.on('element:pointerup link:options', function (cellView) {
       if (!this.selection.collection.contains(cellView.model)) {
         this.cell$.next(cellView.model); }}, this);
-    this.paper.on('blank:pointerclick ', function () {
-      _this.graphService.updateJSON();      // save to firebase
-    });
     this.paper.on('blank:pointerdown', function (evt, x, y) {
       selectionConfiguration.blankPointerdown(this, evt, x, y); }, this);
     this.paper.on('cell:pointerdown', function (cellView, evt) {
@@ -154,9 +153,51 @@ export class InitRappidService {
       removeHandle(_this, cell);
       cell.removeHandle(_this);
       });
-    graph.on('add', (cell, collection, opt) => {
+    //graph.on('add', (cell, collection, opt) => {
+//      addHandle(_this, cell, opt);
+  //    cell.addHandle(_this);
+//      cell.removeHandle(_this); });
+    
+    
+    this.graph.on('add', (cell, collection, opt) => {
+      // Alon: We only want to number Object/Process at this time
+      if ( cell instanceof OpmThing) {
+        cell.numberThing();
+      }
       addHandle(_this, cell, opt);
-      cell.addHandle(_this);
+      cell.addHandle(_this); });
+    this.graph.on('change', function (cell) {
+      changeHandle(_this, cell); }, this);
+  }
+  saveModel(modelStorage) {
+    const modelInDb = modelStorage.models.includes(this.opmModel.name);
+    // if there is no name to the model or the model wasn't saved yet
+    if (!this.opmModel.name || !modelInDb) {
+      const result = prompt('Save Model As:', 'Enter a Model Name');
+      if (result === 'Enter a Model Name' || result === null) {
+        console.log('Model not saved');
+        return;
+      } else {
+        this.opmModel.name = result;
+      }
+    }
+    const modelObject = new ModelObject(this.opmModel.name, this.opmModel.toJson());
+    modelStorage.save(modelObject);
+  }
+  loadModel(name, modelStorage) {
+    modelStorage.get(name).then((res) => {
+      this.opmModel.fromJson(res.modelData);
+      let newGraph = this.graphService.createGraph(this.opmModel.opds[0]);
+      this.treeViewService.nodes[0].graph = newGraph;
+      this.graph.resetCells(newGraph.getCells());
+      // update the graph reference for each cell to be the current graph
+      this.graph.getCells().map((cell) => cell.graph = this.graph);
+      for (let i = 1; i < this.opmModel.opds.length; i++) {
+        newGraph = this.graphService.createGraph(this.opmModel.opds[i]);
+        this.treeViewService.insetNodeWithGraph(newGraph, this.opmModel.opds[i].name, this.opmModel.opds[i].parendId);
+      }
+      this.treeViewService.treeView.treeModel.getNodeById('SD').toggleActivated();
+      this.treeViewService.treeView.treeModel.getNodeById('SD').parent.expand();
     });
   }
 }

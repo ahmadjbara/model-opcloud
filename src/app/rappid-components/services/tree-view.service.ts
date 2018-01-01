@@ -88,19 +88,31 @@ export class TreeViewService {
     this.nodesSubject.next(this.nodes);
     return clonedProcess;
   }
-
-
-
-
+  insetNodeWithGraph(graph, opdId, parentNodeId) {
+    const parentNode = this.getNodeById(parentNodeId) ? this.getNodeById(parentNodeId) : this.getNodeById('SD');
+    const newNode = new Node({
+      className: 'root-class',
+      expanded: true,
+      children: [],
+      id: opdId,
+      name: 'SD',
+      parent: parentNode,
+      graph: graph,
+      type: '',
+      subTitle: '',
+    });
+    parentNode.addChildren(newNode);
+    this.nodesSubject.next(this.nodes);
+  }
   removeNode(nodeId){
     let node=this.getNodeById(nodeId);
     const idStr = nodeId.toString();
    this.removeNodeBy((node) => node.id.toString() === idStr,this.nodes[0],nodeId);
     if (node!=null){
-      this.graphService.removeGraphById(nodeId,node.parent.id);
+     // this.graphService.removeGraphById(nodeId,node.parent.id);
     }
 
-    this.nodesSubject.next(this.nodes);
+    // this.nodesSubject.next(this.nodes);
   }
 
 

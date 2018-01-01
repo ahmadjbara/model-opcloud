@@ -38,9 +38,9 @@ export const linkDrawing = {
       newLink.push(new ConsumptionLink(link.getSourceElement(), link.getTargetElement(), isCondition, isEvent));
     } else if (linkName.includes('Effect')) {
       newLink.push(new EffectLink(link.getSourceElement(), link.getTargetElement(), isCondition, isEvent));
-    } else if (linkName.includes('Overtime_exception')) {
+    } else if (linkName.includes('Overtime')) {
       newLink.push(new OvertimeExceptionLink(link.getSourceElement(), link.getTargetElement(), isCondition, isEvent));
-    } else if (linkName.includes('Undertime_exception')) {
+    } else if (linkName.includes('Undertime')) {
       newLink.push(new UndertimeExceptionLink(link.getSourceElement(), link.getTargetElement(), isCondition, isEvent));
     } else if (linkName.includes('OvertimeUndertime-exception')) {
       newLink.push(new OvertimeUndertimeExceptionLink(link.getSourceElement(), link.getTargetElement(), isCondition, isEvent));

@@ -15,6 +15,9 @@ const entityText = {
 };
 
 export class OpmEntity extends OpmEntityRappid {
+  cloneof: OpmEntity;
+  inzoomClone: OpmEntity;
+  unfoldClone: OpmEntity;
   constructor() {
     super();
     this.set(this.entityAttributes());
@@ -50,7 +53,32 @@ export class OpmEntity extends OpmEntityRappid {
       textFontFamily: this.attr('text/font-family'),
       textColor: this.attr('text/fill'),
       text: this.attr('text/text'),
-      id: this.get('id')
+      fill: this.getShapeAttr().fill,
+      strokeColor: this.getShapeAttr().stroke,
+      id: this.get('id'),
+      fatherObjectId: this.get('parent')
+    };
+  }
+  updateEntityFromOpmModel(visualElement) {
+    const attr = {
+      'text' : {
+        fill: visualElement.textColor,
+        'font-size': visualElement.textFontSize,
+        'font-family': visualElement.textFontFamily,
+        'font-weight': visualElement.textFontWeight,
+        'text' : visualElement.logicalElement.text
+      }
+    };
+    this.attr(attr);
+    if (visualElement.fatherObject) this.set('parent', visualElement.fatherObject.id);
+    const attributes = {
+      position: { x: visualElement.xPos, y: visualElement.yPos},
+      size: {width: visualElement.width, height: visualElement.height},
+      id: visualElement.id
+    };
+    this.set(attributes);
+    return {
+      fill: visualElement.fill
     };
   }
   addHandleGenerator(handleName, handlePosition, handleTooltip, handleTooltipPosition) {
@@ -69,47 +97,45 @@ export class OpmEntity extends OpmEntityRappid {
     const thisEntity = this;
     halo.addHandle(this.addHandleGenerator('configuration', 'se', 'Click to configure value', 'right'));
     halo.on('action:configuration:pointerup', function () {
-      const contextToolbar = thisEntity.configurationToolbar(halo).render();
-      thisEntity.configurationContextToolbarEvents(halo, contextToolbar);
+      const contextToolbar = thisEntity.contexToolbarGenerator(halo.el, thisEntity.getConfigurationTools()).render();
+      thisEntity.configurationContextToolbarEvents(halo.el, contextToolbar);
+      joint.ui.Popup.close();
     });
   }
-  configurationToolbar(halo) {
+  contexToolbarGenerator(target, tools) {
     return new joint.ui.ContextToolbar({
       theme: 'modern',
-      tools: this.getConfigurationTools(),
-      target: halo.el,
+      tools: tools,
+      target: target,
       padding: 30
     });
   }
+  popupGenerator(target, content, events) {
+    return new joint.ui.Popup({
+      events: events,
+      content: content,
+      target: target
+    });
+  }
   getConfigurationTools() {
-    const toolsArray = [{ action: 'styling',  content: 'Styling'}];
-    return toolsArray;
+    return [{ action: 'styling',  content: 'Styling'}];
   }
-  stylePopup(halo) {
-    const thingThis = this;
-    const popup = new joint.ui.Popup({
-      events: {
-        'click .btnUpdate': function() {
-          thingThis.attr({text: {fill: this.$('.textColor').val()}});
-          thingThis.attr({text: {'font-size': this.$('.textFontSize').val()}});
-          thingThis.updateFilter({fill: this.$('.shapeColor').val()});
-          thingThis.updateFilter({'stroke': this.$('.shapeOutline').val()});
-          this.remove();
-        }
-      },
-      content: ['Text color: <input type="color" class="textColor" value=' + thingThis.attr('text/fill') + '><br>',
-        'Shape fill: <input type="color" class="shapeColor" value=' + thingThis.getShapeFillColor() + '><br>',
-        'Shape outline: <input type="color" class="shapeOutline" value=' + thingThis.getShapeOutline() + '><br>',
-        'Text font size: <input size="2" type="text" class="textFontSize" value=' + thingThis.attr('text/font-size') + '><br>',
-        '<button class="btnUpdate">Update</button>'],
-      target: halo.el
-    }).render();
-  }
-  configurationContextToolbarEvents(halo, contextToolbar) {
+  configurationContextToolbarEvents(target, contextToolbar) {
     const thisEntity = this;
     contextToolbar.on('action:styling', function() {
       this.remove();
-      thisEntity.stylePopup(halo);
+      const stylePopupContent = ['Text color: <input type="color" class="textColor" value=' + thisEntity.attr('text/fill') + '><br>',
+        'Shape fill: <input type="color" class="shapeColor" value=' + thisEntity.getShapeFillColor() + '><br>',
+        'Shape outline: <input type="color" class="shapeOutline" value=' + thisEntity.getShapeOutline() + '><br>',
+        'Text font size: <input size="2" class="textFontSize" value=' + thisEntity.attr('text/font-size') + '><br>',
+        '<button class="btnUpdate">Update</button>'];
+      const stylePopupEvents = { 'click .btnUpdate': function() {
+          thisEntity.attr({text: {fill: this.$('.textColor').val()}});
+          thisEntity.attr({text: {'font-size': this.$('.textFontSize').val()}});
+          thisEntity.updateShapeAttr({fill: this.$('.shapeColor').val()});
+          thisEntity.updateShapeAttr({'stroke': this.$('.shapeOutline').val()});
+          this.remove(); }};
+      thisEntity.popupGenerator(target, stylePopupContent, stylePopupEvents).render();
     });
   }
   doubleClickHandle(cellView, evt, paper) {
@@ -163,6 +189,20 @@ export class OpmEntity extends OpmEntityRappid {
         this.attributes.attrs.manuallyResized = false;
       }
       this.attributes.attrs.wrappingResized = false;
+      if ( typeof this.cloneof !== 'undefined') {
+        this.cloneof.attributes.attrs.text.text = this.attributes.attrs.text.text;
+        if (typeof this.cloneof.unfoldClone != 'undefined' && this.cloneof.unfoldClone != this)
+          this.cloneof.unfoldClone.attributes.attrs.text.text = this.attributes.attrs.text.text;
+        if (typeof this.cloneof.inzoomClone != 'undefined' && this.cloneof.inzoomClone != this)
+          this.cloneof.inzoomClone.attributes.attrs.text.text = this.attributes.attrs.text.text;
+      }
+
+      if ( typeof this.inzoomClone !== 'undefined')
+        this.inzoomClone.attributes.attrs.text.text = this.attributes.attrs.text.text;
+      if ( typeof this.unfoldClone !== 'undefined')
+        this.unfoldClone.attributes.attrs.text.text = this.attributes.attrs.text.text;
+
+
     }
     this.updatecomputationalPart();
   }

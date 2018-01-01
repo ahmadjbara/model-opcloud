@@ -1,18 +1,18 @@
   import {OpmVisualEntity} from './OpmVisualEntity';
 
   export class OpmVisualState extends OpmVisualEntity {
-    private _fatherObject;
 
     constructor(params, logicalElement) {
       super(params, logicalElement);
-      this.fatherObject = this.logicalElement.opmModel.getVisualElementById(params.fatherObjectId);
     }
-    get fatherObject() {
-      return this._fatherObject;
+    updateParams(params) {
+      super.updateParams(params);
     }
-
-    set fatherObject(value) {
-      this._fatherObject = value;
+    getParams() {
+      return super.getEntityParams();
+    }
+    getParamsFromJsonElement(jsonElement) {
+      return super.getEntityParamsFromJsonElement(jsonElement);
     }
   }
 

@@ -5,4 +5,13 @@ export class OpmStructuralRelation<T extends OpmStructuralLink> extends OpmRelat
   constructor(params, model) {
     super(params, model);
   }
+  updateParams(params) {
+    super.updateParams(params);
+  }
+  getStructuredParams() {
+    return super.getRelationParams();
+  }
+  getStructuralParamsFromJsonElement(jsonElement) {
+    return super.getRelationParamsFromJsonElement(jsonElement);
+  }
 }

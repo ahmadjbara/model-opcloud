@@ -10,6 +10,7 @@ p {
 
 :host >>> .object { color: #006400; }
 :host >>> .process { color: #00008B; }
+:host >>> .state{ color: #808000; }
 
 .highlighted rect{
   fill: #FF0000;

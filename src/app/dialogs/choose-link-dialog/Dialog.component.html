@@ -30,6 +30,19 @@
   </header>
 
   <div style="height:85%;overflow-y:auto;overflow-x: hidden">
+    <!-- In Out Link Pair -->
+    <div *ngIf=check_empty(In_out_Link_Pair)>
+      <md-grid-list cols="2" (click)="onClickedExit(link)" rowHeight="8:1" *ngFor="let link of In_out_Link_Pair">
+        <md-grid-tile>
+          <div class='In_out_Link_Pair {{link.name}}'></div>
+          <div class="oplname">{{replacename(link.name)}}</div>
+        </md-grid-tile>
+        <md-grid-tile class="item">
+          <div class="opl" [innerHtml]="link.opl" >{{link.opl}}</div>
+        </md-grid-tile>
+      </md-grid-list>
+    </div>
+
     <!-- Structural Links -->
     <div id="Structrial" *ngIf=check_empty(Structural_Links)>
       <md-grid-list cols="2" (click)="onClickedExit(link)" rowHeight="8:1" *ngFor="let link of Structural_Links">
@@ -38,11 +51,10 @@
           <div class="oplname">{{replacename(link.name)}}</div>
         </md-grid-tile>
         <md-grid-tile class="item">
-          <div class="opl" [innerHtml]="link.opl">{{link.opl}}</div>
+          <div class="opl" [innerHtml]="link.opl"></div>
         </md-grid-tile>
       </md-grid-list>
     </div>
-
     <!-- Relation Links -->
     <div id="Relation" *ngIf=check_empty(Relation_Links)>
       <md-grid-list  cols="2"  (click)="onClickedExit(link)"  rowHeight="8:1" *ngFor="let link of Relation_Links">

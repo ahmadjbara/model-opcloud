@@ -76,7 +76,13 @@ export class OPDHierarchyComponent implements OnInit {
 
     return this
   }
-
+  getNodeSubTitle(node){
+    //console.log(node.data.graph.getCell(node.id));
+    if (typeof node.data.graph.getCell(node.id) === 'undefined')
+      return '';
+    else
+      return node.data.graph.getCell(node.id).attributes.attrs.text.text + ' '+ node.data.type+'ed';
+  }
   getNodeNum(node) {
     let path = node.path;
     if (path.length==1)
@@ -90,18 +96,6 @@ export class OPDHierarchyComponent implements OnInit {
         result = result+'.'+(next.index+1);
     }
     return result;
-    /*
-    let num = '';
-    let nodeNum = node.index + 1;
-    if (node.level > 1) {
-      let index = node.level - 1;
-      //due to asyc tree constructing must add this condition
-      if (node.parent.hasChildren) {
-        num = index + '.' + nodeNum;
-      }
-    }
-    return num;
-    */
   }
 
 
@@ -117,11 +111,15 @@ export class OPDHierarchyComponent implements OnInit {
   }
 
   getColorByType(node) {
-    if (node.data.type === 'inzoom') {
+    if (node.data.type === 'in-zoom') {
       return '2px solid #0000FF';
     }
     if (node.data.type === 'unfold')
       return '2px solid #0096FF';
     return '1px solid #000000';
+  }
+  addNode(tree){
+    this._treeViewService.removeNode(tree.treeModel.getActiveNode().data.id);
+    tree.treeModel.update();
   }
 }
