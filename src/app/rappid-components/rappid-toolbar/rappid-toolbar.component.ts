@@ -1,5 +1,4 @@
 import {Component, OnInit, ComponentFactoryResolver, ViewContainerRef} from '@angular/core';
-import { Component, OnInit, ViewContainerRef } from '@angular/core';
 import { GraphService } from '../services/graph.service';
 import { MdDialog } from '@angular/material';
 import { LoadModelDialogComponent } from '../../dialogs/load-model-dialog/load-model-dialog.component';
@@ -28,9 +27,7 @@ const commandGroups = [
     group: 'file',
     commands: [
 
-      { name: 'saveModel', tooltip: 'save', icon: 'save' },
-      { name: 'loadModel', tooltip: 'load', icon: 'open_in_browser' },
-      { name: 'importModel', tooltip: 'import/export opx model', icon: 'import_export' },
+      { name: 'importModel', tooltip: 'Import/Export opx Model', icon: 'import_export' },
      // { name: 'executeIfLogged(saveModel)', tooltip: 'save', icon: 'save' },
      // { name: 'executeIfLogged(loadModel)', tooltip: 'load', icon: 'open_in_browser' }
       { name: 'executeIfLogged(saveModel)', tooltip: 'Save', icon: 'save' },
@@ -83,14 +80,11 @@ export class RappidToolbarComponent implements OnInit {
     commandManagerService: CommandManagerService,
     private initRappidService: InitRappidService,
     private _dialog: MdDialog ,
-    private componentFactoryResolver?: ComponentFactoryResolver,
-    private viewContainer?: ViewContainerRef,) {
     private userService: UserService,
-    private viewContainer: ViewContainerRef,
-    private _dialog: MdDialog) {
-
+    private componentFactoryResolver?: ComponentFactoryResolver,
+    private viewContainer?: ViewContainerRef,)
+    {
     this.commandManager = commandManagerService.commandManager;
-
   }
 
   ngOnInit() {

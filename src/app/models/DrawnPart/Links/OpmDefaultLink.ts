@@ -70,11 +70,6 @@ export class OpmDefaultLink extends OpmLinkRappid {
             rect: { stroke: 'none', 'fill-opacity': 0 },} }
 
         ],
-
-        'font-size': 10,
-        fill: 'black',
-        'font-weight': 200} } }]
-
     };
 
   }
