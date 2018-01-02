@@ -80,8 +80,10 @@ export class OpmProcess extends OpmThing {
   }
 
   getCounter() {
+    OpmProcess.counter = OpmProcess.counter % 26;
     return ++OpmProcess.counter;
   }
+
 
   processAttrs() {
     return {
@@ -295,9 +297,12 @@ export class OpmProcess extends OpmThing {
       let defaultProcess = new OpmProcess();
 
       defaultProcess.set('position', {x: xp, y: yp});
+      let processText =  defaultProcess.attributes.attrs.text.text;
+      processText = String.fromCharCode(this.getCounter() + 64)+" "+processText+"ing";
+      defaultProcess.attributes.attrs.text.text = processText;
       parentObject.embed(defaultProcess);     // makes the state stay in the bounds of the object
       options.graph.addCells([parentObject, defaultProcess]);
-      dy += x_margin;
+      dy += defaultProcess.get('size').height+10;
     }
     parentObject.updateProcessSize();
     parentObject.set('statesHeightPadding', 150);

@@ -90,7 +90,7 @@ export const linkTypeSelection = {
       else if (linkName == 'Instrument') {
         return `${desName} requires ${srcName}.`;
       }
-      else if (linkName == 'In-out_Link_Pair') {
+      else if (linkName == 'In/out_linkPair') {
         return ``; //<P> changes <O> from <s1> to <s2>
       }
       else if (linkName == 'Agent') {

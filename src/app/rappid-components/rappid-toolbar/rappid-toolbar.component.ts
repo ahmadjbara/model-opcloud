@@ -54,7 +54,7 @@ const commandGroups = [
     <div class="button-row">
       <div class="button-group" *ngFor="let commandGroup of commandGroups">
         <button *ngFor="let command of commandGroup.commands"
-                md-mini-fab
+                md-mini-fab [disabled]="command.icon === 'undo' || command.icon === 'redo'" 
                 [mdTooltip]="command.tooltip"
                 class="button"
                 (click)="buttonClick(command)">
@@ -82,8 +82,7 @@ export class RappidToolbarComponent implements OnInit {
     private _dialog: MdDialog ,
     private userService: UserService,
     private componentFactoryResolver?: ComponentFactoryResolver,
-    private viewContainer?: ViewContainerRef,)
-    {
+    private viewContainer?: ViewContainerRef) {
     this.commandManager = commandManagerService.commandManager;
   }
 
@@ -108,7 +107,7 @@ export class RappidToolbarComponent implements OnInit {
     this.graphService.updateJSON();
   }
 
-  spinner(){
+  spinner() {
     let SpinnerComponentFactory =
       this.componentFactoryResolver.resolveComponentFactory(ProgressSpinner);
     let SpinnerComponentRef = this.viewContainer.createComponent(SpinnerComponentFactory);

@@ -19,46 +19,48 @@ export const defaultTable =  {
     'Bidirectional_Relation_(ftag,btag)': `<O1> <forward tag> <O2> and <O2> <backward tag> <O1>.`,
     'Exhibition-Characterization': `<O1> exhibits <O2>.`},
   'P1-P2': {
+    'Overtime_exception': `<P2> occurs if <P1> lasts more than <maxtime> <units>.`,
     'Undertime_exception': `<P2> occurs if <P1> falls short of <mintime> <units>.`,
     'Aggregation-Participation': `<P1> consist of <P2>.`,
-    'Bidirectional_Relation_(tag)': `<P1> and <P2> are <forward tag>.`,
-    'UndertimeOvertimeException':
+   // 'Bidirectional_Relation_(tag)': `<P1> and <P2> are <forward tag>.`,
+    'OvertimeUndertime-exception':
       `<P2> occurs if <P1> falls short of <mintime> <units> or lasts more than <maxtime> <units>.`,
     'Unidirectional_Relation': `<P1> relates to <P2>.`,
     'Invocation': `<P1> invokes <P2>.`,
-    'Overtime_exception': `<P2> occurs if <P1> lasts more than <maxtime> <units>.`,
+
     'Bidirectional_Relation': `<P1> and <P2> are equivalent.`,
-    'Generalization-Specialization': `<P2>is a <P1>.`,
+    'Generalization-Specialization': `<P2> is a <P1>.`,
     'Classification-Instantiation': `<P2> is an instance of <P1>.`,
-    'Unidirectional_Relation_(tag)': `<P1> <tag> <P2>.`,
-    'Bidirectional_Relation_(ftag,btag)': `<P1> <forward tag> <P2> and <P2> <backward tag> <P1>.`,
+   // 'Unidirectional_Relation_(tag)': `<P1> <tag> <P2>.`,
+   // 'Bidirectional_Relation_(ftag,btag)': `<P1> <forward tag> <P2> and <P2> <backward tag> <P1>.`,
     'Exhibition-Characterization': `<P1> exhibits <P2>.`},
   'P1-P1 (same process)': {
     'Invocation': `<P1> invokes itself.`},
   'O-P': {
+    'Agent': `<O> handles <P>.`,
     'Condition_Agent': `<P> occurs if <O> exists, otherwise <P>  is skipped.`,
+    'Event_Agent': `<O> initiates and handles<P>.`,
     'Consumption': `<P> consumes <O>.`,
+    'Condition_Consumption': `<P> occurs if <O> exists, in which case<P>  consumes <O>, otherwise <P>  is skipped.`,
     'Event_Consumption': `<O> initiates <P>, which consumes <O>.`,
     'Instrument': `<P> requires <O>.`,
     'Condition_Instrument': `<P> occurs if <O> exists, otherwise <P>  is skipped.`,
     'Event_Instrument': `<O> initiates <P>, which requires <O>.`,
-    'Agent': `<O> handles <P>.`,
-    'Event_Agent': `<O> initiates and handles<P>.`,
-    'Condition_Consumption': `<P> occurs if <O> exists, in which case<P>  consumes <O>, otherwise <P>  is skipped.`,
     'Exhibition-Characterization': `<O> exhibits <P>.`,
    },
   'P-O': {
     'Exhibition-Characterization': `<P> exhibits <O>.`,
     'Result': `<P> yields <O>.`,
     'Effect': `<P> affects <O>.`,
+    'Event_Effect': `<O> initiates <P>, which affects <O>`,
     'Condition_Effect': `<P> occurs if <O> exists, in which case<P>  affects <O>, otherwise <P>  is skipped.`,
-    'Event_Effect': `<O> initiates <P>, which affects <O>`
+
   },
 
   'Os-(P)-O (from object state to the same object)': {
     'Overtime_exception': `<O> triggers <P> when <O> is <s> more than <maxtime> <units>, in which case <P> changes <O>.`,
     'Condition_Input ': `<P> occurs if <O> is <s>, in which case <P> changes <O> from <s> , otherwise <P>  is skipped.`,
-    'In/out_linkPair': `<P> changes <O> from <s>.`},
+    'In-out_Link_Pair': `<P> changes <O> from <s>.`},
   'O1s-O2': {
     'Bidirectional_Relation_(tag)': `<s> <O1> and <O2> are <forward tag>.`,
     'Unidirectional_Relation': `<s> <O1> relates to <O2>.`,
@@ -68,6 +70,7 @@ export const defaultTable =  {
     'Exhibition-Characterization': `<s> <O1> exhibits <O2>.`},
   'P-Os': {
     'Split_output': `<P> changes <O> to <s>.`,
+    'In/out_linkPair':`<P> changes <O> from <s> to <s>.`,
     'Exhibition-Characterization': `<P> exhibits <s> <O>.`,
     'Result': `<P> yields <s> <O>.`},
   'O1s1-O2s2': {
@@ -94,8 +97,9 @@ export const defaultTable =  {
     'Overtime_exception':
       `<O> triggers <P> when <O> is <s1> more than <maxtime> <units>, in which case <P> changes <o> to <s2>.`,
     'Condition_Input ': `<P> occurs if <O> is <s1>, in which case <P> changes <O> from <s1> to <s2>, otherwise <P>  is skipped.`,
-    'In/out_linkPair': `<P> changes <O> from <s1> to <s2>.`},
+    'In-out_Link_Pair': `<P> changes <O> from <s1> to <s2>.`},
   'Os-P': {
+    'In/out_linkPair':`<P> changes <O> from <s> to <s>.`,
     'Agent': `<s> <O> handles <P>.`,
     'Condition_Agent': `<P> occurs if <O> is <s>, otherwise <P> is skipped.`,
     'Event_Agent': `<s> <O> initiates and handles<P>.`,
@@ -112,7 +116,7 @@ export const defaultTable =  {
 
     'Overtime_exception': `<O> triggers <P> when <O> is <s> more than <maxtime> <units>.`,
     'Undertime_exception': `<O> triggers <P> when <O> is <s> less than <mintime> <units>.`,
-    'UndertimeOvertimeException': `<O> triggers <P> when <O> is <s> more than <maxtime> <units> and less than <mintime> <units>.`,
+    'OvertimeUndertime-exception': `<O> triggers <P> when <O> is <s> more than <maxtime> <units> and less than <mintime> <units>.`,
     'Exhibition-Characterization': `<s> <O> exhibits <P>.`}
 };
 

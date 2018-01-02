@@ -49,6 +49,11 @@ export class RappidStencilComponent implements OnInit, AfterViewInit {
       dragStartClone: function (cell) {
          return  cell.clone().removeAttr('./data-tooltip');
       },
+      dragEndClone: function (cell) {
+        let cloned = cell.clone();
+        cloned.numberThing();
+        return cloned;
+      },
     });
   }
 
