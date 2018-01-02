@@ -15,11 +15,11 @@ import { ModelFbStorageService } from '../rappid-components/services/storage/mod
 import { TreeViewService } from '../rappid-components/services/tree-view.service';
 import { AngularFireAuthModule } from 'angularfire2/auth';
 import { AngularFireDatabaseModule } from 'angularfire2/database';
-import { MaterialModule } from './material.module';
+import { MaterialModule } from './shared/material.module';
 
 import 'hammerjs';
 import { CoreModule } from './core.module';
-import { SharedModule } from './shared.module';
+import { SharedModule } from './shared/shared.module';
 import { UserService } from '../rappid-components/services/user.service';
 import { environment } from '../../environments/environment.airbus';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
