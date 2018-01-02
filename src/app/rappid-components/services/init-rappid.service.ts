@@ -15,6 +15,7 @@ import {OpmFundamentalLink} from '../../models/DrawnPart/Links/OpmFundamentalLin
 import {OpmState} from "../../models/DrawnPart/OpmState";
 import {ModelObject} from "./storage/model-object.class";
 import {OpmThing} from '../../models/DrawnPart/OpmThing';
+import {validationAlert} from "../../configuration/rappidEnviromentFunctionality/shared";
 
 
 const joint = require('rappid');
@@ -181,6 +182,7 @@ export class InitRappidService {
     }
     const modelObject = new ModelObject(this.opmModel.name, this.opmModel.toJson());
     modelStorage.save(modelObject);
+    validationAlert(this.opmModel.name + ' was saved');
   }
   loadModel(name, modelStorage) {
     modelStorage.get(name).then((res) => {

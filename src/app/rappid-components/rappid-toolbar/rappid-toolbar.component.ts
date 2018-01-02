@@ -82,8 +82,7 @@ export class RappidToolbarComponent implements OnInit {
     private _dialog: MdDialog ,
     private userService: UserService,
     private componentFactoryResolver?: ComponentFactoryResolver,
-    private viewContainer?: ViewContainerRef,)
-    {
+    private viewContainer?: ViewContainerRef) {
     this.commandManager = commandManagerService.commandManager;
   }
 
@@ -108,7 +107,7 @@ export class RappidToolbarComponent implements OnInit {
     this.graphService.updateJSON();
   }
 
-  spinner(){
+  spinner() {
     let SpinnerComponentFactory =
       this.componentFactoryResolver.resolveComponentFactory(ProgressSpinner);
     let SpinnerComponentRef = this.viewContainer.createComponent(SpinnerComponentFactory);

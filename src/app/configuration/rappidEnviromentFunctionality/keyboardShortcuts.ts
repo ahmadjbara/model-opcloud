@@ -3,6 +3,7 @@ import {joint, _} from '../../configuration/rappidEnviromentFunctionality/shared
 // Options - init-rappid service
 export function defineKeyboardShortcuts(options) {
   options.keyboard = new joint.ui.Keyboard();
+  /*
   options.keyboard.on({
     'ctrl+c': function () {
       // Copy all selected elements and their associated links.
@@ -53,4 +54,5 @@ export function defineKeyboardShortcuts(options) {
       options.paperScroller.setCursor('grab');
     }
   }, options);
+  */
 }
