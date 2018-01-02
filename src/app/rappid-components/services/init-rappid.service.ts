@@ -161,9 +161,7 @@ export class InitRappidService {
 
     graph.on('add', (cell, collection, opt) => {
       // Alon: We only want to number Object/Process at this time
-      if ( cell instanceof OpmThing) {
-        cell.numberThing();
-      }
+
       addHandle(_this, cell, opt);
       cell.addHandle(_this); });
     this.graph.on('change', function (cell) {

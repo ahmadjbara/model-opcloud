@@ -22,9 +22,11 @@ export  class OpmThing extends OpmEntity {
   numberThing() {
     let thisText = this.attributes.attrs.text.text;
     if (this instanceof OpmProcess)
-      thisText += 'ing';
-    const thisCounter = this.getCounter();
-    this.attr({text: {text: thisText + thisCounter}});
+      thisText = String.fromCharCode(this.getCounter() + 64) + " " + thisText + 'ing';
+    else
+      thisText += " "+this.getCounter();
+    this.attr({text: {text: thisText }});
+
   }
 
   thingShape() {
