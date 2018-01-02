@@ -1,13 +1,17 @@
-import { Component, OnInit, ViewContainerRef } from '@angular/core';
+import {Component, OnInit, ComponentFactoryResolver, ViewContainerRef} from '@angular/core';
 import { GraphService } from '../services/graph.service';
 import { MdDialog } from '@angular/material';
 import { LoadModelDialogComponent } from '../../dialogs/load-model-dialog/load-model-dialog.component';
 import { CommandManagerService } from '../services/command-manager.service';
 import { InitRappidService } from '../services/init-rappid.service';
 import {AboutDialogComponent} from '../../dialogs/About/about';
+import {UploadFile} from "../../dialogs/FileUploader/FileUploader";
+import {ProgressSpinner} from "../../dialogs/Spinner/Progress_Spinner";
 import {ClearCanvasComponent} from '../../dialogs/clear-canvas/clear-canvas';
 import {UserService} from '../services/user.service';
 import {SignInComponent} from '../../modules/layout/header/sign-in/sign-in.component';
+
+const parseString = require('xml2js').parseString;
 
 
 const commandGroups = [
@@ -22,6 +26,8 @@ const commandGroups = [
   {
     group: 'file',
     commands: [
+
+      { name: 'importModel', tooltip: 'Import/Export opx Model', icon: 'import_export' },
      // { name: 'executeIfLogged(saveModel)', tooltip: 'save', icon: 'save' },
      // { name: 'executeIfLogged(loadModel)', tooltip: 'load', icon: 'open_in_browser' }
       { name: 'executeIfLogged(saveModel)', tooltip: 'Save', icon: 'save' },
@@ -48,13 +54,14 @@ const commandGroups = [
     <div class="button-row">
       <div class="button-group" *ngFor="let commandGroup of commandGroups">
         <button *ngFor="let command of commandGroup.commands"
-                md-mini-fab
+                md-mini-fab [disabled]="command.icon === 'undo' || command.icon === 'redo'" 
                 [mdTooltip]="command.tooltip"
                 class="button"
                 (click)="buttonClick(command)">
           <md-icon>{{command.icon}}</md-icon>
         </button>
       </div>
+      
     </div>
   `,
   styleUrls: ['./rappid-toolbar.component.scss']
@@ -63,15 +70,20 @@ export class RappidToolbarComponent implements OnInit {
   graph;
   // modelName;
   private commandManager;
+  private  OPX_JSON : any;
   commandGroups = commandGroups;
+
+
 
   constructor(
     private graphService: GraphService,
     commandManagerService: CommandManagerService,
     private initRappidService: InitRappidService,
+    private _dialog: MdDialog ,
     private userService: UserService,
-    private viewContainer: ViewContainerRef,
-    private _dialog: MdDialog) {
+    private componentFactoryResolver?: ComponentFactoryResolver,
+    private viewContainer?: ViewContainerRef,)
+    {
     this.commandManager = commandManagerService.commandManager;
   }
 
@@ -85,6 +97,7 @@ export class RappidToolbarComponent implements OnInit {
     return this[func](args);
   }
 
+
   undo() {
     this.commandManager.undo();
     this.graphService.updateJSON();
@@ -94,6 +107,35 @@ export class RappidToolbarComponent implements OnInit {
     this.commandManager.redo();
     this.graphService.updateJSON();
   }
+
+  spinner(){
+    let SpinnerComponentFactory =
+      this.componentFactoryResolver.resolveComponentFactory(ProgressSpinner);
+    let SpinnerComponentRef = this.viewContainer.createComponent(SpinnerComponentFactory);
+    return SpinnerComponentRef;
+  }
+  importModel() {
+    let dialogRef = this._dialog.open(UploadFile);
+
+
+    let That = this;
+
+    dialogRef.afterClosed().subscribe(result => {
+
+        parseString(result, function (err, result) {
+          That.OPX_JSON = result
+         // That.spinner();
+          console.log(That.OPX_JSON);
+
+        });
+
+      this.graphService.importOpxGraph(this.OPX_JSON , this.initRappidService);
+
+      });
+
+}
+
+
 
   saveModel() {
     this.initRappidService.saveModel(this.graphService.modelStorage);

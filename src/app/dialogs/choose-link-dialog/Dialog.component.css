@@ -180,7 +180,7 @@
   height: 24px;
 }
 
-.Exceptions.UndertimeOvertimeException {
+.Exceptions.OvertimeUndertime-exception {
   background-position: -0px -48px;
   width: 73px;
   height: 24px;
@@ -322,6 +322,4 @@
   font-size: 11px;
   word-spacing: 9999999px;
 }
-:host >>> .object { color: #006400; }
-:host >>> .process { color: #00008B; }
-:host >>> .state{ color: #808000; }
+

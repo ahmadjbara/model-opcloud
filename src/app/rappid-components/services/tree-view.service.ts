@@ -35,6 +35,31 @@ export class TreeViewService {
 
   }
 
+  SetRoot(graph){
+    this.nodes[0].graph = graph;
+  }
+
+
+  fromImport(parent_id,name,graph,type){
+    let parent=this.getNodeById(parent_id.trim());
+    if(!parent){
+      parent = this.getNodeById(rootId);
+    }
+
+    let newNode = new Node({
+      className: 'root-class',
+      expanded: true,
+      children: [],
+      id: name,
+      name: name,
+      parent: parent,
+      graph: graph,
+      type: type,
+    });
+    parent.addChildren(newNode);
+    this.nodesSubject.next(this.nodes);
+   // console.log(this.nodes)
+  }
 
   getNodes(): Observable<Node[]> {
     return this.nodesSubject.asObservable();
@@ -59,7 +84,7 @@ export class TreeViewService {
     let clonedProcess = this.graphService.graphSetUpdate(element_id, newNode, this, type, initRappid, unfoldingOptions);
 
     parentNode.addChildren(newNode);
-    console.log(parentNode);
+  //  console.log(parentNode);
     this.nodesSubject.next(this.nodes);
     return clonedProcess;
   }

@@ -21,7 +21,11 @@ const childMargin = 55;
 
 export class OpmProcess extends OpmThing {
 
+  min_width:number = 90;
+  min_height:number = 50;
+
   static counter: number =0;
+
 
   constructor() {
     super();
@@ -31,6 +35,42 @@ export class OpmProcess extends OpmThing {
     this.attr({ellipse: this.entityShape()});
     this.attr({ellipse: this.thingShape()});
   }
+
+  fromData(angle: number, name: string, id: string, width: number, height: number,
+           pos_x: number, pos_y: number, statesHeightPadding: number, statesWidthPadding: number,
+           type: string, z: number, physical, enviromental  ){
+    this.attr({text: {text: name}});
+    this.attr({ellipse: {filter:{args:{dx: this.IsPhysical(physical), dy: this.IsPhysical(physical)}}}});
+    this.attr({ellipse:{['stroke-dasharray']: JSON.parse(enviromental) ? [10, 5] : 0}});
+    this.set(  {
+      angle: angle,
+      id: id,
+      size: {width: width>this.min_width ? width:this.min_width, height: height>this.min_height ? height:this.min_height},
+      statesWidthPadding: statesWidthPadding,
+      statesHeightPadding: statesHeightPadding,
+      position: {x: pos_x, y: pos_y},
+      z: z,
+      type: type,
+    });
+  }
+
+  setLayout(width: number, height: number, pos_x: number, pos_y: number ){
+    this.set(  {
+      position: {x: pos_x, y: pos_y},
+      size: {width: width>this.min_width ? width:this.min_width, height: height>this.min_height ? height:this.min_height},
+
+    });
+  }
+
+
+
+  IsPhysical(physical) {
+    if (!JSON.parse(physical)) {
+      return 0;
+    }
+
+  }
+
   processAttributes() {
     return {
       markup: `<g class='rotatable'><g class='scalable'><ellipse/></g><text/></g>`,
@@ -40,8 +80,10 @@ export class OpmProcess extends OpmThing {
   }
 
   getCounter() {
+    OpmProcess.counter = OpmProcess.counter % 26;
     return ++OpmProcess.counter;
   }
+
 
   processAttrs() {
     return {
@@ -255,9 +297,12 @@ export class OpmProcess extends OpmThing {
       let defaultProcess = new OpmProcess();
 
       defaultProcess.set('position', {x: xp, y: yp});
+      let processText =  defaultProcess.attributes.attrs.text.text;
+      processText = String.fromCharCode(this.getCounter() + 64)+" "+processText+"ing";
+      defaultProcess.attributes.attrs.text.text = processText;
       parentObject.embed(defaultProcess);     // makes the state stay in the bounds of the object
       options.graph.addCells([parentObject, defaultProcess]);
-      dy += x_margin;
+      dy += defaultProcess.get('size').height+10;
     }
     parentObject.updateProcessSize();
     parentObject.set('statesHeightPadding', 150);

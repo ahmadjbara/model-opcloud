@@ -21,6 +21,9 @@ import {GeneralizationLink} from "../../models/DrawnPart/Links/GeneralizationLin
 import {InstantiationLink} from "../../models/DrawnPart/Links/InstantiationLink";
 import {OpmLink} from "../../models/VisualPart/OpmLink";
 import {OpmLinkRappid} from "../../models/DrawnPart/Links/OpmLinkRappid";
+import {OPXModel} from "../../controllers/OPX.controller";
+import {importOpxOPDs} from "../../controllers/Import.controller";
+import {ProgressSpinner} from "../../dialogs/Spinner/Progress_Spinner";
 import {OpmEntity} from "../../models/DrawnPart/OpmEntity";
 import {OpmVisualEntity} from "../../models/VisualPart/OpmVisualEntity";
 import {createDrawnEntity, createDrawnLink} from "../../configuration/elementsFunctionality/graphFunctionality";
@@ -52,28 +55,51 @@ export class GraphService {
   // private OPL;
   // private modelName;
   type;
+  private opxModel :OPXModel;
+  counter:number = 0;
+  ImportGraph;
 
 
   constructor(modelStorage: ModelStorageInterface) {
     this.modelStorage = modelStorage;
     this.graph = new joint.dia.Graph;
+    this.ImportGraph = new joint.dia.Graph;
     this.JSON = this.graph.toJSON();
     localStorage.setItem(rootId, JSON.stringify(this.graph.toJSON()));
     this.currentGraphId = rootId;
     this.type='';
     // this.initializeDatabase();
     // TODO: change:position emits on mousemove, find a better event - when drag stopped
+
     this.graph.on(`
                   remove`,
       () => this.updateJSON());
 
      this.modelObject = new ModelObject(null, null);
+    this.counter = 0;
   }
 
   getGraph(name?: string) {
 
     return name ? this.loadGraph(name) : this.graph;
   }
+
+  getImportedGraph(){
+    return this.ImportGraph;
+  }
+
+
+  /**
+   *
+   * @Import OPX Model
+   * options InitRappid
+   */
+
+  importOpxGraph(opxJson , options ){
+
+    importOpxOPDs(opxJson,options,this.opxModel,this.graph,this.ImportGraph);
+  }
+
 
   saveGraph(modelName, firstSave) {
     console.log('inside saveModel func')
@@ -402,6 +428,8 @@ export class GraphService {
     this.graph.resetCells(treeViewService.getNodeByIdType(elementId, type).graph.getCells());
     this.currentGraphId = elementId;
     this.type = type;
+    console.log(this.ImportGraph);
+    return this.ImportGraph;
   }
   execute(initRappid, linksArray) {
     // get all processes in the graph

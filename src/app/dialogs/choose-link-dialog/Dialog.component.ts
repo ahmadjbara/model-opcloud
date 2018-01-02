@@ -2,8 +2,8 @@ import { Component, EventEmitter, HostListener, Inject } from '@angular/core';
 import {linkDrawing} from "../../configuration/elementsFunctionality/linkDrawing";
 import { MD_DIALOG_DATA, MdDialogRef } from '@angular/material';
 import {GraphService} from '../../rappid-components/services/graph.service';
-
-
+import {OpmObject} from "../../models/DrawnPart/OpmObject";
+import {OpmState} from "../../models/DrawnPart/OpmState";
 const joint = require('rappid');
 @Component({
   selector: 'opcloud-choose-link-dialog',
@@ -114,6 +114,14 @@ export class DialogComponent {
       return this.noshow;
     } else {
       return this.show;
+    }
+  }
+
+  IsPhysicalObject(element){
+    if(element instanceof OpmObject){
+    return element.attributes.attrs.rect.filter.args.dx != 0;}
+    if(element instanceof OpmState){
+     return this.graph.getCell(element.attributes.father).attributes.attrs.rect.filter.args.dx != 0;
     }
   }
 

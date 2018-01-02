@@ -18,12 +18,42 @@ const childMargin = 55;
 
 export class OpmObject extends OpmThing {
 
+  min_width:number = 90;
+  min_height:number = 50;
+
   static counter: number =0;
+
 
   constructor() {
     super();
     this.set(this.objectAttributes());
     this.attr(this.objectAttrs());
+  }
+
+  fromData(angle: number, name: string, id: string, width: number, height: number,
+           pos_x: number, pos_y: number, statesHeightPadding: number, statesWidthPadding: number,
+           type: string, z: number, physical, enviromental,States ?) {
+    this.attr({text: {text: name}});
+    this.attr({rect: {filter: {args: {dx: this.IsPhysical(physical), dy: this.IsPhysical(physical)}}}});
+    this.attr({rect: {['stroke-dasharray']: JSON.parse(enviromental) ? [10, 5] : 0}});
+    this.set({
+      angle: angle,
+      id: id,
+      size: {
+        width: width > this.min_width ? width : this.min_width,
+        height: height > this.min_height ? height : this.min_height
+      },
+      position: {x: pos_x, y: pos_y},
+      type: type,
+    });
+  }
+
+
+  IsPhysical(physical) {
+    if (!JSON.parse(physical)) {
+      return 0;
+    }
+
   }
 
   objectAttributes() {
@@ -56,6 +86,55 @@ export class OpmObject extends OpmThing {
     };
     return {...super.getThingParams(), ...params};
   }
+
+  addState_fromData(importedState,instance,counter,graph) {
+    this.objectChangedSize = false;
+    let state = new OpmState();
+    if(!instance){
+    state.fromData(0,importedState.name,importedState.id,
+      importedState.width,importedState.height,importedState.x + this.get('position').x,importedState.y+this.get('position').y,'opm.State',counter,
+      this.get('id'),importedState.default_,importedState.final_,importedState.initial_);}
+    else{
+      state.fromData(0,importedState.name,importedState.id,
+        instance.width,instance.height,instance.x + this.get('position').x,instance.y+this.get('position').y,'opm.State',counter,
+        this.get('id'),importedState.default_,importedState.final_,importedState.initial_);
+    }
+   // const xNewState = this.getBBox().center().x - state.get('size').width / 2;
+  //  const yNewState = this.get('position').y + this.get('size').height - state.get('size').height;
+ //   state.set({position: {x: xNewState, y: yNewState}});
+    this.embed(state);     // makes the state stay in the bounds of the object
+    graph.addCells([this, state]);
+    // Placing the new state. By default it is outside the object.
+    state.set('father', state.get('parent'));
+    state.position({parentRelative: true})
+    // Add the new state using the current states arrangement
+    if (this.get('embeds').length < 2) {
+    //  arrangeEmbedded(this, 'bottom');
+    }
+    else {
+    //  arrangeEmbedded(this, this.attr('statesArrange'));
+    }
+
+  }
+
+  addState(stateName = null , Graph ?:any) {
+    this.objectChangedSize = false;
+    const statesNumber = this.getEmbeddedCells().length;
+    this.createNewState((stateName ? stateName : ('state' + (statesNumber + 1))),Graph);
+    // For the first time of clicking on general addState should be added 3 states
+    if (!stateName && (statesNumber === 0)) {
+      for (let i = 2; i <= 2; i++) {
+        this.createNewState(('state' + (statesNumber + i)),Graph);
+      }
+    }
+    // Add the new state using the current states arrangement
+    if (this.get('embeds').length < 2) {
+      arrangeEmbedded(this, 'bottom');
+    } else {
+      arrangeEmbedded(this, this.attr('statesArrange'));
+    }
+  }
+
   updateParamsFromOpmModel(visualElement) {
     const attr = {
       rect: {...this.updateEntityFromOpmModel(visualElement), ...this.updateThingFromOpmModel(visualElement), ...{stroke: visualElement.strokeColor}},
@@ -78,33 +157,24 @@ export class OpmObject extends OpmThing {
       }
     }
   }
-  addState(stateName = null) {
-    this.objectChangedSize = false;
-    const statesNumber = this.getEmbeddedCells().length;
-    this.createNewState((stateName ? stateName : ('state' + (statesNumber + 1))));
-    // For the first time of clicking on general addState should be added 3 states
-    if (!stateName && (statesNumber === 0)) {
-      for (let i = 2; i <= 2; i++) {
-        this.createNewState(('state' + (statesNumber + i)));
-      }
-    }
-    // Add the new state using the current states arrangement
-    if (this.get('embeds').length < 2) {
-      arrangeEmbedded(this, 'bottom');
-    } else {
-      arrangeEmbedded(this, this.attr('statesArrange'));
-    }
-  }
-  createNewState(stateName) {
+
+  createNewState(stateName , Graph) {
     const defaultState = new OpmState(stateName);
     this.embed(defaultState);     // makes the state stay in the bounds of the object
+    if(!Graph){
     this.graph.addCells([this, defaultState]);
+    console.log(defaultState);
+    }
+    else{
+      Graph.addCells([this, defaultState]);
+    }
     // Placing the new state. By default it is outside the object.
     const xNewState = this.getBBox().center().x - defaultState.get('size').width / 2;
     const yNewState = this.get('position').y + this.get('size').height - defaultState.get('size').height;
     defaultState.set('father', defaultState.get('parent'));
     defaultState.set({position: {x: xNewState, y: yNewState}});
   }
+
   haloConfiguration(halo, options) {
     super.haloConfiguration(halo, options);
     const thisObject = this;
@@ -116,6 +186,7 @@ export class OpmObject extends OpmThing {
       halo.$handles.children('.arrange_down').toggleClass('hidden', !hasStates);
       halo.$handles.children('.arrange_left').toggleClass('hidden', !hasStates);
       halo.$handles.children('.arrange_right').toggleClass('hidden', !hasStates);
+      console.log( this.options.cellView.model);
       this.options.cellView.model.addState();
     });
     halo.addHandle(this.addHandleGenerator('arrange_up', 'n', 'Arrange the states at the top inside the object', 'top'));

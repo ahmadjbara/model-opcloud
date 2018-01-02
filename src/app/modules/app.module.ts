@@ -27,9 +27,14 @@ import { Tab } from '../dialogs/choose-link-dialog/tab';
 import { Tabs } from '../dialogs/choose-link-dialog/tabs';
 import { DialogComponent } from '../dialogs/choose-link-dialog/Dialog.component';
 import {AboutDialogComponent} from '../dialogs/About/about';
+import { OplDialogComponent } from '../dialogs/opl-dialog/opl-dialog.component';
+import { FileSelectDirective, FileDropDirective } from 'ng2-file-upload';
+import {UploadFile} from "../dialogs/FileUploader/FileUploader";
+import {ProgressSpinner} from "../dialogs/Spinner/Progress_Spinner";
 import {ClearCanvasComponent} from '../dialogs/clear-canvas/clear-canvas';
-import {KeysPipe, OplDialogComponent} from '../dialogs/opl-dialog/opl-dialog.component';
+import {KeysPipe} from '../dialogs/opl-dialog/opl-dialog.component';
 import { OplService } from "../opl-generation/opl.service";
+
 
 @NgModule({
   declarations: [
@@ -42,7 +47,12 @@ import { OplService } from "../opl-generation/opl.service";
     OplDialogComponent,
     Tabs,
     Tab,
+    FileSelectDirective, /** The FileSelectDirective is what we will require , Drop is an option too*/
+    FileDropDirective,
+    UploadFile,
+    ProgressSpinner,
     KeysPipe
+
   ],
   imports: [
     BrowserModule,
@@ -56,6 +66,7 @@ import { OplService } from "../opl-generation/opl.service";
     AngularFireDatabaseModule,
     CoreModule,
     SharedModule,
+
     // AppRoutingModule
   ],
   providers: [
@@ -69,6 +80,9 @@ import { OplService } from "../opl-generation/opl.service";
     LoadModelDialogComponent,
     DialogComponent,
     OplDialogComponent,
+    AboutDialogComponent,
+    UploadFile,
+    ProgressSpinner,
     ClearCanvasComponent,
     AboutDialogComponent
   ],

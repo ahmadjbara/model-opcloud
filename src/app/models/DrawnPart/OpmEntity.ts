@@ -25,7 +25,7 @@ export class OpmEntity extends OpmEntityRappid {
   }
   entityAttributes() {
     return {
-      size: {width: 90, height: 50}
+      size: {width: 100, height: 50}
     };
   }
   enitiyAttrs() {
@@ -166,7 +166,8 @@ export class OpmEntity extends OpmEntityRappid {
       const halo = new joint.ui.Halo({
         cellView: cellView,
         type: 'surrounding',
-        handles: haloConfig.handles
+        handles: haloConfig.handles,
+        boxContent: false
       }).render();
       this.haloConfiguration(halo, options);
       options.selection.collection.reset([]);
@@ -233,6 +234,8 @@ export class OpmEntity extends OpmEntityRappid {
       this.resize(newParams.width, newParams.height);
     }
   }
-  removeHandle(options) {}
+  removeHandle(options) {
+    console.log('remove from entity')
+  }
   addHandle(options) {}
 }
