@@ -7,6 +7,9 @@
     width: number;
     height: number;
     private _fatherObject;
+    cloneof: OpmVisualEntity;
+    inzoomClone: OpmVisualEntity;
+    unfoldClone: OpmVisualEntity;
 
     constructor(params, logicalElement) {
       super(params, logicalElement);
