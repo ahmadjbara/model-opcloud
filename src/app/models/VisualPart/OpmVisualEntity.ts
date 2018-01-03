@@ -27,7 +27,10 @@
         width: this.width,
         height: this.height,
         fill: this.fill,
-        fatherObjectId: this.fatherObject ? (this.fatherObject.id ? this.fatherObject.id : this.fatherObject) : null
+        fatherObjectId: this.fatherObject ? (this.fatherObject.id ? this.fatherObject.id : this.fatherObject) : null,
+        cloneof: this.cloneof ? this.cloneof.id : null,
+        inzoomClone: this.inzoomClone ? this.inzoomClone.id : null,
+        unfoldClone: this.unfoldClone ? this.unfoldClone.id : null
       };
       return {...super.getElementParams(), ...params};
     }
@@ -41,6 +44,9 @@
       if (this.logicalElement) {
         const father = this.logicalElement.opmModel.getVisualElementById(params.fatherObjectId);
         this.fatherObject = father ? father : params.fatherObjectId;
+        this.cloneof = <OpmVisualEntity>(this.logicalElement.opmModel.getVisualElementById(params.cloneof));
+        this.inzoomClone = <OpmVisualEntity>(this.logicalElement.opmModel.getVisualElementById(params.inzoomClone));
+        this.unfoldClone = <OpmVisualEntity>(this.logicalElement.opmModel.getVisualElementById(params.unfoldClone));
       }
     }
     getEntityParamsFromJsonElement(jsonElement) {
@@ -50,7 +56,10 @@
         yPos: jsonElement.yPos,
         width: jsonElement.width,
         height: jsonElement.height,
-        fatherObjectId: jsonElement.fatherObjectId
+        fatherObjectId: jsonElement.fatherObjectId,
+        cloneof: jsonElement.cloneof,
+        inzoomClone: jsonElement.inzoomClone,
+        unfoldClone: jsonElement.unfoldClone
       };
       return {...super.getElementParamsFromJsonElement(jsonElement), ...params};
     }

@@ -162,8 +162,22 @@ export class TreeViewService {
       }
     }
   }
-
-
-
+  getCellById(id, nodeId) {
+    const currentNode = this.getNodeById(nodeId);
+    const currentGraph = currentNode.graph;
+    let cell = currentGraph.getCell(id);
+    if (cell) return cell;
+    for (let i = 0; i < currentNode.children.length; i++) {
+      cell = this.getCellById(id, currentNode.children[i].id);
+      if (!cell) continue;
+      return cell;
+    }
+    // this.treeView.treeModel.doForAll(function (node) {
+    //   console.log(node);
+    //   const graphCell = node.data.graph.getCell(id);
+    //   if (graphCell) return graphCell;
+    // });
+    // return null;
+  }
 }
 

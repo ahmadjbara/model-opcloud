@@ -399,23 +399,30 @@ export class GraphService {
     newGraph.addCells(clonedConnectedCells);
     for (let key in temp) {
       const lg = initRappid.opmModel.getLogicalElementByVisualId(key);
-      if (temp[key] instanceof OpmObject) {
-        lg.add(new OpmVisualObject(temp[key].getParams(), lg));
-      }
-      if (temp[key] instanceof OpmProcess) {
-        lg.add(new OpmVisualProcess(temp[key].getParams(), lg));
-      }
-      if (temp[key] instanceof OpmState) {
-        lg.add(new OpmVisualState(temp[key].getParams(), lg));
-      }
-      if (temp[key] instanceof OpmProceduralLink) {
-        lg.add(new OpmProceduralLinkVisual(temp[key].getParams(), lg));
-      }
-      if (temp[key] instanceof OpmFundamentalLink) {
-        lg.add(new OpmFundamentalLinkVisual(temp[key].getParams(), lg));
-      }
-      if (temp[key] instanceof OpmTaggedLink) {
-        lg.add(new OpmTaggedLinkVisual(temp[key].getParams(), lg));
+      if (lg) {
+        let newVisual;
+        if (temp[key] instanceof OpmObject) {
+          newVisual = new OpmVisualObject(temp[key].getParams(), lg);
+        }
+        if (temp[key] instanceof OpmProcess) {
+          newVisual = new OpmVisualProcess(temp[key].getParams(), lg);
+        }
+        if (temp[key] instanceof OpmState) {
+          newVisual = new OpmVisualState(temp[key].getParams(), lg);
+        }
+        if (temp[key] instanceof OpmProceduralLink) {
+          newVisual = new OpmProceduralLinkVisual(temp[key].getParams(), lg);
+        }
+        if (temp[key] instanceof OpmFundamentalLink) {
+          newVisual = new OpmFundamentalLinkVisual(temp[key].getParams(), lg);
+        }
+        if (temp[key] instanceof OpmTaggedLink) {
+          newVisual = new OpmTaggedLinkVisual(temp[key].getParams(), lg);
+        }
+        lg.add(newVisual);
+        const originalVisual = initRappid.opmModel.getVisualElementById(this.graph.getCell(key).get('id'));
+        newVisual.cloneof = originalVisual;
+        originalVisual.inzoomClone = newVisual;
       }
     }
     return temp[elementId];

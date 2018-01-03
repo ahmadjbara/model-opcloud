@@ -156,13 +156,17 @@ export  class OpmThing extends OpmEntity {
           clonedProcess = options.treeViewService.insertNode(cellModel, 'in-zoom', options);
           clonedProcess.set('position', {x: 350, y: 100});
           const elementlinks = options.graphService.graphLinks;
-          let r;
-          thisProcess.processInzooming(evt, 350, 100, haloThis.options, clonedProcess, elementlinks);
-          let visualElement = new OpmVisualProcess(clonedProcess.getParams(), null);
-          options.opmModel.getLogicalElementByVisualId(cellModel.id).add(visualElement);
-          visualElement.connectRefinementElements(cellModel.id, 'in-zoom');
-          opd.add(visualElement);
-          opd.name = visualElement.id;
+          thisProcess.processInzooming(options.opmModel, evt, 350, 100, haloThis.options, clonedProcess, elementlinks);
+          let visualElementCloned = options.opmModel.getVisualElementById(clonedProcess.get('id'));
+          if (!visualElementCloned) {
+            visualElementCloned = new OpmVisualProcess(clonedProcess.getParams(), null);
+            options.opmModel.getLogicalElementByVisualId(cellModel.id).add(visualElementCloned);
+            opd.add(visualElementCloned);
+          }
+          visualElementCloned.cloneof = options.opmModel.getVisualElementById(cellModel.id);
+          options.opmModel.getVisualElementById(cellModel.id).inzoomClone = visualElementCloned;
+          visualElementCloned.connectRefinementElements(cellModel.id, 'in-zoom');
+          opd.name = visualElementCloned.id;
           opd.parendId = cellModel.get('id');
         }
         options.treeViewService.treeView.treeModel.getNodeById(clonedProcess.id).toggleActivated();

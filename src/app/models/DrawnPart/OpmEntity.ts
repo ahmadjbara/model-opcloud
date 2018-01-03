@@ -56,7 +56,10 @@ export class OpmEntity extends OpmEntityRappid {
       fill: this.getShapeAttr().fill,
       strokeColor: this.getShapeAttr().stroke,
       id: this.get('id'),
-      fatherObjectId: this.get('parent')
+      fatherObjectId: this.get('parent'),
+      cloneof: this.cloneof ? this.cloneof.get('id') : null,
+      inzoomClone: this.inzoomClone ? this.inzoomClone.get('id') : null,
+      unfoldClone: this.unfoldClone ? this.unfoldClone.get('id') : null
     };
   }
   updateEntityFromOpmModel(visualElement) {
@@ -77,6 +80,9 @@ export class OpmEntity extends OpmEntityRappid {
       id: visualElement.id
     };
     this.set(attributes);
+    this.cloneof = visualElement.cloneof ? visualElement.cloneof.id : null;
+    this.inzoomClone = visualElement.inzoomClone ? visualElement.inzoomClone.id : null;
+    this.unfoldClone = visualElement.unfoldClone ? visualElement.unfoldClone.id : null;
     return {
       fill: visualElement.fill
     };

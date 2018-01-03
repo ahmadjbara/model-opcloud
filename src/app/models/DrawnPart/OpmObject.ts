@@ -318,7 +318,7 @@ export class OpmObject extends OpmThing {
   getImageEssenceAffiliation() {
     return '../../../assets/icons/essenceAffil/EssenceAffilObject.JPG';
   }
-  processInzooming (evt, x, y, options, cellRef, links) {
+  processInzooming (initRappid, evt, x, y, options, cellRef, links) {
 
 
 

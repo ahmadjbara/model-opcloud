@@ -262,7 +262,7 @@ export class OpmProcess extends OpmThing {
   getImageEssenceAffiliation() {
     return '../../../assets/icons/essenceAffil/EssenceAffilProcess.JPG';
   }
-  processInzooming (evt, x, y, options, cellRef, links) {
+  processInzooming (initRappid, evt, x, y, options, cellRef, links) {
     // var options = _this.options;
     const parentObject = cellRef;
     parentObject.set('padding', 100);

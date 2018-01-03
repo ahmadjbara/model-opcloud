@@ -14,6 +14,7 @@ import {OpmVisualState} from './VisualPart/OpmVisualState';
 import {OpmProceduralLink} from './VisualPart/OpmProceduralLink';
 import {OpmFundamentalLink} from './VisualPart/OpmFundamentalLink';
 import {OpmRelation} from './LogicalPart/OpmRelation';
+import {current} from "codelyzer/util/syntaxKind";
 
 export class OpmModel {
   name: string;
@@ -157,6 +158,20 @@ export class OpmModel {
     for (let i = 1; i < jsonElement.visualElementsParams.length; i++) {
       paramsVisual = pseudoVisual.getParamsFromJsonElement(jsonElement.visualElementsParams[i]);
       logicalElement.add(this.createNewVisualElement(jsonElement.name, paramsVisual, logicalElement));
+    }
+    // connect cloned elements
+    for (let i = 0; i < jsonElement.visualElementsParams.length; i++) {
+      const visualElement = jsonElement.visualElementsParams[i];
+      let cloneof = visualElement.cloneof;
+      let inzoomClone = visualElement.inzoomClone;
+      let unfloldClone = visualElement.unfoldClone;
+      const current = logicalElement.visualElements.find(e => e.id === visualElement.id);
+      cloneof = logicalElement.visualElements.find(e => e.id === cloneof);
+      inzoomClone = logicalElement.visualElements.find(e => e.id === inzoomClone);
+      unfloldClone = logicalElement.visualElements.find(e => e.id === unfloldClone);
+      current.cloneof = cloneof;
+      current.inzoomClone = inzoomClone;
+      current.unfoldClone = unfloldClone;
     }
     return logicalElement;
   }

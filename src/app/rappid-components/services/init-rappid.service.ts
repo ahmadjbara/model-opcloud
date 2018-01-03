@@ -185,6 +185,7 @@ export class InitRappidService {
     validationAlert(this.opmModel.name + ' was saved');
   }
   loadModel(name, modelStorage) {
+    const thisInit = this;
     modelStorage.get(name).then((res) => {
       this.opmModel.fromJson(res.modelData);
       let newGraph = this.graphService.createGraph(this.opmModel.opds[0]);
@@ -196,6 +197,17 @@ export class InitRappidService {
         newGraph = this.graphService.createGraph(this.opmModel.opds[i]);
         this.treeViewService.insetNodeWithGraph(newGraph, this.opmModel.opds[i].name, this.opmModel.opds[i].parendId);
       }
+      this.treeViewService.treeView.treeModel.doForAll((node) => {
+        const graphCells = node.data.graph.getCells();
+        for (let i = 0; i < graphCells.length; i++) {
+          const clonof = graphCells[i].cloneof;
+          const inzoomClone = graphCells[i].inzoomClone;
+          const unfoldClone = graphCells[i].unfoldClone;
+          graphCells[i].cloneof = thisInit.treeViewService.getCellById(clonof, 'SD');
+          graphCells[i].inzoomClone = thisInit.treeViewService.getCellById(inzoomClone, 'SD');
+          graphCells[i].unfoldClone = thisInit.treeViewService.getCellById(unfoldClone, 'SD');
+        }
+      });
       this.treeViewService.treeView.treeModel.getNodeById('SD').toggleActivated();
       this.treeViewService.treeView.treeModel.getNodeById('SD').parent.expand();
     });
