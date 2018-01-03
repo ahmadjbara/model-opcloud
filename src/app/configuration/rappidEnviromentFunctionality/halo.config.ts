@@ -7,7 +7,7 @@ export const haloConfig = {
       attrs: {
         '.handle': {
           'data-tooltip-class-name': 'small',
-          'data-tooltip': 'Click to remove the object',
+          'data-tooltip': 'Click to remove',
           'data-tooltip-position': 'right',
           'data-tooltip-padding': 15
         }

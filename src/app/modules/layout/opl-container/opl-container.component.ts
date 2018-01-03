@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
+import 'rxjs/add/operator/do';
 
 @Component({
-  selector: 'opc-opl-container',
+  selector: 'opcloud-opl-container',
   template: `
     <button md-raised-button class="opl-icon"
             (click)="toggleOpl()"
@@ -10,7 +11,7 @@ import { Component, OnInit } from '@angular/core';
       <i class="material-icons app-toolbar-menu-icon">{{ oplOpen ? 'expand_more' : 'expand_less' }}</i>
     </button>
 
-    <div class="opl-widget" *ngIf="oplOpen">
+    <div class="opl-widget" *ngIf="oplOpen" opcloudResizeBar="top">
       <ng-content></ng-content>
     </div>
   `,

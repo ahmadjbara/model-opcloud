@@ -39,7 +39,7 @@ export class RappidStencilComponent implements OnInit, AfterViewInit {
       paper: this.paperScroller,
       snaplines: new joint.ui.Snaplines({ paper: this.paper }),
       scaleClones: true,
-      width: 300,
+      width: 240,
       height: 100,
       dropAnimation: true,
       // Use default Grid Layout
@@ -48,6 +48,11 @@ export class RappidStencilComponent implements OnInit, AfterViewInit {
       // Remove tooltip definition from clone
       dragStartClone: function (cell) {
          return  cell.clone().removeAttr('./data-tooltip');
+      },
+      dragEndClone: function (cell) {
+        let cloned = cell.clone();
+        cloned.numberThing();
+        return cloned;
       },
     });
   }

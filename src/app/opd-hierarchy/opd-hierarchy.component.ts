@@ -70,8 +70,9 @@ export class OPDHierarchyComponent implements OnInit {
   changeGraphModel($event, node) {
     console.log(node);
     this.graph =  this.graphService.changeGraphModel(node.data.id, this._treeViewService, node.data.type);
-    if(node.data.id === 'SD'){
-      node.data.graph.resetCells(this.graph.getCells())
+    if (node.data.id === 'SD') {
+      if (this.graph)
+        node.data.graph.resetCells(this.graph.getCells())
     }
 
     return this
