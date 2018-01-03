@@ -22,8 +22,7 @@ import { Subscription } from 'rxjs/Subscription';
       <md-sidenav #sidenav class="sd-tree-menu"
                   [opened]="sdTreeOpen"
                   mode="side"
-                  [opcResizable]="'horizontal'"
-                  (opcResize)="onResize($event)">
+                  opcloudResizeBar="right">
         <opcloud-opd-hierarchy id="opd-block"></opcloud-opd-hierarchy>
 
       <!--  <opcloud-rappid-navigator [paperScroller]="paperScroller"></opcloud-rappid-navigator> -->
@@ -33,20 +32,11 @@ import { Subscription } from 'rxjs/Subscription';
 
         <div class="rappid-main rappid main-content">
           <opcloud-rappid-paper [paper]="paper" [paperScroller]="paperScroller"></opcloud-rappid-paper>
-
-          <button class="inspector-button"
-                  (click)="toggleInspector()"
-                  *ngIf="cell$ | async"
-                  md-mini-fab>
-            <md-icon>{{ inspectorOpen ? 'close' : 'assignment' }}</md-icon>
-          </button>
-          <opcloud-rappid-inspector [style.visibility]="inspectorOpen ? 'visible' : 'hidden'"
-                                    [cell]="cell$ | async"></opcloud-rappid-inspector>
         </div>
 
-        <opc-opl-container>
+        <opcloud-opl-container>
           <opcloud-rappid-opl id="opl-block" [graph]="graph" [paper]="paper"></opcloud-rappid-opl>
-        </opc-opl-container>
+        </opcloud-opl-container>
 
       </div>
 
@@ -137,11 +127,6 @@ export class MainComponent implements OnInit, OnDestroy {
 
   closeSidenav() {
     this.sidenav.close();
-  }
-
-  // TODO: replace with onResize method
-  onResize(e) {
-    //console.log(e);
   }
 
   toggleInspector() {

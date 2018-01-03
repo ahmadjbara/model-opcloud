@@ -1,0 +1,69 @@
+.resize-bar {
+  position: absolute;
+  // for debugging
+  //background: rgba(255, 255, 0, 0.42);
+  background: transparent;
+  z-index: 1;
+
+  .resize-bar-control {
+    border: solid transparent 0;
+    visibility: hidden;
+  }
+
+  &:hover {
+    .resize-bar-control {
+      visibility: visible;
+      border-color: #1de9b6;
+    }
+  }
+
+  &.top, &.bottom {
+    cursor: row-resize;
+    width: 100%;
+    left: 0;
+    height: 8px;
+
+    .resize-bar-control {
+      height: 1px;
+      border-width: 1px 0;
+    }
+  }
+
+  &.top {
+    top: -5px;
+    margin-top: 5px;
+  }
+
+  &.bottom {
+    bottom: 0;
+    .resize-bar-control {
+      margin-top: 5px;
+    }
+  }
+
+  &.left, &.right {
+    cursor: col-resize;
+    height: 100%;
+    top: 0;
+    position: absolute;
+    width: 8px;
+
+    .resize-bar-control {
+      height: 100%;
+      width: 1px;
+      border-width: 0 1px;
+    }
+  }
+
+  &.left {
+    left: 0;
+  }
+
+  &.right {
+    right: 0;
+
+    .resize-bar-control {
+      margin: 0 5px;
+    }
+  }
+}
