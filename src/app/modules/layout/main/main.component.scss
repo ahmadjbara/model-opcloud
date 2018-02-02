@@ -15,6 +15,7 @@
 .opcloud-container {
   height: 100%;
 
+
   .sd-tree-menu {
     padding: 20px;
     width: 260px;
@@ -22,6 +23,7 @@
     height: 100%;
     display: flex;
     flex-direction: column;
+    background-color: lightgray;
 
     // workaround to allow reducing the width beyond the initial value
     // doesn't work when you have to click inner item...

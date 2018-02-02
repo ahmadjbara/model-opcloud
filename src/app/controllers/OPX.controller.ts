@@ -20,6 +20,8 @@ export class OPXModel {
   private FundamentalRelationSection : any;
   private GeneralRelationSection : any;
   private OPD: any;
+  private system: any;
+  private log : any;
   private _InZoomedTree: Array<InzoomedTree> = [];
   private _UnfoldedTree: Array<UnfoldedTree> = []
   private _LogicalObjects: Array<LogicalEntity> = [];
@@ -38,6 +40,7 @@ export class OPXModel {
   constructor(json_opx: string) {
     json_opx = JSON.stringify(json_opx);
     let json = JSON.parse(json_opx);
+    this.system = json.OPX.OPMSystem[0].$;
     this.LogicalStructure = json.OPX.OPMSystem[0].LogicalStructure;
     this.VisualPart = json.OPX.OPMSystem[0].VisualPart[0];
     this.OPD = json.OPX.OPMSystem[0].VisualPart[0].OPD[0];
@@ -45,6 +48,7 @@ export class OPXModel {
     this.LinkSection = json.OPX.OPMSystem[0].VisualPart[0].OPD[0].VisualLinkSection[0];
     this.FundamentalRelationSection = json.OPX.OPMSystem[0].VisualPart[0].OPD[0].FundamentalRelationSection[0];
     this.GeneralRelationSection = json.OPX.OPMSystem[0].VisualPart[0].OPD[0].GeneralRelationSection[0];
+    this.loadLogInfo();
     this.load_Inzoomed_sections(json);
     this.load_Unfolded_sections(json);
     this.load_object_section(this.LogicalStructure);
@@ -55,6 +59,11 @@ export class OPXModel {
 
 
   //-----------------------------------------------Loaders--------------------------------------------------------------
+
+  private loadLogInfo(){
+    //system info
+    this.log = this.system;
+  }
 
   private load_Inzoomed_sections(json) {
     let Root = this.OPD;
@@ -281,6 +290,7 @@ export class OPXModel {
                   ))
 
               }
+
               this.StateInstances = [];
             }
 
@@ -528,9 +538,13 @@ export class OPXModel {
   private static VisualRelationInRoot(FundamentalRelationSection,GeneralRelationSection,id) {
     if (FundamentalRelationSection) {
       let size1 = parseInt(FundamentalRelationSection.CommonPart.length);
+
       for (let i = 0; i < size1; i++) {
-        if (FundamentalRelationSection.CommonPart[i].VisualFundamentalRelation[0].InstanceAttr[0].$.entityId === id) {
+        let size3 = parseInt(FundamentalRelationSection.CommonPart[i].VisualFundamentalRelation.length);
+        for(let k=0;k<size3;k++){
+        if (FundamentalRelationSection.CommonPart[i].VisualFundamentalRelation[k].InstanceAttr[0].$.entityId === id) {
           return true;
+        }
         }
       }
     }

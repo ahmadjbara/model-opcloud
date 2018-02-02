@@ -148,7 +148,9 @@ export const oplFunctions = {
     const OPL = this.generateRelationOPL(pairs, list[linkType]);
 
     return OPL;
-  }
+  },
+
+
 
 };
 

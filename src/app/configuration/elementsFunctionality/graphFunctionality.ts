@@ -26,6 +26,8 @@ import {EffectLink} from "../../models/DrawnPart/Links/EffectLink";
 import {ConsumptionLink} from "../../models/DrawnPart/Links/ConsumptionLink";
 import {ResultLink} from "../../models/DrawnPart/Links/ResultLink";
 import {InvocationLink} from "../../models/DrawnPart/Links/InvocationLink";
+import {textWrapping} from "./textWrapping";
+
 
 export function addHandle(initRappidService, cell, opt) {
   if (opt.stencil) {
@@ -113,4 +115,24 @@ export function createDrawnLink(source, target, isCondition = null, isEvent = nu
   }else if (linkName.includes('Instantiation')) {
     return  new InstantiationLink(source, target, graph);
   }
+}
+
+// fix embed elements from data
+export function FixEmbeds_FromData(graph){
+
+  for(let cell of graph.getCells()){
+
+    if(cell.get('father')){
+      let fatherID = cell.get('father')
+      let father = graph.getCell(fatherID);
+      if(cell instanceof OpmState){
+        textWrapping.wrapTextAfterSizeChange(cell);
+        father.embed(cell);
+        cell.set('parent',fatherID);
+        father.updateSizeToFitEmbeded();
+      }
+      father.embed(cell);
+    }
+  }
+
 }

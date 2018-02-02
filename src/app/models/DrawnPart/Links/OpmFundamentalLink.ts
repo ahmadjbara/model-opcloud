@@ -83,6 +83,8 @@ export  class OpmFundamentalLink extends OpmStructuralLink {
   removeHandle(options) {
     super.removeHandle(options);
     const triangle = options.graph.getCell(this.get('source').id);
+
+    console.log(triangle);
     const numberOfTargets = triangle.get('numberOfTargets');
     if (numberOfTargets > 1) {
       triangle.set('numberOfTargets', (numberOfTargets - 1));
@@ -95,7 +97,7 @@ export  class OpmFundamentalLink extends OpmStructuralLink {
   getTriangle(){
     return this.triangle;
   }
-  
+
   getSource() {
     return this.sourceElement;
   }

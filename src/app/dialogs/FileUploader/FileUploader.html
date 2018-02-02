@@ -30,13 +30,19 @@
     <li ><span>File Size : </span>{{ item.file.size/1024/1024 | number:'.2' }} MB</li>
   </ul>
 </md-dialog-content>
-<hr>
 
+<hr>
+<ng-progress [positionUsing]="'marginLeft'" [minimum]="0.85" [maximum]="1"
+             [speed]="1500" [showSpinner]="true" [direction]="'leftToRightIncreased'"
+             [color]="'yellow'" [trickleSpeed]="100" [thick]="false" [ease]="'linear'"></ng-progress>
 <p>
-  <button md-raised-button  (click)="Import()"  *ngIf="importOPX">IMPORT</button>
-  <button md-raised-button  (click)="dialogRef.close()" *ngIf="!importOPX">EXPORT</button>
+
+  <button md-raised-button id="import" [disabled]="imported" (click)="Import()" *ngIf="importOPX">IMPORT</button>
+  <button md-raised-button id="log"  (click)="logFile()" *ngIf="imported">DOWNLOAD LOG</button>
+  <button md-raised-button id="export" (click)="dialogRef.close()" *ngIf="!importOPX">EXPORT</button>
   <button md-raised-button  (click)="dialogRef.close()">CANCEL</button>
 </p>
+
 
 
 

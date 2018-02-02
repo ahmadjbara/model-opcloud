@@ -16,6 +16,7 @@ import {InstantiationLink} from '../../models/DrawnPart/Links/InstantiationLink'
 import {OpmObject} from "../../models/DrawnPart/OpmObject";
 import {OpmProcess} from "../../models/DrawnPart/OpmProcess";
 import {OpmState} from "../../models/DrawnPart/OpmState";
+import {oplFunctions} from "../../opl-generation/opl-functions"
 
 const joint = require('rappid');
 
@@ -38,9 +39,9 @@ export const linkDrawing = {
       newLink.push(new ConsumptionLink(link.getSourceElement(), link.getTargetElement(), isCondition, isEvent));
     } else if (linkName.includes('Effect')) {
       newLink.push(new EffectLink(link.getSourceElement(), link.getTargetElement(), isCondition, isEvent));
-    } else if (linkName.includes('Overtime')) {
+    } else if (linkName.includes('Overtime_exception')) {
       newLink.push(new OvertimeExceptionLink(link.getSourceElement(), link.getTargetElement(), isCondition, isEvent));
-    } else if (linkName.includes('Undertime')) {
+    } else if (linkName.includes('Undertime_exception')) {
       newLink.push(new UndertimeExceptionLink(link.getSourceElement(), link.getTargetElement(), isCondition, isEvent));
     } else if (linkName.includes('OvertimeUndertime-exception')) {
       newLink.push(new OvertimeUndertimeExceptionLink(link.getSourceElement(), link.getTargetElement(), isCondition, isEvent));
@@ -57,7 +58,7 @@ export const linkDrawing = {
     }else if (linkName.includes('Instantiation')) {
       newLink.push( new InstantiationLink(link.getSourceElement(), link.getTargetElement(), graph));
     }else if (linkName.includes('In/out_linkPair')) {
-      InOutLinkpair(link.getSourceElement(), link.getTargetElement(),newLink, graph , isCondition, isEvent);
+      InOutLinkpair(link,link.getSourceElement(), link.getTargetElement(),newLink, graph , isCondition, isEvent);
     }
     newLink[0].set('previousTargetId', link.get('previousTargetId'));
     newLink[0].set('previousSourceId', link.get('previousSourceId'));
@@ -110,11 +111,11 @@ export const linkDrawing = {
     }else if (linkName.includes('Instantiation')) {
       newLink = new InstantiationLink(source, target, graph,id);
     }
-    graph.addCell(newLink);
+    graph.addCells(newLink);
   }
 };
 
-function InOutLinkpair(source,target,newLink,graph ,  isCondition, isEvent){
+function InOutLinkpair(link,source,target,newLink,graph ,  isCondition, isEvent){
   if(source instanceof OpmState){
     const sourceID = source.attributes.father;
     const children  = graph.getCell(sourceID).getEmbeddedCells();
@@ -129,6 +130,9 @@ function InOutLinkpair(source,target,newLink,graph ,  isCondition, isEvent){
       }
     }
   }
+    newLink[1].set('previousTargetId', link.get('previousTargetId'));
+    newLink[1].set('previousSourceId', link.get('previousSourceId'));
+    newLink[1].set('name', link.get('name'));
 }
 if(source instanceof OpmProcess) {
   const targetID = target.attributes.father;
@@ -144,5 +148,8 @@ if(source instanceof OpmProcess) {
       }
     }
   }
+  newLink[1].set('previousTargetId', link.get('previousTargetId'));
+  newLink[1].set('previousSourceId', link.get('previousSourceId'));
+  newLink[1].set('name', link.get('name'));
 }
 }

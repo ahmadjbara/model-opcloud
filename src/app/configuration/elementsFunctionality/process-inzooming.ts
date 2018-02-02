@@ -134,6 +134,43 @@ export function processInzooming (evt, x, y, options, cellRef, links) {
     }
   });
 }
+// Inzoom from data (import ...)
+export function processResize_FromData(graph){
+  graph.on('change:position change:size', function (cell, value, opt) {
+
+
+    if (opt.cameFrom === 'textEdit') {
+      const maxWidth = opt.wd > value.width ? opt.wd : value.width;
+      const maxHeight = opt.hg > value.height ? opt.hg : value.height;
+      cell.resize(maxWidth, maxHeight);
+      return;
+    }
+    cell.set('originalSize', cell.get('size'));
+    cell.set('originalPosition', cell.get('position'));
+    const parentId = cell.get('parent');
+    if (parentId) {
+      const parent = graph.getCell(parentId);
+      if (!parent.get('originalPosition')) parent.set('originalPosition', parent.get('position'));
+      if (cell.attributes.attrs.wrappingResized) {
+        parent.updateSizeToFitEmbeded();
+        return;
+      }
+      if (!parent.get('originalSize')) parent.set('originalSize', parent.get('size'));
+      if (parent instanceof OpmProcess) {
+        parent.updateProcessSize();
+
+      }
+
+    } else if (cell.get('embeds') && cell.get('embeds').length) {
+      // if (cell.attributes.attrs.wrappingResized){
+      //  common.CommonFunctions.updateSizeToFitEmbeded(cell);
+      //  return;
+      // }
+
+      cell.updateSizeToFitEmbeded();
+    }
+  });
+}
 
 export function processUnfolding (options, cellRef, unfoldingOptions) {
 

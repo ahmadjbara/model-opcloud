@@ -10,9 +10,9 @@ import {ProgressSpinner} from "../../dialogs/Spinner/Progress_Spinner";
 import {ClearCanvasComponent} from '../../dialogs/clear-canvas/clear-canvas';
 import {UserService} from '../services/user.service';
 import {SignInComponent} from '../../modules/layout/header/sign-in/sign-in.component';
-
+import {joint, _, vectorizer} from '../../configuration/rappidEnviromentFunctionality/shared';
+import {OpmDefaultLink} from "../../models/DrawnPart/Links/OpmDefaultLink";
 const parseString = require('xml2js').parseString;
-
 
 const commandGroups = [
   {
@@ -31,7 +31,9 @@ const commandGroups = [
      // { name: 'executeIfLogged(saveModel)', tooltip: 'save', icon: 'save' },
      // { name: 'executeIfLogged(loadModel)', tooltip: 'load', icon: 'open_in_browser' }
       { name: 'executeIfLogged(saveModel)', tooltip: 'Save', icon: 'save' },
-      { name: 'executeIfLogged(loadModel)', tooltip: 'Load', icon: 'open_in_browser' }
+      { name: 'executeIfLogged(loadModel)', tooltip: 'Load', icon: 'open_in_browser' },
+      {name: 'CheckModel',tooltip: 'Check', icon: 'check'},
+      {name: 'GraphLayout',tooltip: 'Layout', icon:'space_bar'}
     ]
   },
   {
@@ -88,6 +90,7 @@ export class RappidToolbarComponent implements OnInit {
 
   ngOnInit() {
     this.graph = this.graphService.getGraph();
+
   }
 
   buttonClick(command) {
@@ -96,7 +99,29 @@ export class RappidToolbarComponent implements OnInit {
     return this[func](args);
   }
 
+  GraphLayout(){
+// Layout the entire graph
+   // joint.layout.GridLayout.layout(this.graph, {
+     // columns: 2,
+    //  columnWidth: 100,
+     // rowHeight: 100
+     // dx:30,
+     // dy:30
+     // resizeToFit:true,
+    //  marginX:200,
+     // marginY:200,
+   // });
+    for(let cell of this.graph.getCells() ){
+      if(!(cell instanceof OpmDefaultLink)){
+        console.log('layout');
+        cell.set({
 
+        //  size: { width: 100, height: 100 },
+        //  marginLeft :10
+        })
+      }
+    }
+  }
   undo() {
     this.commandManager.undo();
     this.graphService.updateJSON();
@@ -107,35 +132,14 @@ export class RappidToolbarComponent implements OnInit {
     this.graphService.updateJSON();
   }
 
-  spinner() {
-    let SpinnerComponentFactory =
-      this.componentFactoryResolver.resolveComponentFactory(ProgressSpinner);
-    let SpinnerComponentRef = this.viewContainer.createComponent(SpinnerComponentFactory);
-    return SpinnerComponentRef;
-  }
+
   importModel() {
     let dialogRef = this._dialog.open(UploadFile);
-
-
     let That = this;
-
     dialogRef.afterClosed().subscribe(result => {
-
-        parseString(result, function (err, result) {
-          That.OPX_JSON = result
-         // That.spinner();
-          console.log(That.OPX_JSON);
-
-        });
-
-      this.graphService.importOpxGraph(this.OPX_JSON , this.initRappidService);
-
       });
 
 }
-
-
-
   saveModel() {
     this.initRappidService.saveModel(this.graphService.modelStorage);
   }

@@ -106,6 +106,7 @@ export class OpmObject extends OpmThing {
     graph.addCells([this, state]);
     // Placing the new state. By default it is outside the object.
     state.set('father', state.get('parent'));
+
     state.position({parentRelative: true})
     // Add the new state using the current states arrangement
     if (this.get('embeds').length < 2) {

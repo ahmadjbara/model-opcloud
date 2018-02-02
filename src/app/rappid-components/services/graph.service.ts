@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import {ComponentFactoryResolver, Injectable, ViewContainerRef} from '@angular/core';
 import { ModelObject } from './storage/model-object.class';
 import { ModelStorageInterface } from './storage/model-storage.interface';
 import {TreeViewService} from './tree-view.service';
@@ -38,6 +38,7 @@ import {OpmProceduralLink} from "../../models/DrawnPart/Links/OpmProceduralLink"
 import {OpmFundamentalLink as OpmFundamentalLinkVisual} from "../../models/VisualPart/OpmFundamentalLink";
 import {OpmTaggedLink} from "../../models/DrawnPart/Links/OpmTaggedLink";
 import {OpmTaggedLink as OpmTaggedLinkVisual} from "../../models/VisualPart/OpmTaggedLink";
+import {FileUploader} from "ng2-file-upload";
 
 const rootId = 'SD';
 const firebaseKeyEncode = require('firebase-key-encode');
@@ -96,8 +97,7 @@ export class GraphService {
    */
 
   importOpxGraph(opxJson , options ){
-
-    importOpxOPDs(opxJson,options,this.opxModel,this.graph,this.ImportGraph);
+   return importOpxOPDs(opxJson,options,this.opxModel,this.graph,this.ImportGraph);
   }
 
 
@@ -427,16 +427,17 @@ export class GraphService {
     }
     return temp[elementId];
   }
+
   changeGraphModel(elementId, treeViewService, type) {
     if (elementId == this.currentGraphId && this.type === type)
       return 0;
     treeViewService.getNodeByIdType(this.currentGraphId, this.type).graph.resetCells(this.graph.getCells());
-
     this.graph.resetCells(treeViewService.getNodeByIdType(elementId, type).graph.getCells());
     this.currentGraphId = elementId;
     this.type = type;
-    console.log(this.ImportGraph);
-    return this.ImportGraph;
+    return {ImportedGraph:this.ImportGraph,
+      MainGraph:this.graph,
+      nodeGraph:treeViewService.getNodeByIdType(elementId, type).graph}
   }
   execute(initRappid, linksArray) {
     // get all processes in the graph

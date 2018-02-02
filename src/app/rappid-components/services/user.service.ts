@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
 import { AngularFireAuth } from 'angularfire2/auth';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
-import { environment } from '../../../environments/environment.airbus';
+//import { environment } from '../../../environments/environment.airbus';
+import { environment } from '../../../environments/environment.prod';
 import { AngularFireDatabase } from 'angularfire2/database';
 
 import * as firebase from 'firebase/app';

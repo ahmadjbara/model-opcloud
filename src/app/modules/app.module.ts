@@ -21,7 +21,8 @@ import 'hammerjs';
 import { CoreModule } from './core.module';
 import { SharedModule } from './shared/shared.module';
 import { UserService } from '../rappid-components/services/user.service';
-import { environment } from '../../environments/environment.airbus';
+//import { environment } from '../../environments/environment.airbus';
+import { environment } from '../../environments/environment.prod';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { Tab } from '../dialogs/choose-link-dialog/tab';
 import { Tabs } from '../dialogs/choose-link-dialog/tabs';
@@ -34,6 +35,7 @@ import {ProgressSpinner} from "../dialogs/Spinner/Progress_Spinner";
 import {ClearCanvasComponent} from '../dialogs/clear-canvas/clear-canvas';
 import {KeysPipe} from '../dialogs/opl-dialog/opl-dialog.component';
 import { OplService } from "../opl-generation/opl.service";
+import { NgProgressModule } from 'ngx-progressbar';
 
 
 @NgModule({
@@ -66,14 +68,17 @@ import { OplService } from "../opl-generation/opl.service";
     AngularFireDatabaseModule,
     CoreModule,
     SharedModule,
+    NgProgressModule
 
-    // AppRoutingModule
+
+// AppRoutingModule
   ],
   providers: [
     { provide: ModelStorageInterface, useClass: ModelFbStorageService },
     TreeViewService,
     UserService,
-    OplService
+    OplService,
+
   ],
   entryComponents: [
     SaveModelDialogComponent,

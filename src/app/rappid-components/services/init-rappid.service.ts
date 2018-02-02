@@ -49,6 +49,7 @@ export class InitRappidService {
     joint.setTheme('modern');
     this.initializeDesktop();
     this.initializeEvents(this.graph);
+    this.initializeEvents(this.ImportedGraph);
     this.opmModel = new OpmModel();
     defineKeyboardShortcuts(this);
     console.log(this.opmModel);
@@ -65,6 +66,7 @@ export class InitRappidService {
       width: 1000,
       height: 1000,
       gridSize: 5,
+      padding: 20,
       drawGrid: true,
       model: this.graph,
       defaultLink: new OpmDefaultLink(),
@@ -150,22 +152,15 @@ export class InitRappidService {
     graph.on('change:position', _.bind(function (cell) {
       cell.changePositionHandle(); }, this));
     graph.on('remove', (cell) => {
-      cell = cell.model || cell;
+
       removeHandle(_this, cell);
       cell.removeHandle(_this);
-      });
-    //graph.on('add', (cell, collection, opt) => {
-//      addHandle(_this, cell, opt);
-  //    cell.addHandle(_this);
-//      cell.removeHandle(_this); });
-
-
+    });
     graph.on('add', (cell, collection, opt) => {
       // Alon: We only want to number Object/Process at this time
-
       addHandle(_this, cell, opt);
       cell.addHandle(_this); });
-    this.graph.on('change', function (cell) {
+    graph.on('change', function (cell) {
       changeHandle(_this, cell); }, this);
   }
   saveModel(modelStorage) {

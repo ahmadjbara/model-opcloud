@@ -243,5 +243,7 @@ export class OpmEntity extends OpmEntityRappid {
   removeHandle(options) {
     console.log('remove from entity')
   }
-  addHandle(options) {}
+  addHandle(options) {
+    console.log('add from entity')
+  }
 }

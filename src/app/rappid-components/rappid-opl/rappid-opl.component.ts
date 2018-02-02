@@ -34,12 +34,14 @@ export class RappidOplComponent implements OnInit {
     this.GenerateOPL();
     this.HoverOnCells;
     this.test();
+
   }
 
   test(){
     this.graph.on('add',(cell)=>{
-      console.log(cell);
+
     });
+
   }
 
   GenerateOPL() {
@@ -163,9 +165,11 @@ export class RappidOplComponent implements OnInit {
         for (; i < states.length - 2 ; i++) {
           stateOpl = stateOpl + ` <b class="state">${states[i].attributes.attrs.text.text}</b><b>,</b>`;
         }
-        stateOpl = stateOpl + ` <b class="state">${states[i].attributes.attrs.text.text}</b> or <b class="state">${states[i+1].attributes.attrs.text.text}</b><b>.</b>`;
-      }
-     parent.getEmbeddedCells()[0].attributes.opl = stateOpl;
+        if(states[i]) {
+          stateOpl = stateOpl + ` <b class="state">${states[i].attributes.attrs.text.text}</b> or <b class="state">${states[i + 1].attributes.attrs.text.text}</b><b>.</b>`;
+        } }
+        if(parent.getEmbeddedCells()[0]){
+     parent.getEmbeddedCells()[0].attributes.opl = stateOpl;}
     }
   }
 

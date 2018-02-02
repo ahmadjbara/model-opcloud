@@ -5,7 +5,18 @@ import { TreeViewService } from '../rappid-components/services/tree-view.service
 import { Node } from '../models/node.model';
 import { Subscription } from 'rxjs/Subscription';
 import {DomSanitizer} from "@angular/platform-browser"
+import {
+  changeHandle, FixEmbeds_FromData,
+  removeHandle
+} from "../configuration/elementsFunctionality/graphFunctionality";
+import {InitRappidService} from "../rappid-components/services/init-rappid.service";
+import {OpmState} from "../models/DrawnPart/OpmState";
+import {OpmProcess} from "../models/DrawnPart/OpmProcess";
+import {processResize_FromData} from "../configuration/elementsFunctionality/process-inzooming";
+import {width} from "../configuration/rappidEnviromentFunctionality/shared";
+import {OpmObject} from "../models/DrawnPart/OpmObject";
 const joint = require('rappid');
+const _ = require('lodash');
 
 const actionMapping: IActionMapping = {
   mouse: {
@@ -39,9 +50,10 @@ export class OPDHierarchyComponent implements OnInit {
   @ViewChild(TreeComponent) treeView: TreeComponent;
   private graph;
   showApi = false;
-  private ServGraph = new joint.dia.Graph();
+  private ServGraph ;
 
-  constructor(private graphService: GraphService, public _treeViewService: TreeViewService, private sanitizer: DomSanitizer) {
+  constructor(private graphService: GraphService, public _treeViewService: TreeViewService,
+              private sanitizer: DomSanitizer , public initRappid?:InitRappidService) {
     this.graph = graphService.getGraph();
     this.subscription = new Subscription();
   }
@@ -68,13 +80,28 @@ export class OPDHierarchyComponent implements OnInit {
   }
 
   changeGraphModel($event, node) {
-    console.log(node);
-    this.graph =  this.graphService.changeGraphModel(node.data.id, this._treeViewService, node.data.type);
-    if (node.data.id === 'SD') {
-      if (this.graph)
-        node.data.graph.resetCells(this.graph.getCells())
-    }
+   // this.graphService.changeGraphModel(node.data.id, this._treeViewService, node.data.type);
+    let Graph:any;
 
+    Graph = this.graphService.changeGraphModel(node.data.id, this._treeViewService, node.data.type);
+
+      if(Graph.ImportedGraph.getCells().length > 0){
+
+        if (node.data.id === 'SD') {
+        Graph.MainGraph.resetCells(Graph.ImportedGraph.getCells());
+        for(let cell of Graph.MainGraph.getCells()){
+        //  if(!(cell instanceof OpmState)){
+          //  cell.translate(50,50);
+          //}
+
+        }
+        }
+        else {
+               Graph.MainGraph.resetCells(Graph.nodeGraph.getCells().map((cell) => cell.remove()));
+        }
+        FixEmbeds_FromData(Graph.MainGraph);
+        processResize_FromData(Graph.MainGraph);
+    }
     return this
   }
   getNodeSubTitle(node){
@@ -110,6 +137,7 @@ export class OPDHierarchyComponent implements OnInit {
     tree.treeModel.getNodeById(1001)
       .setActiveAndVisible();
   }
+
 
   getColorByType(node) {
     if (node.data.type === 'in-zoom') {

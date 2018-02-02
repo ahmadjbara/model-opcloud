@@ -1,4 +1,6 @@
-import {Component, Optional} from '@angular/core';
+import {Component, ElementRef, OnInit, Optional} from '@angular/core';
+import {GraphService} from "../../rappid-components/services/graph.service";
+
 
 
 /**
@@ -9,16 +11,12 @@ import {Component, Optional} from '@angular/core';
   templateUrl: 'Progress_Spinner.html',
   styleUrls:['Progress_Spinner.scss']
 })
-export class ProgressSpinner {
-
-
-  constructor() { }
-
-  Show(){
-
+export class ProgressSpinner implements OnInit{
+  element = this.elementRef.nativeElement;
+  ngOnInit(): void {
+  }
+  constructor( private elementRef: ElementRef) {
   }
 
-  Hide(){
 
-  }
 }

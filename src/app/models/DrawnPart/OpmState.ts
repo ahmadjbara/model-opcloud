@@ -29,8 +29,8 @@ export  class OpmState extends OpmEntity {
       size: {width: width>this.min_width ? width:this.min_width, height: height>this.min_height ? height:this.min_height},
       position: {x: pos_x, y: pos_y},
       type: type,
-      'father' : father,
-      'parent':father
+      'parent':father,
+      'father':father,
     });
   }
 
