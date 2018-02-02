@@ -1,0 +1,5 @@
+import {OpmModel} from './OpmModel';
+
+export class OpmKnowledgeBase {
+  opmModels: Array<OpmModel>;
+}

@@ -1,5 +1,6 @@
 import { Component, OnInit, ViewChild, ViewContainerRef,ComponentFactoryResolver,ComponentRef,Input } from '@angular/core';
-import { linkTypeSelection} from '../../link-operating/linkTypeSelection'
+import { linkTypeSelection} from '../../configuration/elementsFunctionality/linkTypeSelection';
+import { oplFunctions} from "../../opl-generation/opl-functions";
 
 // popup imports
 import {DialogComponent} from "../../dialogs/choose-link-dialog/Dialog.component";
@@ -11,7 +12,7 @@ import {OplDialogComponent} from "../../dialogs/opl-dialog/opl-dialog.component"
   selector: 'opcloud-rappid-opl',
   template: `
     <div class="opl-container">
-       <ng-container *ngFor="let cell of graph.getCells()">
+       <ng-container *ngFor="let cell of graph.getCells().reverse()">
           <p *ngIf = "cell.attributes.opl" 
             [innerHTML]="cell.attributes.opl" 
             (mouseover)="highlightCell(cell)"
@@ -32,11 +33,19 @@ export class RappidOplComponent implements OnInit {
   ngOnInit() {
     this.GenerateOPL();
     this.HoverOnCells;
+    this.test();
+
   }
 
-  GenerateOPL(){
-      this.graph.on('add', (cell) => {
+  test(){
+    this.graph.on('add',(cell)=>{
 
+    });
+
+  }
+
+  GenerateOPL() {
+      this.graph.on('add', (cell) => {
         if (cell.attributes.type === 'opm.Object') {
           this.updateObjectOPL(cell);
         }
@@ -46,21 +55,17 @@ export class RappidOplComponent implements OnInit {
         }
 
         if (cell.attributes.type === 'opm.State') {
-          var parentId = cell.attributes.parent;
-          if(parentId) {
-            var parent = this.graph.getCell(parentId).attributes.attrs.text.text;
-            cell.attributes['opl'] = `${parent} can be ${cell.attributes.attrs.text.text}`;
-          }
+          this.updateStateOPL(cell);
+        }
+        if (cell.attributes.type === 'opm.Link') {
+          this.updateLinkOPL(cell);
         }
       });
 
+
       this.graph.on('change', (cell) => {
         if (cell.attributes.type === 'opm.State') {
-          var parentId = cell.attributes.parent;
-          if(parentId){
-            var parent = this.graph.getCell(parentId).attributes.attrs.text.text;
-            cell.attributes['opl'] = `${parent} can be ${cell.attributes.attrs.text.text}`;
-          }
+          this.updateStateOPL(cell);
         }
 
         if (cell.attributes.type === 'opm.Object') {
@@ -68,7 +73,7 @@ export class RappidOplComponent implements OnInit {
         }
 
         if (cell.attributes.type === 'opm.Process') {
-          this.updateProcessOPL(cell)
+          this.updateProcessOPL(cell);
         }
 
         if (cell.attributes.type != 'opm.Link') {
@@ -120,10 +125,13 @@ export class RappidOplComponent implements OnInit {
 
   //update OPL for a link when link is added or changed
   updateLinkOPL(cell){
+
     var src=cell.getSourceElement();
     var tgt=cell.getTargetElement();
-    if(src && tgt)
-        cell.attributes.opl=linkTypeSelection.generateOPL(src,tgt,cell.attributes.name);
+    if(src && tgt){
+        //cell.attributes.opl=linkTypeSelection.generateOPL(src,tgt,cell.attributes.name);
+        cell.attributes.opl = oplFunctions.generateLinkOpl(cell, cell.attributes.name);
+    }
   }
   //update OPL for an Object when object is added or changed
   updateObjectOPL(cell){
@@ -143,6 +151,27 @@ export class RappidOplComponent implements OnInit {
     cell.attributes.opl=`<b class="process">${processName}</b> is <i>${affiliation}</i> and <i>${essence}</i><b>.</b>`;
 
   }
+  updateStateOPL(cell) {
+    const parent = cell.getParent();
+    if ( !parent) {return; }
+    const objectName = parent.attributes.attrs.text.text;
+    if (parent.getEmbeddedCells()) {
+      const states = parent.getEmbeddedCells();
+      let stateOpl = `<b class="object">${objectName}</b> can be`;
+      if (states.length === 1) {
+        stateOpl = `<b class="object">${objectName}</b> is <b class="state">${states[0].attributes.attrs.text.text}</b><b>.</b>`;
+      }else {
+        let i = 0;
+        for (; i < states.length - 2 ; i++) {
+          stateOpl = stateOpl + ` <b class="state">${states[i].attributes.attrs.text.text}</b><b>,</b>`;
+        }
+        if(states[i]) {
+          stateOpl = stateOpl + ` <b class="state">${states[i].attributes.attrs.text.text}</b> or <b class="state">${states[i + 1].attributes.attrs.text.text}</b><b>.</b>`;
+        } }
+        if(parent.getEmbeddedCells()[0]){
+     parent.getEmbeddedCells()[0].attributes.opl = stateOpl;}
+    }
+  }
 
   highlightObject(cell){
     var cellView = this.paper.findViewByModel(cell);
@@ -151,7 +180,7 @@ export class RappidOplComponent implements OnInit {
   }
   unhighlightObject(cell){
     var cellView = this.paper.findViewByModel(cell);
-    cellView.model.attr('rect/fill','#DCDCDC')
+    cellView.model.attr('rect/fill','white')
 
   }
 
@@ -162,36 +191,80 @@ export class RappidOplComponent implements OnInit {
 
   unhighlightProcess(cell){
     var cellView = this.paper.findViewByModel(cell);
-    cellView.model.attr('ellipse/fill','#DCDCDC')
+    cellView.model.attr('ellipse/fill','white')
   }
 
   highlightLink(cell){
-
-    var source=cell.getSourceElement();
-    var target=cell.getTargetElement();
+    const linkType = cell.attributes.name;
+    let source= cell.getSourceElement();
+    const target= cell.getTargetElement();
+    if ([ 'Aggregation-Participation', 'Generalization-Specialization', 'Classification-Instantiation',
+        'Exhibition-Characterization'].indexOf(linkType) > -1) {
+      source = cell.getSource();
+      const cellView = this.paper.findViewByModel(cell.getMainUpperLink());
+      cellView.model.attr('.connection/stroke','#FFA500');
+    }
     if(source.attributes.type==='opm.Object') this.highlightObject(source);
     else if(source.attributes.type==='opm.Process') this.highlightProcess(source);
+    else if(source.attributes.type==='opm.State') this.highlightSingleState(source);
     if(target.attributes.type==='opm.Object') this.highlightObject(target);
     else if(target.attributes.type==='opm.Process') this.highlightProcess(target);
+    else if(target.attributes.type==='opm.State') this.highlightSingleState(target);
 
     var cellView = this.paper.findViewByModel(cell);
     cellView.model.attr('.connection/stroke','#FFA500');
   }
   unhighlightLink(cell){
-
-    var source=cell.getSourceElement();
-    var target=cell.getTargetElement();
+    const linkType = cell.attributes.name;
+    let source= cell.getSourceElement();
+    const target= cell.getTargetElement();
+    if ([ 'Aggregation-Participation', 'Generalization-Specialization', 'Classification-Instantiation',
+        'Exhibition-Characterization'].indexOf(linkType) > -1) {
+      source = cell.getSource();
+      const cellView = this.paper.findViewByModel(cell.getMainUpperLink());
+      cellView.model.removeAttr('.connection/stroke');
+    }
     if(source.attributes.type==='opm.Object') this.unhighlightObject(source);
     else if(source.attributes.type==='opm.Process') this.unhighlightProcess(source);
+    else if(source.attributes.type==='opm.State') this.unhighlightSingleState(source);
     if(target.attributes.type==='opm.Object') this.unhighlightObject(target);
     else if(target.attributes.type==='opm.Process') this.unhighlightProcess(target);
+    else if(target.attributes.type==='opm.State') this.unhighlightSingleState(target);
 
     var cellView = this.paper.findViewByModel(cell);
     cellView.model.removeAttr('.connection/stroke');
   }
+  highlightStates(cell){
+    const parent = cell.getParent();
+    if (parent.getEmbeddedCells()) {
+      const states = parent.getEmbeddedCells();
+      for (const state of states) {
+        this.highlightSingleState(state);
+      }
+    }
+  }
+  unhighlightStates(cell){
+    const parent = cell.getParent();
+    if (parent.getEmbeddedCells()) {
+      const states = parent.getEmbeddedCells();
+      for (const state of states) {
+        this.unhighlightSingleState(state);
+      }
+    }
+  }
+  highlightSingleState(state){
+    const cellView = this.paper.findViewByModel(state);
+    cellView.model.attr('.inner/fill','#FFA500');
+    cellView.model.attr('.outer/fill','#FFA500');
+  }
+  unhighlightSingleState(state){
+    const cellView = this.paper.findViewByModel(state);
+    cellView.model.attr('.inner/fill','white');
+    cellView.model.attr('.outer/fill','white');
+  }
 
 
-  highlightCell(cell){
+  highlightCell(cell) {
     switch(cell.attributes.type) {
       case 'opm.Object':
         this.highlightObject(cell);
@@ -199,6 +272,8 @@ export class RappidOplComponent implements OnInit {
       case 'opm.Process': this.highlightProcess(cell);
         break;
       case 'opm.Link': this.highlightLink(cell);
+        break;
+      case 'opm.State': this.highlightStates(cell);
         break;
     }
 
@@ -211,6 +286,8 @@ export class RappidOplComponent implements OnInit {
       case 'opm.Process': this.unhighlightProcess(cell);
         break;
       case 'opm.Link': this.unhighlightLink(cell);
+        break;
+      case 'opm.State': this.unhighlightStates(cell);
         break;
     }
 

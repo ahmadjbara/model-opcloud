@@ -1,10 +1,10 @@
 /* You can add global styles to this file, and also import other style files */
-@import 'assets/OPCloud-dev/css/rappid.css';
-@import 'assets/OPCloud-dev/css/style.css';
-@import 'assets/OPCloud-dev/css/theme-picker.css';
-@import 'assets/OPCloud-dev/css/halo.css';
-@import 'assets/OPCloud-dev/css/OPCloud.css';
-@import 'assets/styles/material-theme.scss';
+@import 'assets/css/style.css';
+@import 'assets/css/theme-picker.css';
+@import 'assets/css/halo.css';
+@import 'assets/css/OPCloud.css';
+@import 'assets/css/material-theme';
+@import '~rappid/build/rappid.css';
 
 html, body {
   position: relative;
@@ -112,7 +112,7 @@ body {
   }
 
   .joint-paper {
-    transform: scale(0.6);
+    transform: scale(0.9);
   }
 }
 

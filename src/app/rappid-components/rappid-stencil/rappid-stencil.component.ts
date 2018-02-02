@@ -1,5 +1,6 @@
 import { Component, AfterViewInit, ViewContainerRef, ViewChild, Input, OnInit } from '@angular/core';
-import { stencilConfig } from '../../config/stencil.config';
+import { stencilConfig } from '../../configuration/rappidEnviromentFunctionality/stencil.config';
+
 
 const joint = require('rappid');
 
@@ -43,10 +44,16 @@ export class RappidStencilComponent implements OnInit, AfterViewInit {
       dropAnimation: true,
       // Use default Grid Layout
       layout: true,
+      last: joint.dia.cell,
       // Remove tooltip definition from clone
       dragStartClone: function (cell) {
-        return cell.clone().removeAttr('./data-tooltip');
-      }
+         return  cell.clone().removeAttr('./data-tooltip');
+      },
+      dragEndClone: function (cell) {
+        let cloned = cell.clone();
+        cloned.numberThing();
+        return cloned;
+      },
     });
   }
 
